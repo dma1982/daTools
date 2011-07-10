@@ -1,18 +1,10 @@
 #include "process.h"
+#include "buffer.h"
 
 #include "types.h"
+#include "msg.h"
 
-string sw::gethostname()
-{
-    buffer_t buf;
 
-    int rc = ::gethostname(buf.data(), buf.capacity());
-    sw_assert(rc == 0, ERR_GET_HOSTNAME_FAILED);
-
-    buf.size(strlen(buf.data()) + 1);
-
-    return buf.data();
-}
 
 pid_t sw::spawn(const char* cmd, char*const* args)
 {
@@ -21,15 +13,15 @@ pid_t sw::spawn(const char* cmd, char*const* args)
     rc = vfork();
     if (rc == 0)
     {
-        sw_assert(execvp(cmd, args) > 0);
+        __assert(execvp(cmd, args) > 0, "spawn a process failed");
     }
-    
-    sw_assert(rc > 0, ERR_CREATE_PROCESS_FAILED);
+
+    __assert(rc > 0, ERR_CREATE_PROCESS_FAILED);
 
 #endif
 
 #ifdef WIN
-    
+
 #endif
 
     return rc;

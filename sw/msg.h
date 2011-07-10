@@ -20,6 +20,9 @@
 
 #define ERR_SOCKET_ACCEPT_FAILED "Accept client connection failed."
 
+#define ERR_INVALID_SIZE "Invalid size."
+#define ERR_INVALID_STATUS "Invalid status."
 
+#define ERR_NULL_BUFFER "Cannot append a NULL buffer."
 
 #endif

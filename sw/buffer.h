@@ -2,6 +2,10 @@
 #define _SW_BUFFER_H_
 
 #include "util.h"
+#include "msg.h"
+
+#include <cstring>
+#include <cstdio>
 
 namespace sw
 {
@@ -45,9 +49,9 @@ public:
         return _capacity;
     }
 
-    void size(int s)
+    void size(size_t s)
     {
-        __assert(s <= _capacity && s >= 0);
+        __assert(s <= _capacity && s >= 0, ERR_INVALID_SIZE);
         _size = s;
     }
 
@@ -55,9 +59,9 @@ public:
         return _capacity - _size;
     }
 
-    data_t(char* msg, int len)
+    data_t(char* msg, size_t len)
     {
-        __assert(msg != 0);
+        __assert(msg != 0, ERR_NULL_BUFFER);
         _size = len;
         _capacity = len * 2;
 
@@ -67,9 +71,9 @@ public:
         _refcnt = 1;
     }
 
-    data_t(int size = BUFSIZ)
+    data_t(size_t size = BUFSIZ)
     {
-        __assert(size > 0, ERR_BUFSIZ_INVALID, size);
+        __assert(size > 0, ERR_BUFSIZ_INVALID);
         _data = new char[size];
         _size = 0;
         _data[_size] = 0;
@@ -145,6 +149,7 @@ public:
         if (_data) {
             _data->_inc_ref_cnt();
         }
+
         if (_next) {
             _next->_inc_ref_cnt();
         }
@@ -158,20 +163,29 @@ public:
 
     void append(buffer_t* next)
     {
-        __assert(next != 0);
+        __assert(next != 0, ERR_NULL_BUFFER);
         _next = next;
     };
 
-    void append(char* msg, int len)
+    void append(char* msg, size_t len)
     {
-        __assert(msg != 0);
-        if (_data->idle() > len)
+        __assert(msg != 0, ERR_NULL_BUFFER);
+        size_t idle = _data->idle();
+
+        if (idle > len)
         {
             memcpy(data() + size(), msg, len);
+            _data->size(_data->size() + len);
         }
         else
         {
-            _next = new buffer_t(msg, len);
+            memcpy(data() + size(), msg, idle);
+            _data->size(_data->capacity());
+
+            _next = new buffer_t();
+            _next->_inc_ref_cnt();
+
+            _next->append(msg + idle, len - idle);
         }
     }
 
@@ -180,23 +194,23 @@ public:
     }
 
     size_t size() const {
-        return _data->_size();
+        return _data->size();
     }
 
     size_t capacity() const {
         return _data->capacity();
     }
 
-    void size(int s)
+    void size(size_t s)
     {
-        __assert(s <= capacity() && s >= 0);
+        __assert(s <= capacity() && s >= 0, ERR_INVALID_SIZE);
         _data->size(s);
     }
 
 
     ~buffer_t()
     {
-        __assert(_data != 0);
+        __assert(_data != 0, ERR_INVALID_STATUS);
 
         if (_data) _data->_dec_ref_cnt();
         if (_next) _next->_dec_ref_cnt();
