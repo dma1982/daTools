@@ -6,4 +6,4 @@ Why Simpler?
 How to use?
 Different with other framework, we suggest to compile "Simpler" with your project directly, because it's simple.
 
-Please the "Makefile" and "make.misc" in test directory to see how to use.
+Please check the "Makefile" and "make.misc" in "test" directory to see how to use.
