@@ -1,3 +1,9 @@
 Why Simpler?
 1. It's smaller than others, only Linux and windows are supported.
 2. It has high compatiblity with STL, less internal data structure, less internal or external function...
+
+
+How to use?
+Different with other framework, we suggest to compile "Simpler" with your project directly, because it's simple.
+
+Please the "Makefile" and "make.misc" in test directory to see how to use.

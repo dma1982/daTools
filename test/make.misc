@@ -1,0 +1,12 @@
+
+SW_TOP=..
+SW_INCLUDE = ${SW_TOP}
+
+SW_TYPE=lin
+SW_CFLAGS=-DLIN
+
+SW_FS_SRC=${SW_TOP}/sw/fs.cpp
+SW_PRO_SRC=${SW_TOP}/sw/process.cpp
+SW_NET_SRC=${SW_TOP}/sw/tcp.${SW_TYPE}.cpp
+
+SW_SRC=${SW_FS_SRC} ${SW_PRO_SRC} ${SW_NET_SRC}
