@@ -212,8 +212,12 @@ public:
     {
         __assert(_data != 0, ERR_INVALID_STATUS);
 
-        if (_data) _data->_dec_ref_cnt();
-        if (_next) _next->_dec_ref_cnt();
+        if (_data) {
+            _data->_dec_ref_cnt();
+        }
+        if (_next) {
+            _next->_dec_ref_cnt();
+        }
     }
 };
 }

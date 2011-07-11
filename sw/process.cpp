@@ -13,7 +13,7 @@ pid_t sw::spawn(const char* cmd, char*const* args)
     rc = vfork();
     if (rc == 0)
     {
-        __assert(execvp(cmd, args) > 0, "spawn a process failed");
+        __assert(execvp(cmd, args) > 0, ERR_SPAWN_PROCESS_FAILED);
     }
 
     __assert(rc > 0, ERR_CREATE_PROCESS_FAILED);
