@@ -1,7 +1,7 @@
 include make.misc
 
 
-CFLAGS=-Wall -O2 ${SW_CFLAGS}
+CFLAGS=-O2 ${SW_CFLAGS}
 CC=g++
 
 
