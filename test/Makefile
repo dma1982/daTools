@@ -1,8 +1,11 @@
 include ../make.misc
 
-SW_TOP = ..
 
-SW_INCLUDE = ..
+CFLAGS=-Wall -O2 ${SW_CFLAGS}
+CC=g++
+
+SW_TOP = ..
+SW_INCLUDE = ${SW_TOP}
 
 all: test_buffer test_util test_fs test_tcp_serv test_tcp_client
 
