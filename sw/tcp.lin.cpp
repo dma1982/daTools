@@ -19,7 +19,7 @@ std::string sw::gethostname()
     buffer_t buf;
 
     int rc = ::gethostname(buf.data(), buf.capacity());
-    __assert(rc == 0, ERR_GET_HOSTNAME_FAILED);
+    __e_assert(rc == 0);
 
     buf.size(strlen(buf.data()) + 1);
 
@@ -47,7 +47,7 @@ sw::TcpServer::TcpServer(int& port)
     }
 
     rc = bind(_socket, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
-    __assert(rc >= 0, ERR_SOCKET_BIND_FAILED);
+    __e_assert(rc >= 0);
 
     if (0 == port)
     {
@@ -59,7 +59,7 @@ sw::TcpServer::TcpServer(int& port)
     }
 
     rc = listen(_socket, 10);
-    __assert(rc >= 0, ERR_SOCKET_LISTEN_FAILED);
+    __e_assert(rc >= 0);
 }
 
 int sw::TcpServer::close()
@@ -71,7 +71,7 @@ sw::TcpConnection sw::TcpServer::accept()
 {
     socket_t skt;
     skt = ::accept(_socket, 0, 0);
-    __assert(skt >= 0, ERR_SOCKET_ACCEPT_FAILED);
+    __e_assert(skt > 0);
     return skt;
 }
 

@@ -14,7 +14,7 @@ sw::handle_t sw::open(const string& fname, mode_t mode, int mask)
 {
 #ifdef LIN
     handle_t rc = ::open(fname.c_str(), mode, mask);
-    __assert(rc >= 0, ERR_OPEN_FILE_FAILED);
+    __e_assert(rc >= 0);
 
     return rc;
 #endif
@@ -24,7 +24,7 @@ size_t sw::write(handle_t fd, const buffer_t& buff)
 {
 #ifdef LIN
     int n = ::write(fd, buff.data(), buff.size());
-    __assert(n > 0 && (size_t) n == buff.size(), ERR_WRITE_FILE_FAILED);
+    __e_assert(n > 0 && (size_t) n == buff.size());
 #endif
 
     return buff.size();
@@ -34,7 +34,7 @@ size_t sw::write(handle_t fd, const char* buff, int size)
 {
 #ifdef LIN
     int n = ::write(fd, buff, size);
-    __assert(n > 0 && n == size, ERR_WRITE_FILE_FAILED);
+    __e_assert(n > 0 && n == size);
 #endif
 
     return size;
@@ -44,7 +44,7 @@ size_t sw::read(handle_t fd, char* buff, int& size)
 {
 #ifdef LIN
     int n = ::read(fd, buff, size);
-    __assert(n >= 0, ERR_READ_FILE_FAILED);
+    __e_assert(n >= 0);
     size = n;
 #endif
 
@@ -56,7 +56,7 @@ size_t sw::read(handle_t fd, buffer_t& buff)
 {
 #ifdef LIN
     int n = ::read(fd, buff.data(), buff.capacity());
-    __assert(n >= 0, ERR_READ_FILE_FAILED);
+    __e_assert(n >= 0);
     buff.size(n);
 #endif
 

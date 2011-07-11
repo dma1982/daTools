@@ -23,9 +23,10 @@ extern char **environ;
 
 #define __assert(exp, msg) \
     do { \
-        std::stringstream ss; \
-        ss << "Runtime Error(" <<  __FILE__ << ":" << __LINE__<< ") : " << msg ;\
-        if (!(exp)) throw std::runtime_error(ss.str()); \
+        if (!(exp)) { \
+            std::stringstream ss; \
+            ss << "Runtime Error(" <<  __FILE__ << ":" << __LINE__<< ") : " << msg ;\
+            throw std::runtime_error(ss.str()); } \
     } while(0)
 
 #define __e_assert(exp) __assert(exp, strerror(errno) << " (code: " << errno << ")")

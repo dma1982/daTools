@@ -51,7 +51,9 @@ public:
 
     void size(size_t s)
     {
-        __assert(s <= _capacity && s >= 0, ERR_INVALID_SIZE);
+        __assert(s >= 0, ERR_INVALID_SIZE_NEG);
+        __assert(s <= _capacity, ERR_INVALID_SIZE_BIG);
+
         _size = s;
     }
 
@@ -71,9 +73,9 @@ public:
         _refcnt = 1;
     }
 
-    data_t(size_t size = BUFSIZ)
+    data_t(int size = BUFSIZ)
     {
-        __assert(size > 0, ERR_BUFSIZ_INVALID);
+        __assert(size > 0, ERR_INVALID_SIZE_NEG);
         _data = new char[size];
         _size = 0;
         _data[_size] = 0;
