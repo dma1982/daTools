@@ -1,5 +1,4 @@
-CC=g++
 SW_TYPE=lin
-CFLAGS=-Wall -DLIN -O2
+SW_CFLAGS=-DLIN
 SW_SRC= ${SW_TOP}/sw/fs.cpp  ${SW_TOP}/sw/process.cpp  ${SW_TOP}/sw/tcp.${SW_TYPE}.cpp
 
