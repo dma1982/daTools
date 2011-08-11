@@ -184,7 +184,7 @@ public:
             memcpy(data() + size(), msg, idle);
             _data->size(_data->capacity());
 
-            _next = new buffer_t();
+            _next = new buffer_t(_data->capacity());
             _next->_inc_ref_cnt();
 
             _next->append(msg + idle, len - idle);
