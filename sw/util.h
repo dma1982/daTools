@@ -32,8 +32,8 @@ extern char **environ;
 #define __e_assert(exp) __assert(exp, strerror(errno) << " (code: " << errno << ")")
 
 
-#define SAFE_DELETE(x) do { if (x!=0) { delete (x); x =0; } } while(0)
-#define SAFE_DELETE_ARRAY(x) do { if (x!=0) { delete[] (x); x = 0; } } while(0)
+//#define SAFE_DELETE(x) do { if (x!=0) { delete (x); x =0; } } while(0)
+//#define SAFE_DELETE_ARRAY(x) do { if (x!=0) { delete[] (x); x = 0; } } while(0)
 
 
 #endif
