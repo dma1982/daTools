@@ -14,6 +14,7 @@ class Logger
         const std::string& m_name;
         FILE* m_logFile;
         LOG_LEVEL m_logLevel;
+
         static const int default_stack_depth = 20;
 
         Logger(const std::string& loggerName) : m_name(loggerName) 
@@ -34,8 +35,9 @@ class Logger
         void Error(const char* msg);
         void Assert(bool exp, const char* msg);
         void Assert(bool exp);
-        void printStackTrace();
 };
+
+extern Logger* g_logger;
 
 }
 #endif

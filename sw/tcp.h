@@ -1,11 +1,11 @@
 #ifndef _SW_TCP_H_
 #define _SW_TCP_H_
 
-#include <map>
-
 #include "buffer.h"
 #include "types.h"
+#include "log.h"
 
+#include <map>
 #include <string>
 
 namespace sw
@@ -32,6 +32,7 @@ public:
     std::map<long, long>::iterator begin() {
         return _options.begin();
     };
+
     std::map<long, long>::iterator end() {
         return _options.end();
     };
@@ -45,6 +46,7 @@ class TcpConnection
 {
 private:
     socket_t _socket;
+    static Logger* _logger;
 public:
     TcpConnection(const std::string& host, int port);
     TcpConnection(const std::string& host, int port, const SocketOptions& options) {};
@@ -64,6 +66,7 @@ class TcpServer
 {
 private:
     socket_t _socket;
+    static Logger* _logger;
 public:
     TcpServer(int& port);
     TcpServer(int& port, const SocketOptions& options) {};

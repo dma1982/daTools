@@ -1,19 +1,18 @@
-#include "sw/buffer.h"
+#include "sw/sw.h"
 
 #include <iostream>
 
-using namespace sw;
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    buffer_t buf(2);
+    sw::buffer_t buf(2);
 
     buf.append("123", 4);
 
     *(buf.data()+4) = 0;
 
-    cout << (buf.data()) << endl;
+    std::cout << (buf.data()) << std::endl;
     cout << buf.size() << endl;
     cout << buf.capacity() << endl;
 

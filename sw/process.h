@@ -4,6 +4,7 @@
 #include <string>
 
 #include "types.h"
+#include "log.h"
 
 namespace sw
 {

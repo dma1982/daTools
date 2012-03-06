@@ -2,6 +2,7 @@
 #define __SW_CONF_H__
 
 #include "types.h"
+#include "event.h"
 #include <cstdio>
 
 namespace sw
@@ -9,15 +10,18 @@ namespace sw
 
 class Configuration
 {
-
     private:
         static Configuration* m_conf;
-        FILE* m_logFile;
+        static lock_t m_lock;
 
+        FILE* m_logFile;
         Configuration();
 
     public:
+
         static Configuration* instance();
+
+        ~Configuration();
 
         FILE* getLogFile();
 

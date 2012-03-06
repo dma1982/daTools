@@ -1,9 +1,23 @@
 #include "types.h"
 #include "conf.h"
+#include "event.h"
 
 namespace sw
 {
-    Configuration* Configuration::m_conf = new Configuration();
+
+    lock_t Configuration::m_lock;
+    Configuration* Configuration::m_conf;
+
+    Configuration* Configuration::instance()
+    {
+        autolock_t guard(m_lock);
+        if (m_conf == 0)
+        {
+            m_conf = new Configuration();
+        }
+
+        return m_conf;
+    }
 
     Configuration::Configuration()
     {
@@ -16,11 +30,6 @@ namespace sw
         {
             fclose(m_logFile);
         }
-    }
-
-    Configuration* Configuration::instance()
-    {
-        return m_conf;
     }
 
     FILE* Configuration::getLogFile()

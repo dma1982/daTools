@@ -1,22 +1,24 @@
 #ifndef _SW_BUFFER_H_
 #define _SW_BUFFER_H_
 
-#include "util.h"
-#include "msg.h"
-
 #include <cstring>
 #include <cstdio>
+
+#include "msg.h"
+#include "log.h"
 
 namespace sw
 {
 class data_t
 {
+private:
     char* _data;
     size_t _size;
     size_t _capacity;
     long _refcnt;
 
-private:
+    static Logger* _logger;
+
     data_t(const data_t& _d) {}
     data_t& operator=(const data_t& _d) {
         return *this;
@@ -51,8 +53,8 @@ public:
 
     void size(size_t s)
     {
-        __assert(s >= 0, ERR_INVALID_SIZE_NEG);
-        __assert(s <= _capacity, ERR_INVALID_SIZE_BIG);
+        _logger->Assert(s >= 0, ERR_INVALID_SIZE_NEG);
+        _logger->Assert(s <= _capacity, ERR_INVALID_SIZE_BIG);
 
         _size = s;
     }
@@ -63,7 +65,7 @@ public:
 
     data_t(char* msg, size_t len)
     {
-        __assert(msg != 0, ERR_NULL_BUFFER);
+        _logger->Assert(msg != 0, ERR_NULL_BUFFER);
         _size = len;
         _capacity = len * 2;
 
@@ -75,7 +77,7 @@ public:
 
     data_t(int size = BUFSIZ)
     {
-        __assert(size > 0, ERR_INVALID_SIZE_NEG);
+        _logger->Assert(size > 0, ERR_INVALID_SIZE_NEG);
         _data = new char[size];
         _size = 0;
         _data[_size] = 0;
@@ -94,12 +96,15 @@ public:
 
 };
 
+
 class buffer_t
 {
     data_t* _data;
     buffer_t* _next;
 
     long _refcnt;
+
+    static Logger* _logger;
 
 protected:
     void _inc_ref_cnt()
@@ -165,13 +170,13 @@ public:
 
     void append(buffer_t* next)
     {
-        __assert(next != 0, ERR_NULL_BUFFER);
+        _logger->Assert(next != 0, ERR_NULL_BUFFER);
         _next = next;
     };
 
     void append(char* msg, size_t len)
     {
-        __assert(msg != 0, ERR_NULL_BUFFER);
+        _logger->Assert(msg != 0, ERR_NULL_BUFFER);
         size_t idle = _data->idle();
 
         if (idle > len)
@@ -205,14 +210,14 @@ public:
 
     void size(size_t s)
     {
-        __assert(s <= capacity() && s >= 0, ERR_INVALID_SIZE);
+        _logger->Assert(s <= capacity() && s >= 0, ERR_INVALID_SIZE);
         _data->size(s);
     }
 
 
     ~buffer_t()
     {
-        __assert(_data != 0, ERR_INVALID_STATUS);
+        _logger->Assert(_data != 0, ERR_INVALID_STATUS);
 
         if (_data) {
             _data->_dec_ref_cnt();
@@ -222,6 +227,8 @@ public:
         }
     }
 };
+
+
 }
 
 #endif

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-sw::Logger* sw::File::m_log = sw::Logger::getLogger("File");
+sw::Logger* sw::File::m_log = sw::Logger::getLogger("sw.File");
 
 sw::File::File(const string& path): m_path(path)
 {

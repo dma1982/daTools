@@ -14,6 +14,8 @@ extern "C"
 
 namespace sw
 {
+    Logger* g_logger = Logger::getLogger("sw.global");
+
     void Logger::Debug(const char* msg)
     {
         if (m_logLevel <= DEBUG)
@@ -80,24 +82,5 @@ namespace sw
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }
     }
-
-    void Logger::printStackTrace()
-    {
-        if (m_logLevel <= DEBUG)
-        {
-            ::fprintf(m_logFile, "%s [STACK]: \n", m_name.c_str());
-            ::fflush(m_logFile);
-
-            int nptrs;
-            void *buffer[default_stack_depth];
-
-            nptrs = backtrace(buffer, default_stack_depth);
-
-            backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
-
-        }
-
-    }
-
 
 }
