@@ -1,8 +1,8 @@
-#include "../log.h"
-#include "../tcp.h"
-#include "../types.h"
+#include "log.h"
+#include "tcp.h"
+#include "types.h"
 
-#include "../msg.h"
+#include "msg.h"
 
 #include <unistd.h>
 #include <sys/socket.h>

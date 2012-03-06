@@ -1,5 +1,5 @@
-#include "../event.h"
-#include "../types.h"
+#include "event.h"
+#include "types.h"
 
 namespace sw
 {

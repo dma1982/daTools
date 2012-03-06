@@ -1,6 +1,6 @@
 
 SW_TOP=..
-SW_INCLUDE = ${SW_TOP}
+SW_INCLUDE = ${SW_TOP}/sw/include
 
 SW_TYPE=lin
 SW_CFLAGS=-DLIN -g -lpthread

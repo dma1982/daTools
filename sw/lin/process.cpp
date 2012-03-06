@@ -1,8 +1,8 @@
-#include "../process.h"
-#include "../buffer.h"
+#include "process.h"
+#include "buffer.h"
 
-#include "../types.h"
-#include "../msg.h"
+#include "types.h"
+#include "msg.h"
 
 pid_t sw::spawn(const char* cmd, char*const* args)
 {
