@@ -5,7 +5,10 @@ CC=g++
 
 
 #all: test_buffer test_util test_fs test_tcp_serv test_tcp_client
-all: test_buffer test_fs test_tcp_serv test_tcp_client
+all: test_buffer test_fs test_tcp_serv test_tcp_client test_log
+
+test_log: test_log.cpp
+	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
 
 test_buffer: test_buffer.cpp
 	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
