@@ -1,68 +1,78 @@
 #ifndef _SW_FS_H_
 #define _SW_FS_H_
 
+
 #include "buffer.h"
 #include "types.h"
 
-#include <string>
+#include "log.h"
 
+#include <string>
 
 namespace sw
 {
+    class File
+    {
+        private:
+            handle_t m_handle;
+            std::string m_path;
+            static Logger* m_log;
 
-const mask_t default_file_mask = 0644;
-const mask_t default_dir_mask = 0755;
+        public:
 
-/**
- * open a file
- * [in] fname: file path
- * [in] mode: Y_READ, Y_WRITE, Y_RDWR
- */
-handle_t open(const std::string& fname, mode_t mode, mask_t mask = default_file_mask);
+            const mask_t default_file_mask = 0644;
+            const mask_t default_dir_mask = 0755;
 
-/**
- * write data to a file
- * [in] fd: file descriptor
- * [in] buff: data
- */
-size_t write(handle_t fd, const buffer_t& buff);
+            File();
+            File(const std::string& path, mask_t mask = default_file_mask);
+            ~File();
+            /**
+             * open a file
+             * [in] fname: file path
+             * [in] mode: Y_READ, Y_WRITE, Y_RDWR
+             */
 
-/**
- * write data to a file
- * [in] fd: file descriptor
- * [in] buff: data
- */
-size_t write(handle_t fd, const char* buff, int size);
+            void open(const std::string& path, mask_t mask = default_file_mask);
+            /**
+             * write data to a file
+             * [in] fd: file descriptor
+             * [in] buff: data
+             */
 
+            size_t write(const char* buffer, const size_t& size);
+            /**
+             * write data to a file
+             * [in] fd: file descriptor
+             * [in] buff: data
+             */
 
-/**
- *
- * read data from a file
- * [in] fd: file descriptor
- * [out] buff: data
- */
-size_t read(handle_t fd, buffer_t& buff);
+            size_t write(const buffer_t& buff);
+            /**
+             *
+             * read data from a file
+             * [in] fd: file descriptor
+             * [out] buff: data
+             */
 
+            size_t read(buffer_t& buff);
+            /**
+             *
+             * read data from a file
+             * [in] fd: file descriptor
+             * [out] buff: data
+             */
 
-/**
- *
- * read data from a file
- * [in] fd: file descriptor
- * [out] buff: data
- */
-size_t read(handle_t fd, char* buff, int& size);
+            size_t read(char* buf, size_t& size);
+            bool isDirectory();
+            bool isFile();
+            /**
+             * create a directory
+             * [in] path: directory path
+             */
 
-/**
- * close a file
- * [in] fd: file descriptor
- */
-void close(handle_t fd);
+            void mkdir(mask_t mask = default_dir_mask);
+    };
 
-/**
- * create a directory
- * [in] path: directory path
- */
-void mkdir(const std::string& path, mask_t mask = default_dir_mask);
 }
 
 #endif

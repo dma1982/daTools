@@ -17,6 +17,14 @@ typedef int socket_t;
 typedef int mask_t;
 #endif
 
+enum LOG_LEVEL
+{
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR
+};
+
 }
 
 #endif
