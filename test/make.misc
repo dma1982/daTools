@@ -5,7 +5,7 @@ SW_INCLUDE = ${SW_TOP}
 SW_TYPE=lin
 SW_CFLAGS=-DLIN -g -lpthread
 
-SW_SRC=${SW_TOP}/sw/${SW_TYPE}/fs.cpp
+SW_FS_SRC=${SW_TOP}/sw/${SW_TYPE}/fs.cpp
 SW_PRO_SRC=${SW_TOP}/sw/${SW_TYPE}/process.cpp
 SW_NET_SRC=${SW_TOP}/sw/${SW_TYPE}/tcp.cpp
 SW_EVENT_SRC=${SW_TOP}/sw/${SW_TYPE}/event.cpp

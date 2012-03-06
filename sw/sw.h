@@ -6,5 +6,6 @@
 #include "log.h"
 #include "conf.h"
 #include "buffer.h"
+#include "fs.h"
 
 #endif

@@ -11,7 +11,7 @@ namespace sw
 class Logger
 {
     private:
-        const std::string& m_name;
+        const std::string m_name;
         FILE* m_logFile;
         LOG_LEVEL m_logLevel;
 

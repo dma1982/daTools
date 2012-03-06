@@ -20,19 +20,20 @@ namespace sw
 
         public:
 
-            const mask_t default_file_mask = 0644;
-            const mask_t default_dir_mask = 0755;
+            static const mask_t default_file_mask = 0644;
+            static const mask_t default_dir_mask = 0755;
 
             File();
-            File(const std::string& path, mask_t mask = default_file_mask);
+            File(const std::string& path, mode_t mode,  mask_t mask = default_file_mask);
             ~File();
+
             /**
              * open a file
              * [in] fname: file path
              * [in] mode: Y_READ, Y_WRITE, Y_RDWR
              */
 
-            void open(const std::string& path, mask_t mask = default_file_mask);
+            void open(const std::string& path, mode_t mode, mask_t mask = default_file_mask);
             /**
              * write data to a file
              * [in] fd: file descriptor
@@ -63,8 +64,10 @@ namespace sw
              */
 
             size_t read(char* buf, size_t& size);
+
             bool isDirectory();
             bool isFile();
+
             /**
              * create a directory
              * [in] path: directory path

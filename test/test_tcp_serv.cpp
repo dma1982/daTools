@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    int port = 8080;
+    int port = 8989;
     sw::TcpServer* serv = new sw::TcpServer(port);
 
     sw::TcpConnection con = serv->accept();
