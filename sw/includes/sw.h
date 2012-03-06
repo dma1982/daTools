@@ -7,5 +7,6 @@
 #include "conf.h"
 #include "buffer.h"
 #include "fs.h"
+#include "tcp.h"
 
 #endif

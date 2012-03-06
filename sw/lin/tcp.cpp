@@ -19,7 +19,7 @@ std::string sw::gethostname()
 {
     buffer_t buf;
 
-    int rc = ::gethostname(buf.data(), buf.capacity());
+    ::gethostname(buf.data(), buf.capacity());
 
     buf.size(strlen(buf.data()) + 1);
 
@@ -109,7 +109,7 @@ size_t sw::TcpConnection::send(const sw::buffer_t& buf)
 {
     int n = 0;
     n = ::send(_socket, buf.data(), buf.size(), 0);
-    _logger->Assert(n >=0 && (size_t)n == buf.size());
+    _logger->Assert(n >= 0 && (size_t)n == buf.size());
     return buf.size();
 }
 
@@ -117,7 +117,7 @@ size_t sw::TcpConnection::send(const char* buf, int size)
 {
     int n = 0;
     n = ::send(_socket, buf, size, 0);
-    _logger->Assert(n >=0 && n == size);
+    _logger->Assert(n >= 0 && n == size);
     return size;
 }
 

@@ -3,7 +3,7 @@
 
 namespace sw
 {
-event_t::event_t()
+    event_t::event_t()
     {
         pthread_mutexattr_t attr;
         pthread_mutexattr_init( &attr );
@@ -17,7 +17,7 @@ event_t::event_t()
         pthread_cond_init(&m_cond, NULL);
     }
 
-event_t::event_t(const sw::event_t& event)
+    event_t::event_t(const sw::event_t& event)
     {
         m_mutex = event.m_mutex;
         m_cond = event.m_cond;

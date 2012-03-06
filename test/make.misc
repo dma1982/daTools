@@ -1,14 +1,8 @@
 
 SW_TOP=..
-SW_INCLUDE = ${SW_TOP}/sw/include
+SW_INCLUDE = ${SW_TOP}/sw/includes/
 
 SW_TYPE=lin
-SW_CFLAGS=-DLIN -g -lpthread
+SW_CFLAGS=-DLIN
 
-SW_FS_SRC=${SW_TOP}/sw/${SW_TYPE}/fs.cpp
-SW_PRO_SRC=${SW_TOP}/sw/${SW_TYPE}/process.cpp
-SW_NET_SRC=${SW_TOP}/sw/${SW_TYPE}/tcp.cpp
-SW_EVENT_SRC=${SW_TOP}/sw/${SW_TYPE}/event.cpp
-SW_BASE_SRC=${SW_TOP}/sw/conf.cpp ${SW_TOP}/sw/log.cpp ${SW_TOP}/sw/buffer.cpp
-
-SW_SRC=${SW_FS_SRC} ${SW_PRO_SRC} ${SW_NET_SRC} ${SW_BASE_SRC} ${SW_EVENT_SRC}
+SW_LIB=${SW_TOP}/sw/lin/
