@@ -3,7 +3,8 @@ OBJS=log.o \
      tcp.o \
      event.o \
      buffer.o \
-     conf.o
+     conf.o \
+     mem.o
 
 all: libsw.a
 
