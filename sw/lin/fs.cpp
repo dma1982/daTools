@@ -40,7 +40,7 @@ size_t sw::File::write(const buffer_t& buff)
 size_t sw::File::write(const char* buff, const size_t& size)
 {
     int n = ::write(m_handle, buff, size);
-    m_log->Assert(n > 0 && n == size);
+    m_log->Assert(n > 0 && (size_t)n == size);
 
     return size;
 }

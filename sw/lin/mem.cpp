@@ -16,6 +16,7 @@ namespace sw
         res->next = res;
         res->prev = res;
         res->data = 0;
+        return res;
     }
 
     void list_append(node_t* head, void* data)
@@ -128,7 +129,7 @@ namespace sw
 
     void table_for_each(hash_table_t* table, node_operator_t oper)
     {
-        for (int i = 0; i < table->size; i++)
+        for (size_t i = 0; i < table->size; i++)
         {
             if (table->data[i])
             {
@@ -151,7 +152,7 @@ namespace sw
         fprintf(log_file, "memeroy address <0x%lx>\n", data->address);
         fprintf(log_file, "stack trace:\n");
         char** str =  backtrace_symbols(data->stack_buffer, data->stack_size);
-        for (int i = 0; i < data->stack_size; i++)
+        for (size_t i = 0; i < data->stack_size; i++)
         {
             fprintf(log_file, "%s\n", str[i]);
         }
@@ -180,4 +181,6 @@ namespace sw
 
         return -1;
     }
+
+
 }
