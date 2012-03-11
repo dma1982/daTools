@@ -1,27 +1,20 @@
 include make.misc
 
-CFLAGS= -O2 ${SW_CFLAGS}
+CFLAGS=${SW_CFLAGS}
 CC=g++
 
 
-all: test_buffer test_fs test_tcp_serv test_tcp_client test_log
+all: test_buffer test_fs test_tcp_serv test_tcp_client test_log test_mem
 
-test_log: test_log.cpp
-	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
+OBJS=test_log \
+     test_buffer \
+     test_fs \
+     test_tcp_serv \
+     test_tcp_client \
+     test_mem
 
-test_buffer: test_buffer.cpp
-	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
-
-test_fs: test_fs.cpp
-	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
-
-test_tcp_serv: test_tcp_serv.cpp
-	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
-
-test_tcp_client: test_tcp_client.cpp
-	${CC} ${CFLAGS} -o $@ $< -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE}
-
-
+${OBJS}: %:%.cpp$
+	${CC} ${CFLAGS} $< -o $@ -lpthread -L${SW_LIB} -lsw -I${SW_INCLUDE} 
 
 clean:
-	rm -f test_buffer test_log test_fs test_tcp_serv test_tcp_client
+	rm -f test_buffer test_log test_fs test_tcp_serv test_tcp_client test_mem

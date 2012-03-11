@@ -1,6 +1,7 @@
 #include "sw.h"
 
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ int main(int argc, char** argv)
 
     sw::buffer_t buf;
 
+    sleep(10);
     con.recv(buf);
 
     cout << buf.data() << endl;

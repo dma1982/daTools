@@ -26,6 +26,8 @@ class Configuration
         FILE* getLogFile();
 
         LOG_LEVEL getLogLevel();
+
+        MEM_POOL_TYPE getMemPoolType();
 };
 }
 

@@ -10,6 +10,10 @@ extern "C"
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 }
 
 namespace sw
@@ -59,9 +63,9 @@ namespace sw
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[default_stack_depth];
+            void *buffer[SW_STACK_MAX_SIZE];
 
-            nptrs = backtrace(buffer, default_stack_depth);
+            nptrs = backtrace(buffer, SW_STACK_MAX_SIZE);
 
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }
@@ -75,12 +79,42 @@ namespace sw
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[default_stack_depth];
+            void *buffer[SW_STACK_MAX_SIZE];
 
-            nptrs = backtrace(buffer, default_stack_depth);
+            nptrs = backtrace(buffer, SW_STACK_MAX_SIZE);
 
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }
     }
+
+    AutoTimer::AutoTimer(const char* label) : m_label(label)
+    {
+        m_start= new timeval();
+        gettimeofday((timeval*)m_start, NULL);
+    }
+
+    AutoTimer::~AutoTimer()
+    {
+        m_end = new timeval();
+        gettimeofday((timeval*)m_end, NULL);
+
+        long seconds, useconds;
+        double mtime;
+
+        seconds = ((timeval*)m_end)->tv_sec - ((timeval*)m_start)->tv_sec;
+        useconds = ((timeval*)m_end)->tv_usec - ((timeval*)m_start)->tv_usec;
+        
+        mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+        char buffer[BUFSIZ] = {0};
+
+        sprintf(buffer, "%s (%lf).", m_label.c_str(), mtime);
+
+        g_logger->Info(buffer);
+
+        delete (timeval*) m_start;
+        delete (timeval*) m_end;
+    }
+    
 
 }

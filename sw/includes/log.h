@@ -15,8 +15,6 @@ class Logger
         FILE* m_logFile;
         LOG_LEVEL m_logLevel;
 
-        static const int default_stack_depth = 20;
-
         Logger(const std::string& loggerName) : m_name(loggerName) 
         {
             m_logFile = Configuration::instance()->getLogFile();
@@ -38,6 +36,17 @@ class Logger
 };
 
 extern Logger* g_logger;
+
+class AutoTimer
+{
+    public:
+        AutoTimer(const char* );
+        ~AutoTimer();
+    private:
+        std::string m_label;
+        void* m_start;
+        void* m_end;
+};
 
 }
 #endif

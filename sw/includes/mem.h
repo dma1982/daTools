@@ -1,12 +1,7 @@
 #ifndef __SW_MEM_H__
 #define __SW_MEM_H__
 
-#include "mem.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-
-#define STACK_MAX_SIZE 20
+#include "types.h"
 
 namespace sw
 {
@@ -23,12 +18,12 @@ namespace sw
         node_t** data;
     } hash_table_t;
 
-    typedef unsigned long ulong;
-
     typedef int (*node_comparator_t)(void*, void*);
     typedef int (*node_operator_t)(void* );
 
     node_t* list_create();
+
+    void list_destroy(node_t* head, node_operator_t oper = 0);
 
     void list_append(node_t* head, void* data);
 
@@ -36,11 +31,11 @@ namespace sw
 
     node_t* list_find(node_t* head, void* data, node_comparator_t cmp);
 
-    int list_remove(node_t* head, void* data, node_comparator_t cmp);
+    int list_remove(node_t* head, void* data, node_comparator_t cmp, node_operator_t oper = 0);
 
     void list_for_each(node_t* head, node_operator_t oper);
 
-    hash_table_t* table_create(size_t size);
+    hash_table_t* table_create(size_t size = 997);
 
     void table_insert(hash_table_t* table, ulong key, void* data);
 
@@ -48,18 +43,24 @@ namespace sw
 
     void table_for_each(hash_table_t* table, node_operator_t oper);
 
-    typedef struct
+    class MemoryPool
     {
-        unsigned long address;
-        unsigned long mem_size;
-        void* stack_buffer[STACK_MAX_SIZE];
-        size_t stack_size;
-        int type;
-    } alloc_info_t;
+        public:
+            virtual void* alloc(size_t size) = 0;
+            virtual void free(void* ptr) = 0;
+    };
 
-    int alloc_info_print(void* _data);
+    class Memory
+    {
+        public:
+            Memory(size_t size = BUFSIZ);
+            ~Memory();
+            void* alloc(size_t size);
+            void free(void* ptr);
+        private:
+            MemoryPool* m_memPool;
+    };
 
-    int alloc_info_cmp(void* l, void* r);
 }
 
 #endif

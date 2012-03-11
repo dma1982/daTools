@@ -10,7 +10,7 @@ all: libsw.a
 
 CC=g++
 INCLUDE=../includes
-CFLAGS=-Wall -DLIN
+CFLAGS=-Wall -DLIN -g
 
 libsw.a: ${OBJS}
 	ar cr libsw.a ${OBJS}

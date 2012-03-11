@@ -42,4 +42,8 @@ namespace sw
         return DEBUG;
     }
 
+    MEM_POOL_TYPE Configuration::getMemPoolType()
+    {
+        return NGINX;
+    }
 }

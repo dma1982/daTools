@@ -3,6 +3,7 @@ SW_TOP=..
 SW_INCLUDE = ${SW_TOP}/sw/includes/
 
 SW_TYPE=lin
-SW_CFLAGS=-DLIN
+SW_CFLAGS=-DLIN -g
+
 
 SW_LIB=${SW_TOP}/sw/lin/

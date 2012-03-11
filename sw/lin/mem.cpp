@@ -1,5 +1,5 @@
+#include "sw.h"
 #include "mem.h"
-#include "conf.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -17,6 +17,35 @@ namespace sw
         res->prev = res;
         res->data = 0;
         return res;
+    }
+
+    void list_destroy(node_t* head, node_operator_t oper)
+    {
+        assert(head != 0);
+
+        node_t* cur = head->next;
+        while (cur != head)
+        {
+            assert(cur != 0);
+
+            cur->prev->next = cur->next;
+            cur->next->prev = cur->prev;
+
+            if (oper == 0)
+            {
+                free(cur->data);
+            }
+            else
+            {
+                oper(cur->data);
+            }
+
+            free(cur);
+
+            cur = head->next;
+        }
+
+        free(head);
     }
 
     void list_append(node_t* head, void* data)
@@ -57,7 +86,7 @@ namespace sw
         return 0;
     }
 
-    int list_remove(node_t* head, void* data, node_comparator_t cmp)
+    int list_remove(node_t* head, void* data, node_comparator_t cmp, node_operator_t oper)
     {
         assert(head != 0 && data != 0 && cmp != 0);
 
@@ -70,7 +99,15 @@ namespace sw
             {
                 prev->next = cur->next;
                 cur->next->prev = prev;
-                free(cur->data);
+                if (oper == 0)
+                {
+                    free(cur->data);
+                }
+                else
+                {
+                    oper(cur->data);
+                }
+
                 free(cur);
                 return 1;
             }
@@ -138,49 +175,122 @@ namespace sw
         }
     }
 
-    int alloc_info_print(void* _data)
+    class DefaultMemory : public MemoryPool
     {
-        FILE* log_file = Configuration::instance()->getLogFile();
+        public:
+            DefaultMemory(size_t size) { };
+            virtual ~DefaultMemory() { };
 
-        if (log_file == 0)
+            virtual void* alloc(size_t size)
+            {
+                return malloc(size);
+            }
+
+            virtual void free(void* addr)
+            {
+                free(addr);
+            }
+    };
+
+    class NginxMemory : public MemoryPool
+    {
+        public:
+            NginxMemory(size_t size)
+            {
+                m_rawMem = new char[size];
+                m_availableSize = size;
+                m_blockSize = size;
+                m_availableAddr = m_rawMem;
+                m_bigBlock = list_create();
+                m_nextPool = 0;
+                m_currentPool = this;
+            }
+
+            virtual ~NginxMemory()
+            {
+                delete[] m_rawMem;
+                m_rawMem = 0;
+
+                if (m_nextPool)
+                {
+                    delete m_nextPool;
+                    m_nextPool = 0;
+                }
+
+                list_destroy(m_bigBlock);
+
+            };
+
+            virtual void* alloc(size_t size)
+            {
+                if (size > m_currentPool->m_blockSize)
+                {
+                    void* block = malloc(size);
+                    list_insert(m_currentPool->m_bigBlock, block);
+                    return block;
+                }
+
+                if (m_currentPool->m_availableSize < size)
+                {
+                    if (m_currentPool->m_nextPool == 0)
+                    {
+                        m_currentPool->m_nextPool = new NginxMemory(m_blockSize);
+                        m_currentPool = m_currentPool->m_nextPool;
+                    }
+
+                    return m_currentPool->alloc(size);
+                }
+                else
+                {
+                    char* res = m_currentPool->m_availableAddr;
+                    m_currentPool->m_availableAddr += size;
+                    m_currentPool->m_availableSize -= size;
+                    return (void*) res;
+                }
+            }
+
+            virtual void free(void* addr)
+            {
+            }
+
+        private:
+            NginxMemory* m_nextPool;
+            NginxMemory* m_currentPool;
+            char* m_rawMem;
+            unsigned int m_availableSize;
+            unsigned int m_blockSize;
+            char* m_availableAddr;
+            node_t* m_bigBlock;
+    };
+
+    Memory::Memory(size_t size)
+    {
+        switch ( Configuration::instance()->getMemPoolType() )
         {
-            return -1;
+            case NGINX:
+                m_memPool = new NginxMemory(size);
+                break;
+            default:
+                m_memPool = new DefaultMemory(size);
+                break;
         }
-
-        alloc_info_t* data = (alloc_info_t*)_data;
-        fprintf(log_file, "\n--------------------------------------------------------------------------\n");
-        fprintf(log_file, "memeroy address <0x%lx>\n", data->address);
-        fprintf(log_file, "stack trace:\n");
-        char** str =  backtrace_symbols(data->stack_buffer, data->stack_size);
-        for (size_t i = 0; i < data->stack_size; i++)
-        {
-            fprintf(log_file, "%s\n", str[i]);
-        }
-        fprintf(log_file, "--------------------------------------------------------------------------\n");
-
-        return 0;
     }
 
-    int alloc_info_cmp(void* l, void* r)
+    Memory::~Memory()
     {
-        if (0 == l && 0 == r)
-        {
-            return 0;
-        }
-
-        if (0 == l || 0 == r)
-        {
-            return -1;
-        }
-
-        if (((alloc_info_t*)l)->address == ((alloc_info_t*)r)->address
-            && ((alloc_info_t*)l)->type == ((alloc_info_t*)r)->type)
-        {
-            return 0;
-        }
-
-        return -1;
+        delete m_memPool;
     }
 
+    void* Memory::alloc(size_t size)
+    {
+        return m_memPool->alloc(size);
+    }
+
+    void Memory::free(void* addr)
+    {
+        m_memPool->free(addr);
+    }
 
 }
+
+

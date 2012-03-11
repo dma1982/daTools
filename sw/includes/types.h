@@ -5,6 +5,10 @@
 #include <pthread.h>
 #endif
 
+#ifndef SW_STACK_MAX_SIZE
+#define SW_STACK_MAX_SIZE 20
+#endif
+
 namespace sw
 {
 #ifdef WIN
@@ -25,12 +29,20 @@ typedef pthread_mutex_t mutex_t;
 typedef pthread_cond_t cond_t;
 #endif
 
+typedef unsigned long ulong;
+
 enum LOG_LEVEL
 {
     DEBUG,
     INFO,
     WARN,
     ERROR
+};
+
+enum MEM_POOL_TYPE
+{
+    OS,
+    NGINX
 };
 
 }
