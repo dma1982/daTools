@@ -1,8 +1,1 @@
-Why Sco-W?
-1. It's smaller than others, only Linux and windows are supported.
-2. It has high compatiblity with STL, less internal data structure, less internal or external function...
-
-
-How to use?
-Different with other framework, we suggest to compile "Sco-W" with your project directly, because it's simple.
-Please check the "Makefile" and "make.misc" in "test" directory to see how to use.
+Sco-W is a computing oriented grid middle-ware.
