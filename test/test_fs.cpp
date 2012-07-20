@@ -8,7 +8,7 @@ int main(int argc, char** argv)
     sw::File src("/tmp/aa", O_CREAT | O_RDWR);
     sw::File dest ("/tmp/bb", O_CREAT | O_RDWR);
 
-    sw::buffer_t buf;
+    sw::Buffer buf;
 
     while (src.read(buf) > 0 )
     {

@@ -29,7 +29,7 @@ void sw::File::open(const string& fname, mode_t mode, int mask)
     m_log->Assert(m_handle >= 0);
 }
 
-size_t sw::File::write(const buffer_t& buff)
+size_t sw::File::write(const Buffer& buff)
 {
     int n = ::write(m_handle, buff.data(), buff.size());
     m_log->Assert(n > 0 && (size_t) n == buff.size());
@@ -54,7 +54,7 @@ size_t sw::File::read(char* buff, size_t& size)
     return n;
 }
 
-size_t sw::File::read(buffer_t& buff)
+size_t sw::File::read(Buffer& buff)
 {
     int n = ::read(m_handle, buff.data(), buff.capacity());
     m_log->Assert(n >= 0);

@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 
     sw::TcpConnection con = serv->accept();
 
-    sw::buffer_t buf;
+    sw::Buffer buf;
 
     sleep(10);
     con.recv(buf);

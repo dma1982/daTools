@@ -1,5 +1,5 @@
-#ifndef _SW_BUFFER_H_
-#define _SW_BUFFER_H_
+#ifndef m_SW_BUFFER_H_
+#define m_SW_BUFFER_H_
 
 #include <cstring>
 #include <cstdio>
@@ -9,18 +9,18 @@
 
 namespace sw
 {
-class data_t
+class Data
 {
 private:
-    char* _data;
-    size_t _size;
-    size_t _capacity;
-    long _refcnt;
+    char* m_data;
+    size_t m_size;
+    size_t m_capacity;
+    long m_refcnt;
 
-    static Logger* _logger;
+    static Logger* m_logger;
 
-    data_t(const data_t& _d);
-    data_t& operator=(const data_t& _d); 
+    Data(const Data& m_d);
+    Data& operator=(const Data& m_d); 
 
 public:
 
@@ -30,43 +30,43 @@ public:
 
     char* data() const 
     {
-        return _data;
+        return m_data;
     }
 
     size_t size() const 
     {
-        return _size;
+        return m_size;
     }
 
     size_t capacity() const 
     {
-        return _capacity;
+        return m_capacity;
     }
 
     void size(size_t s);
 
     size_t idle() const 
     {
-        return _capacity - _size;
+        return m_capacity - m_size;
     }
 
-    data_t(char* msg, size_t len);
+    Data(char* msg, size_t len);
 
-    data_t(int size = BUFSIZ);
+    Data(int size = BUFSIZ);
 
-    ~data_t();
+    ~Data();
 };
 
 
-class buffer_t
+class Buffer
 {
     private:
-    data_t* _data;
-    buffer_t* _next;
+    Data* m_data;
+    Buffer* m_next;
 
-    long _refcnt;
+    long m_refcnt;
 
-    static Logger* _logger;
+    static Logger* m_logger;
 
 protected:
     void _inc_ref_cnt();
@@ -75,40 +75,40 @@ protected:
 
 public:
 
-    buffer_t(char* msg, int len);
+    Buffer(char* msg, int len);
 
-    buffer_t(int size = BUFSIZ);
+    Buffer(int size = BUFSIZ);
 
-    buffer_t(const buffer_t& buf);
+    Buffer(const Buffer& buf);
 
-    buffer_t& operator=(const buffer_t& buf);
+    Buffer& operator=(const Buffer& buf);
 
-    buffer_t* next() const {
-        return _next;
+    Buffer* next() const {
+        return m_next;
     }
 
-    void append(buffer_t* next);
+    void append(Buffer* next);
 
     void append(char* msg, size_t len);
 
     char* data() const 
     {
-        return _data->data();
+        return m_data->data();
     }
 
     size_t size() const 
     {
-        return _data->size();
+        return m_data->size();
     }
 
     size_t capacity() const 
     {
-        return _data->capacity();
+        return m_data->capacity();
     }
 
     void size(size_t s);
 
-    ~buffer_t();
+    ~Buffer();
 };
 
 

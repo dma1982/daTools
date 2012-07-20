@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
 
     char buffer[1024] = {0};
-    sprintf(buffer, "I/O BUFSIZE <%ld>.", BUFSIZ);
+    sprintf(buffer, "I/O BUFSIZE <%d>.", BUFSIZ);
 
     sw::g_logger->Info(buffer);
 

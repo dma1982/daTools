@@ -47,7 +47,7 @@ namespace sw
              * [in] buff: data
              */
 
-            size_t write(const buffer_t& buff);
+            size_t write(const Buffer& buff);
             /**
              *
              * read data from a file
@@ -55,7 +55,7 @@ namespace sw
              * [out] buff: data
              */
 
-            size_t read(buffer_t& buff);
+            size_t read(Buffer& buff);
             /**
              *
              * read data from a file

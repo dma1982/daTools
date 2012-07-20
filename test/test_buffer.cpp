@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    sw::buffer_t buf(2);
+    sw::Buffer buf(2);
 
     buf.append("123", 4);
 

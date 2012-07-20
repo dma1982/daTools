@@ -1,0 +1,9 @@
+mada.class [DEBUG]: this is the first line
+mada.class [ASSERT]: errno(0): Success
+./test_log[0x8049224]
+./test_log[0x8048eff]
+/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe6)[0x59dbd6]
+./test_log[0x8048dd1]
+sw.global [INFO]: I/O BUFSIZE <8192>.
+sw.global [INFO]: OS (468.663000).
+sw.global [INFO]: Nginx (295.404000).

@@ -1,5 +1,5 @@
-#ifndef _SW_TCP_H_
-#define _SW_TCP_H_
+#ifndef m_SW_TCP_H_
+#define m_SW_TCP_H_
 
 #include "buffer.h"
 #include "types.h"
@@ -15,26 +15,26 @@ std::string gethostname();
 
 class SocketOptions
 {
-    std::map<long, long> _options;
+    std::map<long, long> m_options;
 
 public:
     long option(long key, long value) {
 
-        long oldValue = _options[key];
-        _options[key] = value;
+        long oldValue = m_options[key];
+        m_options[key] = value;
         return oldValue;
     };
 
     long option(long key) {
-        return _options[key];
+        return m_options[key];
     };
 
     std::map<long, long>::iterator begin() {
-        return _options.begin();
+        return m_options.begin();
     };
 
     std::map<long, long>::iterator end() {
-        return _options.end();
+        return m_options.end();
     };
 };
 
@@ -45,15 +45,15 @@ public:
 class TcpConnection
 {
 private:
-    socket_t _socket;
-    static Logger* _logger;
+    socket_t m_socket;
+    static Logger* m_logger;
 public:
     TcpConnection(const std::string& host, int port);
     TcpConnection(const std::string& host, int port, const SocketOptions& options) {};
     TcpConnection(sw::socket_t skt);
-    size_t send(const buffer_t& buf);
+    size_t send(const Buffer& buf);
     size_t send(const char* buf, int size);
-    size_t recv(buffer_t& buf);
+    size_t recv(Buffer& buf);
     size_t recv(char* buf, int& size);
     int close(void);
 };
@@ -65,8 +65,8 @@ public:
 class TcpServer
 {
 private:
-    socket_t _socket;
-    static Logger* _logger;
+    socket_t m_socket;
+    static Logger* m_logger;
 public:
     TcpServer(int& port);
     TcpServer(int& port, const SocketOptions& options) {};
