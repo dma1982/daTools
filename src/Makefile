@@ -1,5 +1,5 @@
 all:
-	cd lin; make
+	cd utils; make
 
 clean:
-	cd lin; make clean
+	cd utils; make clean

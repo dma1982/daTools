@@ -6,15 +6,15 @@ OBJS=log.o \
      conf.o \
      mem.o
 
-all: libsw.a
+all: libutils.a
 
 CC=g++
 INCLUDE=../includes
 CFLAGS=-Wall -DLIN -g
 
-libsw.a: ${OBJS}
-	ar cr libsw.a ${OBJS}
-	ranlib libsw.a
+libutils.a: ${OBJS}
+	ar cr libutils.a ${OBJS}
+	ranlib libutils.a
 
 ${OBJS}: %.o:%.cpp
 	${CC} -c ${CFLAGS} -I${INCLUDE} $< -o $@

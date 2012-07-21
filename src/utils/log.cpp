@@ -18,7 +18,7 @@ extern "C"
 
 namespace coge
 {
-    Logger* g_logger = Logger::getLogger("coge.global");
+    Logger* logger = Logger::getLogger("coge.global");
 
     void Logger::Debug(const char* msg)
     {
@@ -110,7 +110,7 @@ namespace coge
 
         sprintf(buffer, "%s (%lf).", m_label.c_str(), mtime);
 
-        g_logger->Info(buffer);
+        logger->Info(buffer);
 
         delete (timeval*) m_start;
         delete (timeval*) m_end;

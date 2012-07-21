@@ -1,4 +1,4 @@
-#include "sw.h"
+#include "coge.h"
 
 #include <iostream>
 
@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    sw::Buffer buf(2);
+    coge::Buffer buf(2);
 
     buf.append("123", 4);
 

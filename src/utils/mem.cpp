@@ -265,7 +265,7 @@ namespace coge
 
     Memory::Memory(size_t size)
     {
-        cogeitch ( Configuration::instance()->getMemPoolType() )
+        switch ( Configuration::instance()->getMemPoolType() )
         {
             case NGINX:
                 m_memPool = new NginxMemory(size);

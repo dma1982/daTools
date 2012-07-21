@@ -1,6 +1,6 @@
 #include "log.h"
 
-using namespace sw;
+using namespace coge;
 
 int main(int argc, char** argv)
 {

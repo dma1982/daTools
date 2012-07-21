@@ -1,4 +1,4 @@
-#include "sw.h"
+#include "coge.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,11 +12,10 @@ int main(int argc, char **argv)
     char buffer[1024] = {0};
     sprintf(buffer, "I/O BUFSIZE <%d>.", BUFSIZ);
 
-    sw::g_logger->Info(buffer);
-
+    coge::logger->Info(buffer);
 
     {
-        sw::AutoTimer t("OS");
+        coge::AutoTimer t("OS");
         for (int i = 0; i < TEST_COUNT; i++)
         {
             void* addr = malloc(MEM_SIZE);
@@ -25,9 +24,9 @@ int main(int argc, char **argv)
     }
 
     {
-        sw::AutoTimer t("Nginx");
+        coge::AutoTimer t("Nginx");
         {
-            sw::Memory mem;
+            coge::Memory mem;
             for (int i = 0; i < TEST_COUNT; i++)
             {
                 void* addr = mem.alloc(MEM_SIZE);

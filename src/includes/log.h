@@ -35,7 +35,7 @@ class Logger
         void Assert(bool exp);
 };
 
-extern Logger* g_logger;
+extern Logger* logger;
 
 class AutoTimer
 {
