@@ -1,7 +1,7 @@
 all:
-	cd sw; make
+	cd src; make
 	cd test; make
 
 clean:
-	cd sw; make clean
+	cd src; make clean
 	cd test; make clean
