@@ -1,4 +1,4 @@
-#include "sw.h"
+#include "coge.h"
 #include "mem.h"
 
 #include <stdlib.h>
@@ -6,7 +6,7 @@
 #include <execinfo.h>
 #include <assert.h>
 
-namespace sw
+namespace coge
 {
 
     node_t* list_create()
@@ -265,7 +265,7 @@ namespace sw
 
     Memory::Memory(size_t size)
     {
-        switch ( Configuration::instance()->getMemPoolType() )
+        cogeitch ( Configuration::instance()->getMemPoolType() )
         {
             case NGINX:
                 m_memPool = new NginxMemory(size);

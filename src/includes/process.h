@@ -1,12 +1,12 @@
-#ifndef _SW_PROCESS_H_
-#define _SW_PROCESS_H_
+#ifndef _COGE_PROCESS_H_
+#define _COGE_PROCESS_H_
 
 #include <string>
 
 #include "types.h"
 #include "log.h"
 
-namespace sw
+namespace coge
 {
 
 // create a process

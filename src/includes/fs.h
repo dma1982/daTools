@@ -1,5 +1,5 @@
-#ifndef _SW_FS_H_
-#define _SW_FS_H_
+#ifndef _COGE_FS_H_
+#define _COGE_FS_H_
 
 
 #include "buffer.h"
@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace sw
+namespace coge
 {
     class File
     {

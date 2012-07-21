@@ -1,5 +1,5 @@
-#ifndef _SW_MSG_H_
-#define _SW_MSG_H_
+#ifndef _COGE_MSG_H_
+#define _COGE_MSG_H_
 
 #define ERR_INVALID_SIZE "Invalid size."
 

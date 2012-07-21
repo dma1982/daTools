@@ -9,27 +9,27 @@
 
 using namespace std;
 
-sw::Logger* sw::File::m_log = sw::Logger::getLogger("sw.File");
+coge::Logger* coge::File::m_log = coge::Logger::getLogger("coge.File");
 
-sw::File::File(const string& path, mode_t mode, int mask): m_path(path)
+coge::File::File(const string& path, mode_t mode, int mask): m_path(path)
 {
     m_handle = ::open(m_path.c_str(), mode, mask);
     m_log->Assert(m_handle >= 0);
 }
 
-sw::File::~File()
+coge::File::~File()
 {
     ::close(m_handle);
 }
 
-void sw::File::open(const string& fname, mode_t mode, int mask)
+void coge::File::open(const string& fname, mode_t mode, int mask)
 {
     m_path = fname;
     m_handle = ::open(fname.c_str(), mode, mask);
     m_log->Assert(m_handle >= 0);
 }
 
-size_t sw::File::write(const Buffer& buff)
+size_t coge::File::write(const Buffer& buff)
 {
     int n = ::write(m_handle, buff.data(), buff.size());
     m_log->Assert(n > 0 && (size_t) n == buff.size());
@@ -37,7 +37,7 @@ size_t sw::File::write(const Buffer& buff)
     return buff.size();
 }
 
-size_t sw::File::write(const char* buff, const size_t& size)
+size_t coge::File::write(const char* buff, const size_t& size)
 {
     int n = ::write(m_handle, buff, size);
     m_log->Assert(n > 0 && (size_t)n == size);
@@ -45,7 +45,7 @@ size_t sw::File::write(const char* buff, const size_t& size)
     return size;
 }
 
-size_t sw::File::read(char* buff, size_t& size)
+size_t coge::File::read(char* buff, size_t& size)
 {
     int n = ::read(m_handle, buff, size);
     m_log->Assert(n >= 0);
@@ -54,7 +54,7 @@ size_t sw::File::read(char* buff, size_t& size)
     return n;
 }
 
-size_t sw::File::read(Buffer& buff)
+size_t coge::File::read(Buffer& buff)
 {
     int n = ::read(m_handle, buff.data(), buff.capacity());
     m_log->Assert(n >= 0);
@@ -63,7 +63,7 @@ size_t sw::File::read(Buffer& buff)
     return buff.size();
 }
 
-void sw::File::mkdir(int mask)
+void coge::File::mkdir(int mask)
 {
     ::mkdir(m_path.c_str(), mask);
 }

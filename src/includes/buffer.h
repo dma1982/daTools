@@ -1,5 +1,5 @@
-#ifndef m_SW_BUFFER_H_
-#define m_SW_BUFFER_H_
+#ifndef _COGE_BUFFER_H_
+#define _COGE_BUFFER_H_
 
 #include <cstring>
 #include <cstdio>
@@ -7,7 +7,7 @@
 #include "msg.h"
 #include "log.h"
 
-namespace sw
+namespace coge
 {
 class Data
 {

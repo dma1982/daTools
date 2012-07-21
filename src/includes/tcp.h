@@ -1,5 +1,5 @@
-#ifndef m_SW_TCP_H_
-#define m_SW_TCP_H_
+#ifndef _COGE_TCP_H_
+#define _COGE_TCP_H_
 
 #include "buffer.h"
 #include "types.h"
@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 
-namespace sw
+namespace coge
 {
 
 std::string gethostname();
@@ -50,7 +50,7 @@ private:
 public:
     TcpConnection(const std::string& host, int port);
     TcpConnection(const std::string& host, int port, const SocketOptions& options) {};
-    TcpConnection(sw::socket_t skt);
+    TcpConnection(coge::socket_t skt);
     size_t send(const Buffer& buf);
     size_t send(const char* buf, int size);
     size_t recv(Buffer& buf);

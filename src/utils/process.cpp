@@ -4,7 +4,7 @@
 #include "types.h"
 #include "msg.h"
 
-pid_t sw::spawn(const char* cmd, char*const* args)
+pid_t coge::spawn(const char* cmd, char*const* args)
 {
     pid_t rc = vfork();
     if (rc == 0)

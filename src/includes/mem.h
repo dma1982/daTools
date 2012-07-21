@@ -1,9 +1,9 @@
-#ifndef __SW_MEM_H__
-#define __SW_MEM_H__
+#ifndef __COGE_MEM_H__
+#define __COGE_MEM_H__
 
 #include "types.h"
 
-namespace sw
+namespace coge
 {
     typedef struct _node
     {

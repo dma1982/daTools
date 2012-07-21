@@ -1,16 +1,16 @@
-#ifndef _SW_EVENT_H_
-#define _SW_EVENT_H_
+#ifndef _COGE_EVENT_H_
+#define _COGE_EVENT_H_
 
 #include "types.h"
 
-namespace sw
+namespace coge
 {
     class event_t
     {
         public:
             event_t();
 
-            event_t(const sw::event_t& event);
+            event_t(const coge::event_t& event);
 
             ~event_t();
 
@@ -35,7 +35,7 @@ namespace sw
         public:
             lock_t();
 
-            lock_t(const sw::lock_t& mutex);
+            lock_t(const coge::lock_t& mutex);
 
             ~lock_t();
 
@@ -50,7 +50,7 @@ namespace sw
     class autolock_t
     {
         public:
-            autolock_t(sw::lock_t& cs) : m_cs(cs)
+            autolock_t(coge::lock_t& cs) : m_cs(cs)
             {
                 m_cs.acquire();
             }
@@ -61,7 +61,7 @@ namespace sw
             }
 
         private:
-            sw::lock_t& m_cs;
+            coge::lock_t& m_cs;
     };
 
 }

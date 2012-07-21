@@ -15,7 +15,7 @@
 #include <netdb.h>
 
 
-std::string sw::gethostname()
+std::string coge::gethostname()
 {
     Buffer buf;
 
@@ -27,10 +27,10 @@ std::string sw::gethostname()
 }
 
 
-sw::Logger* sw::TcpServer::m_logger = sw::Logger::getLogger("sw.TcpServer");
-sw::Logger* sw::TcpConnection::m_logger = sw::Logger::getLogger("sw.TcpConnection");
+coge::Logger* coge::TcpServer::m_logger = coge::Logger::getLogger("coge.TcpServer");
+coge::Logger* coge::TcpConnection::m_logger = coge::Logger::getLogger("coge.TcpConnection");
 
-sw::TcpServer::TcpServer(int& port)
+coge::TcpServer::TcpServer(int& port)
 {
     int rc = -1;
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -66,12 +66,12 @@ sw::TcpServer::TcpServer(int& port)
     m_logger->Assert(rc >= 0);
 }
 
-int sw::TcpServer::close()
+int coge::TcpServer::close()
 {
     return ::close(m_socket);
 }
 
-sw::TcpConnection sw::TcpServer::accept()
+coge::TcpConnection coge::TcpServer::accept()
 {
     socket_t skt;
     skt = ::accept(m_socket, 0, 0);
@@ -79,7 +79,7 @@ sw::TcpConnection sw::TcpServer::accept()
     return skt;
 }
 
-sw::TcpConnection::TcpConnection(const std::string& host, int port)
+coge::TcpConnection::TcpConnection(const std::string& host, int port)
 {
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
     m_logger->Assert(m_socket > 0);
@@ -99,13 +99,13 @@ sw::TcpConnection::TcpConnection(const std::string& host, int port)
     m_logger->Assert(rc >= 0);
 }
 
-sw::TcpConnection::TcpConnection(socket_t skt)
+coge::TcpConnection::TcpConnection(socket_t skt)
 {
     m_logger->Assert(skt > 0);
     m_socket = skt;
 }
 
-size_t sw::TcpConnection::send(const sw::Buffer& buf)
+size_t coge::TcpConnection::send(const coge::Buffer& buf)
 {
     int n = 0;
     n = ::send(m_socket, buf.data(), buf.size(), 0);
@@ -113,7 +113,7 @@ size_t sw::TcpConnection::send(const sw::Buffer& buf)
     return buf.size();
 }
 
-size_t sw::TcpConnection::send(const char* buf, int size)
+size_t coge::TcpConnection::send(const char* buf, int size)
 {
     int n = 0;
     n = ::send(m_socket, buf, size, 0);
@@ -121,7 +121,7 @@ size_t sw::TcpConnection::send(const char* buf, int size)
     return size;
 }
 
-size_t sw::TcpConnection::recv(char* buf, int& size)
+size_t coge::TcpConnection::recv(char* buf, int& size)
 {
     int n = 0;
     n = ::recv(m_socket, buf, size, 0);
@@ -130,7 +130,7 @@ size_t sw::TcpConnection::recv(char* buf, int& size)
     return size;
 }
 
-size_t sw::TcpConnection::recv(Buffer& buf)
+size_t coge::TcpConnection::recv(Buffer& buf)
 {
     int n = 0;
     n = ::recv(m_socket, buf.data(), buf.capacity(), 0);
@@ -139,7 +139,7 @@ size_t sw::TcpConnection::recv(Buffer& buf)
     return buf.size();
 }
 
-int sw::TcpConnection::close()
+int coge::TcpConnection::close()
 {
     return ::close(m_socket);
 }

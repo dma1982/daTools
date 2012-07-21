@@ -1,22 +1,22 @@
 #include "buffer.h"
 
-sw::Logger* sw::Data::m_logger = sw::Logger::getLogger("sw.data");
-sw::Logger* sw::Buffer::m_logger = sw::Logger::getLogger("sw.buffer");
+coge::Logger* coge::Data::m_logger = coge::Logger::getLogger("coge.data");
+coge::Logger* coge::Buffer::m_logger = coge::Logger::getLogger("coge.buffer");
 
 
-sw::Data::Data(const Data& m_d) {}
-sw::Data& sw::Data::operator=(const Data& m_d)
+coge::Data::Data(const Data& m_d) {}
+coge::Data& coge::Data::operator=(const Data& m_d)
 {
     return *this;
 }
 
 
-void sw::Data::_inc_ref_cnt()
+void coge::Data::_inc_ref_cnt()
 {
     m_refcnt++;
 };
 
-void sw::Data::_dec_ref_cnt()
+void coge::Data::_dec_ref_cnt()
 {
     m_refcnt--;
     if (m_refcnt == 0)
@@ -25,7 +25,7 @@ void sw::Data::_dec_ref_cnt()
     }
 };
 
-void sw::Data::size(size_t s)
+void coge::Data::size(size_t s)
 {
     m_logger->Assert(s >= 0, ERR_INVALID_SIZE_NEG);
     m_logger->Assert(s <= m_capacity, ERR_INVALID_SIZE_BIG);
@@ -34,7 +34,7 @@ void sw::Data::size(size_t s)
 }
 
 
-sw::Data::Data(char* msg, size_t len)
+coge::Data::Data(char* msg, size_t len)
 {
     m_logger->Assert(msg != 0, ERR_NULL_BUFFER);
     m_size = len;
@@ -46,7 +46,7 @@ sw::Data::Data(char* msg, size_t len)
     m_refcnt = 1;
 }
 
-sw::Data::Data(int size)
+coge::Data::Data(int size)
 {
     m_logger->Assert(size > 0, ERR_INVALID_SIZE_NEG);
     m_data = new char[size];
@@ -57,7 +57,7 @@ sw::Data::Data(int size)
     m_refcnt = 1;
 }
 
-sw::Data::~Data()
+coge::Data::~Data()
 {
     if (m_data)
     {
@@ -65,12 +65,12 @@ sw::Data::~Data()
     }
 }
 
-void sw::Buffer::_inc_ref_cnt()
+void coge::Buffer::_inc_ref_cnt()
 {
     m_refcnt++;
 };
 
-void sw::Buffer::_dec_ref_cnt()
+void coge::Buffer::_dec_ref_cnt()
 {
     m_refcnt--;
     if (m_refcnt == 0)
@@ -79,19 +79,19 @@ void sw::Buffer::_dec_ref_cnt()
     }
 };
 
-sw::Buffer::Buffer(char* msg, int len)
+coge::Buffer::Buffer(char* msg, int len)
 {
     m_data = new Data(msg, len);
     m_next = 0;
 }
 
-sw::Buffer::Buffer(int size)
+coge::Buffer::Buffer(int size)
 {
     m_data = new Data(size);
     m_next = 0;
 }
 
-sw::Buffer::Buffer(const Buffer& buf)
+coge::Buffer::Buffer(const Buffer& buf)
 {
     m_data = buf.m_data;
     m_next = buf.m_next;
@@ -106,7 +106,7 @@ sw::Buffer::Buffer(const Buffer& buf)
     }
 }
 
-sw::Buffer& sw::Buffer::operator=(const Buffer& buf)
+coge::Buffer& coge::Buffer::operator=(const Buffer& buf)
 {
     m_data = buf.m_data;
     m_next = buf.m_next;
@@ -124,13 +124,13 @@ sw::Buffer& sw::Buffer::operator=(const Buffer& buf)
     return *this;
 }
 
-void sw::Buffer::append(Buffer* next)
+void coge::Buffer::append(Buffer* next)
 {
     m_logger->Assert(next != 0, ERR_NULL_BUFFER);
     m_next = next;
 };
 
-void sw::Buffer::append(char* msg, size_t len)
+void coge::Buffer::append(char* msg, size_t len)
 {
     m_logger->Assert(msg != 0, ERR_NULL_BUFFER);
     size_t idle = m_data->idle();
@@ -152,14 +152,14 @@ void sw::Buffer::append(char* msg, size_t len)
     }
 }
 
-void sw::Buffer::size(size_t s)
+void coge::Buffer::size(size_t s)
 {
     m_logger->Assert(s <= capacity() && s >= 0, ERR_INVALID_SIZE);
     m_data->size(s);
 }
 
 
-sw::Buffer::~Buffer()
+coge::Buffer::~Buffer()
 {
     m_logger->Assert(m_data != 0, ERR_INVALID_STATUS);
 

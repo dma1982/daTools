@@ -16,9 +16,9 @@ extern "C"
 
 }
 
-namespace sw
+namespace coge
 {
-    Logger* g_logger = Logger::getLogger("sw.global");
+    Logger* g_logger = Logger::getLogger("coge.global");
 
     void Logger::Debug(const char* msg)
     {
@@ -63,9 +63,9 @@ namespace sw
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[SW_STACK_MAX_SIZE];
+            void *buffer[COGE_STACK_MAX_SIZE];
 
-            nptrs = backtrace(buffer, SW_STACK_MAX_SIZE);
+            nptrs = backtrace(buffer, COGE_STACK_MAX_SIZE);
 
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }
@@ -79,9 +79,9 @@ namespace sw
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[SW_STACK_MAX_SIZE];
+            void *buffer[COGE_STACK_MAX_SIZE];
 
-            nptrs = backtrace(buffer, SW_STACK_MAX_SIZE);
+            nptrs = backtrace(buffer, COGE_STACK_MAX_SIZE);
 
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }

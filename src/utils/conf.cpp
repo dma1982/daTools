@@ -2,7 +2,7 @@
 #include "conf.h"
 #include "event.h"
 
-namespace sw
+namespace coge
 {
 
     lock_t Configuration::m_lock;
@@ -21,7 +21,7 @@ namespace sw
 
     Configuration::Configuration()
     {
-        m_logFile = fopen("sw.debug.log", "a+");
+        m_logFile = fopen("coge.debug.log", "a+");
     }
 
     Configuration::~Configuration()

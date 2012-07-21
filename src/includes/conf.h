@@ -1,11 +1,11 @@
-#ifndef __SW_CONF_H__
-#define __SW_CONF_H__
+#ifndef __COGE_CONF_H__
+#define __COGE_CONF_H__
 
 #include "types.h"
 #include "event.h"
 #include <cstdio>
 
-namespace sw
+namespace coge
 {
 
 class Configuration

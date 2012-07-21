@@ -1,5 +1,5 @@
-#ifndef __SW_H__
-#define __SW_H__
+#ifndef __COGE_H__
+#define __COGE_H__
 
 #include "msg.h"
 #include "types.h"

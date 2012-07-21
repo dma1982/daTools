@@ -1,12 +1,12 @@
-#ifndef __SW_LOG_H__
-#define __SW_LOG_H__
+#ifndef __COGE_LOG_H__
+#define __COGE_LOG_H__
 
 #include "types.h"
 #include "conf.h"
 #include <string>
 #include <cstdio>
 
-namespace sw
+namespace coge
 {
 class Logger
 {
