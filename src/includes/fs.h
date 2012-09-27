@@ -1,5 +1,5 @@
-#ifndef _COGE_FS_H_
-#define _COGE_FS_H_
+#ifndef _OGL_FS_H_
+#define _OGL_FS_H_
 
 
 #include "buffer.h"
@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace coge
+namespace ogl
 {
     class File
     {

@@ -1,16 +1,16 @@
-#ifndef _COGE_EVENT_H_
-#define _COGE_EVENT_H_
+#ifndef _OGL_EVENT_H_
+#define _OGL_EVENT_H_
 
 #include "types.h"
 
-namespace coge
+namespace ogl
 {
     class event_t
     {
         public:
             event_t();
 
-            event_t(const coge::event_t& event);
+            event_t(const ogl::event_t& event);
 
             ~event_t();
 
@@ -35,7 +35,7 @@ namespace coge
         public:
             lock_t();
 
-            lock_t(const coge::lock_t& mutex);
+            lock_t(const ogl::lock_t& mutex);
 
             ~lock_t();
 
@@ -50,7 +50,7 @@ namespace coge
     class autolock_t
     {
         public:
-            autolock_t(coge::lock_t& cs) : m_cs(cs)
+            autolock_t(ogl::lock_t& cs) : m_cs(cs)
             {
                 m_cs.acquire();
             }
@@ -61,7 +61,7 @@ namespace coge
             }
 
         private:
-            coge::lock_t& m_cs;
+            ogl::lock_t& m_cs;
     };
 
 }

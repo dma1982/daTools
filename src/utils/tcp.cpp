@@ -15,7 +15,7 @@
 #include <netdb.h>
 
 
-std::string coge::gethostname()
+std::string ogl::gethostname()
 {
     Buffer buf;
 
@@ -27,10 +27,10 @@ std::string coge::gethostname()
 }
 
 
-coge::Logger* coge::TcpServer::m_logger = coge::Logger::getLogger("coge.TcpServer");
-coge::Logger* coge::TcpConnection::m_logger = coge::Logger::getLogger("coge.TcpConnection");
+ogl::Logger* ogl::TcpServer::m_logger = ogl::Logger::getLogger("ogl.TcpServer");
+ogl::Logger* ogl::TcpConnection::m_logger = ogl::Logger::getLogger("ogl.TcpConnection");
 
-coge::TcpServer::TcpServer(int& port)
+ogl::TcpServer::TcpServer(int& port)
 {
     int rc = -1;
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -66,12 +66,12 @@ coge::TcpServer::TcpServer(int& port)
     m_logger->Assert(rc >= 0);
 }
 
-int coge::TcpServer::close()
+int ogl::TcpServer::close()
 {
     return ::close(m_socket);
 }
 
-coge::TcpConnection coge::TcpServer::accept()
+ogl::TcpConnection ogl::TcpServer::accept()
 {
     socket_t skt;
     skt = ::accept(m_socket, 0, 0);
@@ -79,7 +79,7 @@ coge::TcpConnection coge::TcpServer::accept()
     return skt;
 }
 
-coge::TcpConnection::TcpConnection(const std::string& host, int port)
+ogl::TcpConnection::TcpConnection(const std::string& host, int port)
 {
     m_socket = socket(AF_INET, SOCK_STREAM, 0);
     m_logger->Assert(m_socket > 0);
@@ -99,13 +99,13 @@ coge::TcpConnection::TcpConnection(const std::string& host, int port)
     m_logger->Assert(rc >= 0);
 }
 
-coge::TcpConnection::TcpConnection(socket_t skt)
+ogl::TcpConnection::TcpConnection(socket_t skt)
 {
     m_logger->Assert(skt > 0);
     m_socket = skt;
 }
 
-size_t coge::TcpConnection::send(const coge::Buffer& buf)
+size_t ogl::TcpConnection::send(const ogl::Buffer& buf)
 {
     int n = 0;
     n = ::send(m_socket, buf.data(), buf.size(), 0);
@@ -113,7 +113,7 @@ size_t coge::TcpConnection::send(const coge::Buffer& buf)
     return buf.size();
 }
 
-size_t coge::TcpConnection::send(const char* buf, int size)
+size_t ogl::TcpConnection::send(const char* buf, int size)
 {
     int n = 0;
     n = ::send(m_socket, buf, size, 0);
@@ -121,7 +121,7 @@ size_t coge::TcpConnection::send(const char* buf, int size)
     return size;
 }
 
-size_t coge::TcpConnection::recv(char* buf, int& size)
+size_t ogl::TcpConnection::recv(char* buf, int& size)
 {
     int n = 0;
     n = ::recv(m_socket, buf, size, 0);
@@ -130,7 +130,7 @@ size_t coge::TcpConnection::recv(char* buf, int& size)
     return size;
 }
 
-size_t coge::TcpConnection::recv(Buffer& buf)
+size_t ogl::TcpConnection::recv(Buffer& buf)
 {
     int n = 0;
     n = ::recv(m_socket, buf.data(), buf.capacity(), 0);
@@ -139,7 +139,7 @@ size_t coge::TcpConnection::recv(Buffer& buf)
     return buf.size();
 }
 
-int coge::TcpConnection::close()
+int ogl::TcpConnection::close()
 {
     return ::close(m_socket);
 }

@@ -1,5 +1,5 @@
-#ifndef _COGE_BUFFER_H_
-#define _COGE_BUFFER_H_
+#ifndef _OGL_BUFFER_H_
+#define _OGL_BUFFER_H_
 
 #include <cstring>
 #include <cstdio>
@@ -7,7 +7,7 @@
 #include "msg.h"
 #include "log.h"
 
-namespace coge
+namespace ogl
 {
 class Data
 {

@@ -1,4 +1,4 @@
-#include "coge.h"
+#include "ogl.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,10 +12,10 @@ int main(int argc, char **argv)
     char buffer[1024] = {0};
     sprintf(buffer, "I/O BUFSIZE <%d>.", BUFSIZ);
 
-    coge::logger->Info(buffer);
+    ogl::logger->Info(buffer);
 
     {
-        coge::AutoTimer t("OS");
+        ogl::AutoTimer t("OS");
         for (int i = 0; i < TEST_COUNT; i++)
         {
             void* addr = malloc(MEM_SIZE);
@@ -24,9 +24,9 @@ int main(int argc, char **argv)
     }
 
     {
-        coge::AutoTimer t("Nginx");
+        ogl::AutoTimer t("Nginx");
         {
-            coge::Memory mem;
+            ogl::Memory mem;
             for (int i = 0; i < TEST_COUNT; i++)
             {
                 void* addr = mem.alloc(MEM_SIZE);

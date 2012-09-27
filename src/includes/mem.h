@@ -1,9 +1,9 @@
-#ifndef __COGE_MEM_H__
-#define __COGE_MEM_H__
+#ifndef __OGL_MEM_H__
+#define __OGL_MEM_H__
 
 #include "types.h"
 
-namespace coge
+namespace ogl
 {
     typedef struct _node
     {

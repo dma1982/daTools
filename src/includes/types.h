@@ -1,13 +1,13 @@
-#ifndef _COGE_TYPES_H_
-#define _COGE_TYPES_H_
+#ifndef _OGL_TYPES_H_
+#define _OGL_TYPES_H_
 
 #include <pthread.h>
 
-#ifndef COGE_STACK_MAX_SIZE
-#define COGE_STACK_MAX_SIZE 20
+#ifndef OGL_STACK_MAX_SIZE
+#define OGL_STACK_MAX_SIZE 20
 #endif
 
-namespace coge
+namespace ogl
 {
 
 typedef int handle_t;

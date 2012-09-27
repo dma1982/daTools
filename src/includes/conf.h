@@ -1,11 +1,11 @@
-#ifndef __COGE_CONF_H__
-#define __COGE_CONF_H__
+#ifndef __OGL_CONF_H__
+#define __OGL_CONF_H__
 
 #include "types.h"
 #include "event.h"
 #include <cstdio>
 
-namespace coge
+namespace ogl
 {
 
 class Configuration

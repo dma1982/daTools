@@ -1,12 +1,12 @@
-#ifndef __COGE_LOG_H__
-#define __COGE_LOG_H__
+#ifndef __OGL_LOG_H__
+#define __OGL_LOG_H__
 
 #include "types.h"
 #include "conf.h"
 #include <string>
 #include <cstdio>
 
-namespace coge
+namespace ogl
 {
 class Logger
 {

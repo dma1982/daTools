@@ -1,4 +1,4 @@
-#include "coge.h"
+#include "ogl.h"
 #include "mem.h"
 
 #include <stdlib.h>
@@ -6,7 +6,7 @@
 #include <execinfo.h>
 #include <assert.h>
 
-namespace coge
+namespace ogl
 {
 
     node_t* list_create()

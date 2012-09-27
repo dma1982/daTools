@@ -16,9 +16,9 @@ extern "C"
 
 }
 
-namespace coge
+namespace ogl
 {
-    Logger* logger = Logger::getLogger("coge.global");
+    Logger* logger = Logger::getLogger("ogl.global");
 
     void Logger::Debug(const char* msg)
     {
@@ -63,9 +63,9 @@ namespace coge
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[COGE_STACK_MAX_SIZE];
+            void *buffer[OGL_STACK_MAX_SIZE];
 
-            nptrs = backtrace(buffer, COGE_STACK_MAX_SIZE);
+            nptrs = backtrace(buffer, OGL_STACK_MAX_SIZE);
 
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }
@@ -79,9 +79,9 @@ namespace coge
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[COGE_STACK_MAX_SIZE];
+            void *buffer[ogl_STACK_MAX_SIZE];
 
-            nptrs = backtrace(buffer, COGE_STACK_MAX_SIZE);
+            nptrs = backtrace(buffer, OGL_STACK_MAX_SIZE);
 
             backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
         }

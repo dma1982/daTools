@@ -1,12 +1,12 @@
-#ifndef _COGE_PROCESS_H_
-#define _COGE_PROCESS_H_
+#ifndef _OGL_PROCESS_H_
+#define _OGL_PROCESS_H_
 
 #include <string>
 
 #include "types.h"
 #include "log.h"
 
-namespace coge
+namespace ogl
 {
 
 // create a process

@@ -1,7 +1,7 @@
 #include "event.h"
 #include "types.h"
 
-namespace coge
+namespace ogl
 {
     event_t::event_t()
     {
@@ -17,7 +17,7 @@ namespace coge
         pthread_cond_init(&m_cond, NULL);
     }
 
-    event_t::event_t(const coge::event_t& event)
+    event_t::event_t(const ogl::event_t& event)
     {
         m_mutex = event.m_mutex;
         m_cond = event.m_cond;
@@ -66,7 +66,7 @@ namespace coge
         pthread_mutex_init(&m_mutex, NULL);
     }
 
-    lock_t::lock_t(const coge::lock_t& mutex)
+    lock_t::lock_t(const ogl::lock_t& mutex)
     {
         m_mutex = mutex.m_mutex;
     }

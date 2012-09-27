@@ -2,7 +2,7 @@
 #include "conf.h"
 #include "event.h"
 
-namespace coge
+namespace ogl
 {
 
     lock_t Configuration::m_lock;
@@ -21,7 +21,7 @@ namespace coge
 
     Configuration::Configuration()
     {
-        m_logFile = fopen("coge.debug.log", "a+");
+        m_logFile = fopen("ogl.debug.log", "a+");
     }
 
     Configuration::~Configuration()

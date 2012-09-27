@@ -1,4 +1,4 @@
-#include "coge.h"
+#include "ogl.h"
 
 #include <iostream>
 
@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    coge::Buffer buf(2);
+    ogl::Buffer buf(2);
 
     buf.append("123", 4);
 

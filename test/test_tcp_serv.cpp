@@ -1,4 +1,4 @@
-#include "coge.h"
+#include "ogl.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -9,11 +9,11 @@ using namespace std;
 int main(int argc, char** argv)
 {
     int port = 8989;
-    coge::TcpServer* serv = new coge::TcpServer(port);
+    ogl::TcpServer* serv = new ogl::TcpServer(port);
 
-    coge::TcpConnection con = serv->accept();
+    ogl::TcpConnection con = serv->accept();
 
-    coge::Buffer buf;
+    ogl::Buffer buf;
 
     sleep(10);
     con.recv(buf);
