@@ -8,28 +8,27 @@
 namespace ogl
 {
 
-class Configuration
-{
-    private:
-        static Configuration* m_conf;
-        static lock_t m_lock;
+    class Configuration
+    {
+        private:
+            static Configuration* m_conf;
+            static lock_t m_lock;
 
-        FILE* m_logFile;
-        Configuration();
+            FILE* m_logFile;
+            Configuration();
 
-    public:
+        public:
 
-        static Configuration* instance();
+            static Configuration* instance();
 
-        ~Configuration();
+            ~Configuration();
 
-        FILE* getLogFile();
+            FILE* getLogFile();
 
-        LOG_LEVEL getLogLevel();
+            LOG_LEVEL getLogLevel();
 
-        MEM_POOL_TYPE getMemPoolType();
-};
+            MEM_POOL_TYPE getMemPoolType();
+    };
 }
 
 #endif
-

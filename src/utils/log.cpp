@@ -71,6 +71,18 @@ namespace ogl
         }
     }
 
+    void Logger::Backtrace(void)
+    {
+        ::fprintf(m_logFile, "%s [Backtrace]: errno(%d): %s\n", m_name.c_str(), errno, strerror(errno));
+        ::fflush(m_logFile);
+
+        int nptrs;
+        void *buffer[OGL_STACK_MAX_SIZE];
+
+        nptrs = ::backtrace(buffer, OGL_STACK_MAX_SIZE);
+        ::backtrace_symbols_fd(buffer, nptrs, fileno(m_logFile));
+    }
+
     void Logger::Assert(bool exp)
     {
         if (!exp)
@@ -79,7 +91,7 @@ namespace ogl
             ::fflush(m_logFile);
 
             int nptrs;
-            void *buffer[ogl_STACK_MAX_SIZE];
+            void *buffer[OGL_STACK_MAX_SIZE];
 
             nptrs = backtrace(buffer, OGL_STACK_MAX_SIZE);
 

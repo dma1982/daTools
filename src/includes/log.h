@@ -33,6 +33,7 @@ class Logger
         void Error(const char* msg);
         void Assert(bool exp, const char* msg);
         void Assert(bool exp);
+        void Backtrace(void);
 };
 
 extern Logger* logger;

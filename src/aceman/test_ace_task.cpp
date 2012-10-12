@@ -15,7 +15,13 @@ public:
         ogl::logger->Backtrace();
     }
 
-    virtual int close()
+    virtual int close(unsigned long)
+    {
+        ogl::logger->Backtrace();
+        delete this;
+    }
+
+    virtual int cleanup(void *object, void *params)
     {
         ogl::logger->Backtrace();
     }
@@ -24,13 +30,18 @@ public:
 
 int main(int argc, char** argv)
 {
+    ACE::init();
+
     MyTask* task = new MyTask();
 
     task->open();
 
-    ACE_Thread_Manager::instance()->wait();
+    if (ACE_Thread_Manager::instance()->wait() < 0)
+    {
+        ogl::logger->Error("Failed to wait all thread.");
+    }
 
-    delete task;
+    ACE::fini();
 
     return 0;
 }

@@ -7,6 +7,10 @@
 #define OGL_STACK_MAX_SIZE 20
 #endif
 
+#ifndef BUFSIZ
+#define BUFSIZ 1024
+#endif
+
 namespace ogl
 {
 
