@@ -2,13 +2,15 @@ include ../../make.misc
 CFLAGS=${OGL_CFLAGS}
 CC=g++
 
+OBJS=JobManagerDaemon.o \
+     JobManager.o
 
-all: JobManagerDaemon
+JobManagerDaemon: ${OBJS}
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -lutils -lACE -lpthread 
 
-OBJS=JobManagerDaemon
+${OBJS}: %.o:%.cpp
+	${CC} -c ${CFLAGS} $< -o $@ -I../includes/
 
-${OBJS}: %:%.cpp$
-	${CC} ${CFLAGS} $< -o $@ -lpthread -L../utils/ -lutils -I../includes/ -lACE
 
 clean:
-	rm -f JobManagerDaemon
+	rm -f JobManagerDaemon *.o
