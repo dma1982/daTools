@@ -1,5 +1,4 @@
-
-SW_TOP=..
+SW_TOP=../../
 SW_INCLUDE = ${SW_TOP}/includes/
 
 SW_TYPE=lin
