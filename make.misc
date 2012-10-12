@@ -1,0 +1,3 @@
+OGL_TYPE=lin
+OGL_CFLAGS=-DLIN -g -Wall
+

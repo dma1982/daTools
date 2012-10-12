@@ -1,7 +1,7 @@
 all:
 	cd utils; make
-	cd aceman; make
+	cd jm; make
 
 clean:
+	cd jm; make clean
 	cd utils; make clean
-	cd aceman; make clean

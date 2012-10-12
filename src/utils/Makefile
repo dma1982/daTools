@@ -1,3 +1,5 @@
+include ../../make.misc
+
 OBJS=log.o \
      fs.o \
      tcp.o \
@@ -10,7 +12,7 @@ all: libutils.a
 
 CC=g++
 INCLUDE=../includes
-CFLAGS=-Wall -DLIN -g
+CFLAGS=${OGL_CFLAGS}
 
 libutils.a: ${OBJS}
 	ar cr libutils.a ${OBJS}
