@@ -1,0 +1,8 @@
+
+SW_TOP=..
+SW_INCLUDE = ${SW_TOP}/includes/
+
+SW_TYPE=lin
+SW_CFLAGS=-DLIN -g
+
+SW_LIB=${SW_TOP}/utils/
