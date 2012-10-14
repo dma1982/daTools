@@ -73,7 +73,7 @@ namespace ogl
 
     void Logger::Backtrace(void)
     {
-        ::fprintf(m_logFile, "%s [Backtrace]: errno(%d): %s\n", m_name.c_str(), errno, strerror(errno));
+        ::fprintf(m_logFile, "%s [Backtrace]:\n", m_name.c_str());
         ::fflush(m_logFile);
 
         int nptrs;
