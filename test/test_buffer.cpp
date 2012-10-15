@@ -8,7 +8,8 @@ int main(int argc, char** argv)
 {
     ogl::Buffer buf(2);
 
-    buf.append("123", 4);
+    char data[] = "123";
+    buf.append(data, 4);
 
     *(buf.data()+4) = 0;
 

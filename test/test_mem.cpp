@@ -20,6 +20,7 @@ int main(int argc, char **argv)
         {
             void* addr = malloc(MEM_SIZE);
             //    free(addr);
+            ogl::logger->Assert(addr != NULL);
         }
     }
 
