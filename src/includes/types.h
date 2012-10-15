@@ -22,6 +22,8 @@ typedef pthread_mutex_t mutex_t;
 typedef pthread_cond_t cond_t;
 
 typedef unsigned long ulong;
+typedef unsigned long TaskId;
+typedef unsigned long JobId;
 
 enum LOG_LEVEL
 {

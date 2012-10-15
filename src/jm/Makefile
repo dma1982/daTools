@@ -4,6 +4,7 @@ CC=g++
 
 OBJS=JobManagerDaemon.o \
      JobManager.o \
+     Job.o \
      Commands.o
 
 JobManagerDaemon: ${OBJS}

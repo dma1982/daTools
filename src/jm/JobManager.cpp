@@ -30,8 +30,7 @@ namespace ogl
 
     int JobManager::putCommand(Command* cmd)
     {
-        ACE_Message_Block* msg = new ACE_Message_Block(sizeof(Command*));
-        ACE_OS::memcpy(msg->wr_ptr(), &cmd, sizeof(Command*));
+        ACE_Message_Block* msg = new ACE_Message_Block(reinterpret_cast<char*>(cmd), sizeof(Command*));
         return putq(msg);
     }
 
@@ -45,7 +44,7 @@ namespace ogl
             return 0;
         }
 
-        ACE_OS::memcpy(&cmd, msg->rd_ptr(), sizeof(Command*));
+        cmd = reinterpret_cast<Command*>(msg->rd_ptr());
         msg->release();
 
         return cmd;
