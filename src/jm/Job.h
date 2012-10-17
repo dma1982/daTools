@@ -3,12 +3,14 @@
 
 #include <string>
 #include <map>
+#include "Object.h"
 #include "Task.h"
 
 namespace ogl
 {
-    struct JobOption
+    class JobOption : public Serializable
     {
+        public:
         int m_priority;
         // The name of a job
         std::string m_name;
@@ -25,6 +27,8 @@ namespace ogl
          * This function is used to release arguments & envrionment
          */
         void release();
+        virtual ACE_Message_Block* serialize();
+        virtual void deserialize(ACE_Message_Block* msg);
     };
 
     class Job

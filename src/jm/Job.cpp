@@ -5,6 +5,15 @@
 namespace ogl
 {
 
+    ACE_Message_Block* JobOption::serialize()
+    {
+        return 0;
+    }
+
+    void JobOption::deserialize(ACE_Message_Block* msg)
+    {
+
+    }
     /*
      * This function is used to release arguments & envrionment
      */
