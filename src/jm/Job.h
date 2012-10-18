@@ -8,29 +8,6 @@
 
 namespace ogl
 {
-    class JobOption : public Serializable
-    {
-        public:
-        int m_priority;
-        // The name of a job
-        std::string m_name;
-        // The path of command
-        char* m_cmd;
-        // The arguments of command, terminate with NULL pointer
-        char** m_args;
-        // The environment of command, terminate with NULL pointer
-        char** m_env;
-        // The work directory of command
-        char* m_workDirectory;
-
-        /*
-         * This function is used to release arguments & envrionment
-         */
-        void release();
-        virtual ACE_Message_Block* serialize();
-        virtual void deserialize(ACE_Message_Block* msg);
-    };
-
     class Job
     {
         public:

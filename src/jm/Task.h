@@ -8,29 +8,6 @@
 
 namespace ogl
 {
-    struct TaskOption
-    {
-        ACE_Message_Block* m_taskInput;
-        ACE_Message_Block* m_taskOutput;
-        int m_priority;
-
-        std::string m_jobName;
-        ogl::JobId m_jobId;
-
-        void release()
-        {
-            if (m_taskInput)
-            {
-                m_taskInput->release();
-            }
-
-            if (m_taskOutput)
-            {
-                m_taskOutput->release();
-            }
-        }
-    };
-
     class Task
     {
 

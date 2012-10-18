@@ -5,6 +5,12 @@
 
 namespace ogl
 {
+    enum CommandType
+    {
+        CreateJobCommand,
+        NONE
+    };
+
     class JobOption;
     class TaskOption;
     class Command : public Serializable
@@ -22,6 +28,9 @@ namespace ogl
         virtual void execute(void);
         virtual ACE_Message_Block* serialize(void);
         virtual void deserialize(ACE_Message_Block* msg);
+        void setJobOption(ogl::JobOption* );
+        ogl::JobOption* getJobOption();
+
         private:
         JobOption* m_jobOption;
     };
