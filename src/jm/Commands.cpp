@@ -52,11 +52,18 @@ namespace ogl
 
     void CreateJob::deserialize(ACE_Message_Block* msg)
     {
+        ACE_CDR::ULong cmdType;
+
+        ACE_InputCDR is(msg);
+        is >> cmdType;
+
+        ogl::logger->Assert(cmdType == CreateJobCommand);
+
         if (m_jobOption == NULL)
         {
             m_jobOption = new ogl::JobOption();
         }
-        m_jobOption->deserialize(msg);
+        m_jobOption->deserialize(is.steal_contents());
     }
 
     ogl::JobOption* CreateJob::getJobOption()
