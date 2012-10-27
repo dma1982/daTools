@@ -11,15 +11,18 @@ namespace ogl
     class Job
     {
         public:
-            Job(const JobId& jobId, const JobOption& option);
+            Job(const JobId& jobId, JobOption* option);
             ~Job();
 
-            JobId getJobId() { return m_jobId; };
+            JobId getJobId()
+            {
+                return m_jobId;
+            };
 
-            void addTask(const ogl::TaskOption&);
+            void addTask(ogl::TaskOption* taskOption);
 
         private:
-            ogl::JobOption m_jobOption;
+            ogl::JobOption* m_jobOption;
             std::map<ogl::TaskId, ogl::Task*> m_tasks;
             ogl::TaskId m_nextTaskId;
             JobId m_jobId;

@@ -12,11 +12,11 @@ namespace ogl
         ACE_InputCDR is(msg);
         is >> cmdType;
 
-        switch(cmdType)
+        switch (cmdType)
         {
-            case CreateJobCommand:
-                cmd = new CreateJob();
-                break;
+        case CreateJobCommand:
+            cmd = new CreateJob();
+            break;
         }
 
         if (cmd)
@@ -25,6 +25,11 @@ namespace ogl
         }
 
         return cmd;
+    }
+
+    CreateJob::CreateJob()
+    {
+        m_jobOption = 0;
     }
 
     void CreateJob::execute(void)
@@ -44,7 +49,7 @@ namespace ogl
         {
             ACE_Message_Block* option = m_jobOption->serialize();
             ret->cont(option);
-            delete option;
+            option->release();
         }
 
         return ret;

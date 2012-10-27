@@ -18,51 +18,54 @@ namespace ogl
     class JobOption : public Serializable
     {
         public:
-        int m_priority;
-        // The name of a job
-        std::string m_name;
-        // The path of command
-        char* m_cmd;
-        // The arguments of command, terminate with NULL pointer
-        char** m_args;
-        // The environment of command, terminate with NULL pointer
-        char** m_env;
-        // The work directory of command
-        char* m_workDirectory;
 
-        /*
-         * This function is used to release arguments & envrionment
-         */
-        void release();
-        virtual ACE_Message_Block* serialize();
-        virtual void deserialize(ACE_Message_Block* msg);
+            JobOption();
+            ~JobOption();
+
+            /*
+             * This function is used to release arguments & envrionment
+             */
+            virtual ACE_Message_Block* serialize();
+            virtual void deserialize(ACE_Message_Block* msg);
+
+        private:
+
+            // The priority of the job
+            int m_priority;
+            // The name of a job
+            std::string m_name;
+            // The path of command
+            char* m_cmd;
+            // The arguments of command, terminate with NULL pointer
+            char** m_args;
+            // The environment of command, terminate with NULL pointer
+            char** m_env;
+            // The work directory of command
+            char* m_workDirectory;
+
+            ogl::JobId m_id;
+
     };
 
-    struct TaskOption
+    class TaskOption
     {
-        ACE_Message_Block* m_taskInput;
-        ACE_Message_Block* m_taskOutput;
-        int m_priority;
+        public:
+            TaskOption();
+            ~TaskOption();
 
-        std::string m_jobName;
-        ogl::JobId m_jobId;
+        private:
+            // The input data of a task
+            char* m_taskInput;
+            // The output data of a task
+            char* m_taskOutput;
+            // The priority of a task in a Job
+            int m_priority;
 
-        void release()
-        {
-            if (m_taskInput)
-            {
-                m_taskInput->release();
-            }
+            std::string m_jobName;
+            ogl::JobId m_jobId;
+            ogl::TaskId m_id;
 
-            if (m_taskOutput)
-            {
-                m_taskOutput->release();
-            }
-        }
     };
-
-
-
 
 }
 

@@ -16,23 +16,24 @@ namespace ogl
     class Command : public Serializable
     {
         public:
-        virtual void execute(void) = 0;
+            virtual void execute(void) = 0;
 
-        static Command* build(ACE_Message_Block* );
+            static Command* build(ACE_Message_Block* );
     };
 
 
     class CreateJob: public Command
     {
         public:
-        virtual void execute(void);
-        virtual ACE_Message_Block* serialize(void);
-        virtual void deserialize(ACE_Message_Block* msg);
-        void setJobOption(ogl::JobOption* );
-        ogl::JobOption* getJobOption();
+            CreateJob();
+            virtual void execute(void);
+            virtual ACE_Message_Block* serialize(void);
+            virtual void deserialize(ACE_Message_Block* msg);
+            void setJobOption(ogl::JobOption* );
+            ogl::JobOption* getJobOption();
 
         private:
-        JobOption* m_jobOption;
+            JobOption* m_jobOption;
     };
 };
 

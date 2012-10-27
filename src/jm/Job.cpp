@@ -14,10 +14,18 @@ namespace ogl
     {
 
     }
+
+    JobOption::JobOption() : m_cmd(0),
+            m_args(0),
+            m_env(0),
+            m_workDirectory(0)
+    {
+    }
+
     /*
      * This function is used to release arguments & envrionment
      */
-    void JobOption::release()
+    JobOption::~JobOption()
     {
         if (m_args)
         {
@@ -49,19 +57,21 @@ namespace ogl
 
     }
 
-    Job::Job(const JobId& jobId, const JobOption& option) 
-        : m_jobOption(option), m_nextTaskId(0), m_jobId(jobId)
+    Job::Job(const JobId& jobId, JobOption* option)
+            : m_jobOption(option), m_nextTaskId(0), m_jobId(jobId)
     {
     }
 
     Job::~Job()
     {
-        m_jobOption.release();
+        if (m_jobOption)
+            delete m_jobOption;
     }
 
-    void Job::addTask(const ogl::TaskOption& taskOption)
+    void Job::addTask(ogl::TaskOption* taskOption)
     {
         ogl::TaskId taskId = m_nextTaskId++;
+
         m_tasks[taskId] = new ogl::Task(taskId, taskOption);
     }
 
