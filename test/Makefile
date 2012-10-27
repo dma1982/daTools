@@ -3,17 +3,26 @@ include ../make.misc
 CFLAGS=${OGL_CFLAGS}
 CC=g++
 
-all: test_buffer test_fs test_tcp_serv test_tcp_client test_log test_mem 
+INCS=-I../src/includes -I../src
+LIBS=-L../src/utils/ -L../src/jm -ljm -lutils -lgtest -lACE -lpthread
+
+BINS=test_buffer test_fs test_tcp_serv test_tcp_client test_log test_mem TestCreateJobCommand
+
+all: ${BINS}
 
 OBJS=test_log \
      test_buffer \
      test_fs \
      test_tcp_serv \
      test_tcp_client \
+     TestCreateJobCommand \
      test_mem 
 
 ${OBJS}: %:%.cpp$
-	${CC} ${CFLAGS} $< -o $@ -lpthread -L../src/utils/ -lutils -I../src/includes
+	${CC} ${CFLAGS} $< -o $@ ${INCS} ${LIBS}
+
+run:
+	./TestCreateJobCommand
 
 clean:
-	rm -f test_buffer test_log test_fs test_tcp_serv test_tcp_client test_mem 
+	rm -f ${BINS}
