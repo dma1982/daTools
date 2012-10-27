@@ -15,7 +15,7 @@ namespace ogl
 
     }
 
-    JobOption::JobOption() : m_cmd(0),
+    JobOption::JobOption() : m_name(0), m_cmd(0),
             m_args(0),
             m_env(0),
             m_workDirectory(0)
@@ -27,6 +27,11 @@ namespace ogl
      */
     JobOption::~JobOption()
     {
+        if (m_name)
+        {
+            delete m_name;
+        }
+
         if (m_args)
         {
             for (char** cur = m_args; *cur != 0; cur++)

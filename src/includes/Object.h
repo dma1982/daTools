@@ -33,7 +33,7 @@ namespace ogl
             // The priority of the job
             int m_priority;
             // The name of a job
-            std::string m_name;
+            char* m_name;
             // The path of command
             char* m_cmd;
             // The arguments of command, terminate with NULL pointer
@@ -61,7 +61,7 @@ namespace ogl
             // The priority of a task in a Job
             int m_priority;
 
-            std::string m_jobName;
+            char* m_jobName;
             ogl::JobId m_jobId;
             ogl::TaskId m_id;
 
