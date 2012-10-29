@@ -66,7 +66,66 @@ namespace ogl
             ogl::TaskId m_id;
 
     };
-
 }
+
+#define SERIALIZE_ULONG(os, len) do {\
+    os << ACE_CDR::ULong(len); \
+    if (!os.good_bit()) \
+    { \
+        return 0; \
+    }; \
+} while(0)
+
+#define DESERIALIZE_ULONG(is, len) do {\
+    ACE_CDR::ULong _len; \
+    is >> _len; \
+    len = _len; \
+} while(0)
+
+#define SERIALIZE_CSTRING(os, str) do {\
+    if (str) \
+    { \
+        size_t len = strlen(str); \
+        SERIALIZE_ULONG(os, len); \
+        if(!os.write_char_array(str, len)) \
+        { \
+            return 0; \
+        }; \
+    } \
+    else \
+    { \
+        SERIALIZE_ULONG(os, 0); \
+    } \
+} while (0)
+
+#define DESERIALIZE_CSTRING(is, str) do {\
+    size_t len = 0; \
+    DESERIALIZE_ULONG(is, len);\
+    if (0 == len) \
+    { \
+        str = 0; \
+    } \
+    else \
+    { \
+        str = new char[len + 1];\
+        str[len] = 0; \
+        is.read_char_array(str, len); \
+    } \
+} while (0)
+
+#define SERIALIZE_CSTRING_ARRAY(os, strArr) do {\
+    if (strArr) \
+    { \
+        size_t arrLen = 0;\
+        for (char** cur = strArr; *cur != 0; cur++) { arrLen++; } \
+        SERIALIZE_ULONG(os, arrLen); \
+        for (char** cur = strArr; *cur != 0; cur++) { SERIALIZE_CSTRING(os, *cur); } \
+    } \
+    else \
+    { \
+        SERIALIZE_ULONG(os, 0); \
+    } \
+} while (0)
+
 
 #endif
