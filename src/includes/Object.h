@@ -68,18 +68,13 @@ namespace ogl
     };
 }
 
+//serialize
 #define SERIALIZE_ULONG(os, len) do {\
     os << ACE_CDR::ULong(len); \
     if (!os.good_bit()) \
     { \
         return 0; \
     }; \
-} while(0)
-
-#define DESERIALIZE_ULONG(is, len) do {\
-    ACE_CDR::ULong _len; \
-    is >> _len; \
-    len = _len; \
 } while(0)
 
 #define SERIALIZE_CSTRING(os, str) do {\
@@ -98,6 +93,27 @@ namespace ogl
     } \
 } while (0)
 
+#define SERIALIZE_CSTRING_ARRAY(os, strArr) do {\
+    if (0 == strArr) \
+    { \
+        SERIALIZE_ULONG(os, 0); \
+    } \
+    else \
+    { \
+        size_t arrLen = 0;\
+        for (char** cur = strArr; *cur != 0; cur++) { arrLen++; } \
+        SERIALIZE_ULONG(os, arrLen); \
+        for (char** cur = strArr; *cur != 0; cur++) { SERIALIZE_CSTRING(os, *cur); } \
+    } \
+} while (0)
+
+// deserialize
+#define DESERIALIZE_ULONG(is, len) do {\
+    ACE_CDR::ULong _len; \
+    is >> _len; \
+    len = _len; \
+} while(0)
+
 #define DESERIALIZE_CSTRING(is, str) do {\
     size_t len = 0; \
     DESERIALIZE_ULONG(is, len);\
@@ -113,19 +129,19 @@ namespace ogl
     } \
 } while (0)
 
-#define SERIALIZE_CSTRING_ARRAY(os, strArr) do {\
-    if (strArr) \
+#define DESERIALIZE_CSTRING_ARRAY(os, strArr) do {\
+    size_t len = 0; \
+    DESERIALIZE_ULONG(is, len);\
+    if (0 == len) \
     { \
-        size_t arrLen = 0;\
-        for (char** cur = strArr; *cur != 0; cur++) { arrLen++; } \
-        SERIALIZE_ULONG(os, arrLen); \
-        for (char** cur = strArr; *cur != 0; cur++) { SERIALIZE_CSTRING(os, *cur); } \
+        strArr = 0; \
     } \
     else \
     { \
-        SERIALIZE_ULONG(os, 0); \
+        strArr = new char*[len + 1]; \
+        strArr[len] = 0; \
+        for (size_t i = 0; i <= len; i++) { DESERIALIZE_CSTRING(is, strArr[i]); } \
     } \
 } while (0)
-
 
 #endif
