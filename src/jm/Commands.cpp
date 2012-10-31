@@ -49,7 +49,6 @@ namespace ogl
         {
             ACE_Message_Block* option = m_jobOption->serialize();
             ret->cont(option);
-            option->release();
         }
 
         return ret;
