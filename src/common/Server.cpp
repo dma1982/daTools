@@ -1,5 +1,9 @@
 #include "Server.h"
 
+#include <stdio.h>
+
+#include <iostream>
+
 
 namespace ogl
 {
@@ -7,6 +11,7 @@ namespace ogl
     {
         if (executor() == 0 || executor()->reactor())
         {
+            ogl::logger->Error("no executor in handler.");
             return -1;
         }
 
@@ -48,9 +53,9 @@ namespace ogl
     /* Respond to input just like Tutorial 1.  */
     int ServerHandler::handle_input (ACE_HANDLE)
     {
-        char buf[128];
-        memset (buf, 0, sizeof (buf));
+        char buf[BUFSIZ] = {0};
 
+        ogl::logger->Debug(buf);
         switch (this->peer ().recv (buf, sizeof buf))
         {
         case -1:
@@ -61,6 +66,7 @@ namespace ogl
             ACE_DEBUG ((LM_DEBUG, "(%P|%t) from client: %s", buf));
         }
 
+        ogl::logger->Debug(buf);
         return 0;
     }
 

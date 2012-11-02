@@ -17,11 +17,9 @@ class JobManagerServer : public Server <JobManagerServerAcceptor>
 {
     public:
         virtual void execute(ACE_Message_Block* msg);
-
-        static JobManagerServer* instance();
-    private:
-        static JobManagerServer* m_instance;
 };
+
+typedef ACE_Singleton<JobManagerServer, ACE_Null_Mutex> JOBMGRSRV;
 
 }
 #endif

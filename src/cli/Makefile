@@ -1,0 +1,17 @@
+include ../../make.misc
+CFLAGS=${OGL_CFLAGS}
+CC=g++
+
+OBJS=Submit.o 
+
+all: ogl
+
+ogl: ${OBJS}
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lutils -lACE -lpthread -lcommon
+
+${OBJS}: %.o:%.cpp
+	${CC} -c ${CFLAGS} $< -o $@ -I../includes/
+
+
+clean:
+	rm -f ogl *.o

@@ -3,15 +3,12 @@
 namespace ogl
 {
 
-    JobManagerServer* JobManagerServer::m_instance = new JobManagerServer();
-
     Executor* JobManagerServerHandler::executor()
     {
-        return JobManagerServer::instance();
+        return JOBMGRSRV::instance();
     }
 
-    JobManagerServer* JobManagerServer::instance()
+    void JobManagerServer::execute(ACE_Message_Block* msg)
     {
-        return m_instance;
     }
 }

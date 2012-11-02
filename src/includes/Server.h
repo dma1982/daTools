@@ -1,10 +1,14 @@
 #ifndef __OGL_SERVER_H__
 #define __OGL_SERVER_H__
 
+#include "ogl.h"
+
 #include <ace/Acceptor.h>
 #include <ace/SOCK_Acceptor.h>
 #include <ace/Reactor.h>
 #include <ace/Message_Block.h>
+
+#include <ace/Task.h>
 
 namespace ogl
 {
@@ -25,20 +29,20 @@ namespace ogl
 
             virtual Executor* executor(void) = 0;
 
-        protected:
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
                                       ACE_Reactor_Mask);
     };
 
     template <class SA>
-    class Server : public Executor
+    class Server : public Executor, public ACE_Task<ACE_MT_SYNCH>
     {
         public:
 
             Server()
             {
                 m_shutdown = false;
+                m_port = -1;
             }
 
             virtual ~Server()
@@ -46,24 +50,42 @@ namespace ogl
 
             }
 
+            virtual int open()
+            {
+                this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
+
+                if (m_acceptor.open(ACE_INET_Addr(m_port), reactor()) < 0)
+                {
+                    return -1;
+                }
+
+                return 0;
+            }
+
+            virtual int svc()
+            {
+                while (!m_shutdown)
+                {
+                    reactor()->handle_events ();
+                }
+                return 0;
+            }
+
+            virtual int close(unsigned long)
+            {
+                m_acceptor.close();
+                return 0;
+            }
+
             virtual ACE_Reactor* reactor()
             {
                 return &m_reactor;
             }
 
-            virtual void run(int port)
+            virtual void start(int port)
             {
-                if (m_acceptor.open(ACE_INET_Addr(port), reactor()) < 0)
-                {
-                    return;
-                }
-
-                while (!m_shutdown)
-                {
-                    reactor()->handle_events ();
-                }
-
-                m_acceptor.close();
+                m_port = port;
+                this->open();
             }
 
             virtual void shutdown()
@@ -75,6 +97,7 @@ namespace ogl
             ACE_Reactor m_reactor;
             SA m_acceptor;
             bool m_shutdown;
+            int m_port;
     };
 
 }
