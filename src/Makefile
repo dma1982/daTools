@@ -1,5 +1,6 @@
 all:
 	cd utils; make
+	cd common; make
 	cd jm; make
 
 clean:
