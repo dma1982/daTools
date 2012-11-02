@@ -4,14 +4,15 @@ CC=g++
 
 LIBOBJS=JobManager.o \
      Job.o \
+     JobManagerServer.o \
      Commands.o
 
 OBJS=JobManagerDaemon.o ${LIBOBJS}
 
-all: JobManagerDaemon libjm.a
+all: JobManagerDaemon libjm.a 
 
 JobManagerDaemon: ${OBJS}
-	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -lutils -lACE -lpthread 
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lutils -lACE -lpthread -lcommon
 
 libjm.a: ${LIBOBJS}
 	ar cr libjm.a ${LIBOBJS}

@@ -23,50 +23,47 @@ namespace ogl
             virtual void destroy (void);
             virtual int close (u_long flags = 0);
 
-            virtual void executor(Executor* ) = 0;
             virtual Executor* executor(void) = 0;
 
         protected:
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
                                       ACE_Reactor_Mask);
-
-        private:
-            Executor* m_executor;
     };
 
     template <class SA>
     class Server : public Executor
     {
         public:
+
+            Server()
+            {
+                m_shutdown = false;
+            }
+
+            virtual ~Server()
+            {
+
+            }
+
             virtual ACE_Reactor* reactor()
             {
-                return m_reactor;
+                return &m_reactor;
             }
 
             virtual void run(int port)
             {
-                m_shutdown = false;
-                m_reactor = 0;
-                ACE_NEW_NORETURN(m_reactor, ACE_Reactor());
-
-                if (m_reactor == 0)
-                {
-                    return;
-                }
-
-                if (m_acceptor.open(ACE_INET_Addr(port), m_reactor) < 0)
+                if (m_acceptor.open(ACE_INET_Addr(port), reactor()) < 0)
                 {
                     return;
                 }
 
                 while (!m_shutdown)
                 {
-                    m_reactor->handle_events ();
+                    reactor()->handle_events ();
                 }
 
                 m_acceptor.close();
-                delete m_reactor;
             }
 
             virtual void shutdown()
@@ -75,7 +72,7 @@ namespace ogl
             }
 
         private:
-            ACE_Reactor* m_reactor;
+            ACE_Reactor m_reactor;
             SA m_acceptor;
             bool m_shutdown;
     };

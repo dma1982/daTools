@@ -5,7 +5,7 @@ namespace ogl
 {
     int ServerHandler::open(void *)
     {
-        if (m_executor == 0 || m_executor->reactor())
+        if (executor() == 0 || executor()->reactor())
         {
             return -1;
         }
@@ -23,7 +23,7 @@ namespace ogl
         /*
          The Acceptor<> won't register us with it's reactor, so we have to do so ourselves.  This is where we have to grab that global pointer.  Notice that we again use the READ_MASK so that handle_input() will be called when the client does something.
          */
-        if (m_executor->reactor()->register_handler (this,
+        if (executor()->reactor()->register_handler (this,
                 ACE_Event_Handler::READ_MASK) == -1)
         {
             return -1;
@@ -35,7 +35,7 @@ namespace ogl
     void ServerHandler::destroy (void)
     {
         /* Remove ourselves from the reactor */
-        m_executor->reactor()->remove_handler(this,
+        executor()->reactor()->remove_handler(this,
                                               ACE_Event_Handler::READ_MASK | ACE_Event_Handler::DONT_CALL);
 
         /* Shut down the connection to the client.  */
@@ -43,6 +43,25 @@ namespace ogl
 
         /* Free our memory.  */
         delete this;
+    }
+
+    /* Respond to input just like Tutorial 1.  */
+    int ServerHandler::handle_input (ACE_HANDLE)
+    {
+        char buf[128];
+        memset (buf, 0, sizeof (buf));
+
+        switch (this->peer ().recv (buf, sizeof buf))
+        {
+        case -1:
+            ACE_ERROR_RETURN ((LM_ERROR, "(%P|%t) %p bad read\n", "client logger"), -1);
+        case 0:
+            ACE_ERROR_RETURN ((LM_ERROR, "(%P|%t) closing log daemon (fd = %d)\n", this->get_handle ()), -1);
+        default:
+            ACE_DEBUG ((LM_DEBUG, "(%P|%t) from client: %s", buf));
+        }
+
+        return 0;
     }
 
     /*

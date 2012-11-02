@@ -14,5 +14,4 @@ namespace ogl
     {
         return m_instance;
     }
-
 }
