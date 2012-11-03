@@ -2,9 +2,6 @@
 
 #include <stdio.h>
 
-#include <iostream>
-
-
 namespace ogl
 {
     int ServerHandler::open(void *)

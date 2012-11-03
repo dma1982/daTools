@@ -8,7 +8,7 @@ namespace ogl
 class JobManagerServerHandler : public ServerHandler
 {
     public:
-        Executor* executor();
+        virtual Executor* executor();
 };
 
 typedef ACE_Acceptor <JobManagerServerHandler, ACE_SOCK_ACCEPTOR > JobManagerServerAcceptor;

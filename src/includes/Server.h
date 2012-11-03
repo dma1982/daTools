@@ -3,6 +3,8 @@
 
 #include "ogl.h"
 
+#include <ace/INET_Addr.h>
+
 #include <ace/Acceptor.h>
 #include <ace/SOCK_Acceptor.h>
 #include <ace/Reactor.h>
@@ -45,29 +47,17 @@ namespace ogl
                 m_port = -1;
             }
 
-            virtual ~Server()
-            {
-
-            }
-
-            virtual int open()
-            {
-                this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
-
-                if (m_acceptor.open(ACE_INET_Addr(m_port), reactor()) < 0)
-                {
-                    return -1;
-                }
-
-                return 0;
-            }
+            virtual ~Server() { }
 
             virtual int svc()
             {
+                reactor()->owner( ACE_Thread::self());
+
                 while (!m_shutdown)
                 {
                     reactor()->handle_events ();
                 }
+
                 return 0;
             }
 
@@ -85,7 +75,13 @@ namespace ogl
             virtual void start(int port)
             {
                 m_port = port;
-                this->open();
+
+                if (m_acceptor.open(ACE_INET_Addr(m_port), reactor()) < 0)
+                {
+                    return;
+                }
+
+                this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
             }
 
             virtual void shutdown()

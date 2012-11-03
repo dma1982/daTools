@@ -2,6 +2,8 @@
 #include "JobManager.h"
 #include "JobManagerServer.h"
 
+typedef ACE_Acceptor <ogl::JobManagerServerHandler, ACE_SOCK_ACCEPTOR> Logging_Acceptor;
+
 int main(int argc, char** argv)
 {
     ACE::init();
@@ -11,7 +13,7 @@ int main(int argc, char** argv)
 
     ogl::JOBMGRSRV::instance()->start(9080);
 
-    ogl::logger->Info("Job Manager Server start at 8080.");
+    ogl::logger->Info("Job Manager Server start at 9080.");
 
     if (ACE_Thread_Manager::instance()->wait() < 0)
     {
