@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "ogl.h"
-#include "jm/Commands.h"
+#include "Commands.h"
 
 #include<ace/CDR_Stream.h>
 

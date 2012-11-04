@@ -7,7 +7,7 @@ OBJS=Submit.o
 all: ogl
 
 ogl: ${OBJS}
-	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common  -lACE -lpthread -lcommon  -lutils
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common  -lACE -lpthread -lcommon  -lutils -lconfig++
 
 ${OBJS}: %.o:%.cpp
 	${CC} -c ${CFLAGS} $< -o $@ -I../includes/
