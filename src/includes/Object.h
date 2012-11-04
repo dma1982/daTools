@@ -1,8 +1,8 @@
 #ifndef __OGL_OBJECT_H__
 #define __OGL_OBJECT_H__
 
-
 #include <ace/Message_Block.h>
+#include <ace/CDR_Stream.h>
 #include <string>
 #include "ogl.h"
 
@@ -161,5 +161,14 @@ namespace ogl
         for (size_t i = 0; i <= len; i++) { DESERIALIZE_CSTRING(is, strArr[i]); } \
     } \
 } while (0)
+
+#define DUMP_MESSAGE_BLOCK(msg) do {\
+    char buf[128] = {0}; \
+    for (size_t i = 0; i < msg->length(); i++) { \
+        memset(buf, 0, 128); \
+        sprintf(buf, "{%s:%d} %d", __FILE__, __LINE__, msg->rd_ptr()[i]); \
+        ogl::logger->Debug(buf); \
+    } \
+} while(0)
 
 #endif

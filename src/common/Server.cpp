@@ -1,3 +1,4 @@
+#include "Commands.h"
 #include "Server.h"
 
 #include <stdio.h>
@@ -6,7 +7,7 @@ namespace ogl
 {
     int ServerHandler::open(void *)
     {
-        if (executor() == 0 || executor()->reactor())
+        if (executor() == 0 || executor()->reactor() == 0)
         {
             ogl::logger->Error("no executor in handler.");
             return -1;
@@ -15,7 +16,8 @@ namespace ogl
         ACE_INET_Addr addr;
 
         /*
-         Ask the peer() (held in our baseclass) to tell us the address of the cient which has connected.  There may be valid reasons for this to fail where we wouldn't want to drop the connection but I can't think of one.
+         Ask the peer() (held in our baseclass) to tell us the address of the cient which has connected.
+         There may be valid reasons for this to fail where we wouldn't want to drop the connection but I can't think of one.
          */
         if (this->peer ().get_remote_addr (addr) == -1)
         {
@@ -23,7 +25,9 @@ namespace ogl
         }
 
         /*
-         The Acceptor<> won't register us with it's reactor, so we have to do so ourselves.  This is where we have to grab that global pointer.  Notice that we again use the READ_MASK so that handle_input() will be called when the client does something.
+         The Acceptor<> won't register us with it's reactor, so we have to do so ourselves.
+         This is where we have to grab that global pointer.
+         Notice that we again use the READ_MASK so that handle_input() will be called when the client does something.
          */
         if (executor()->reactor()->register_handler (this,
                 ACE_Event_Handler::READ_MASK) == -1)
@@ -50,21 +54,53 @@ namespace ogl
     /* Respond to input just like Tutorial 1.  */
     int ServerHandler::handle_input (ACE_HANDLE)
     {
-        char buf[BUFSIZ] = {0};
+        ACE_Message_Block* data = 0;
+        int headerSize = CommandHeader::size();
 
-        ogl::logger->Debug(buf);
-        switch (this->peer ().recv (buf, sizeof buf))
+        ACE_NEW_RETURN(data,
+                ACE_Message_Block(headerSize), 
+                -1);
+
+        int n = -1;
+        n = this->peer().recv_n(data->wr_ptr(), headerSize);
+
+        // get the data of command header
+        if ( n != headerSize)
         {
-        case -1:
-            ACE_ERROR_RETURN ((LM_ERROR, "(%P|%t) %p bad read\n", "client logger"), -1);
-        case 0:
-            ACE_ERROR_RETURN ((LM_ERROR, "(%P|%t) closing log daemon (fd = %d)\n", this->get_handle ()), -1);
-        default:
-            ACE_DEBUG ((LM_DEBUG, "(%P|%t) from client: %s", buf));
+            OGL_LOG_ERROR("Failed to get enough data (%d) for command header (%d).", n, CommandHeader::size());
+            return -1;
         }
 
-        ogl::logger->Debug(buf);
-        return 0;
+        // set data's write pointer
+        data->wr_ptr(n);
+
+        CommandHeader* header = CommandHeader::build(data);
+
+        // release the data of header
+        delete data;
+        data = 0;
+
+        // if no command data; just execute the command and return
+        if (header->m_size == 0)
+        {
+            executor()->execute(header, 0);
+            return headerSize;
+        }
+
+        // get the data of options
+        ACE_NEW_RETURN(data, ACE_Message_Block(header->m_size), -1);
+
+        n = this->peer().recv_n(data->wr_ptr(), header->m_size);
+
+        if (n < 0 || ((unsigned int)n) != header->m_size)
+        {
+            OGL_LOG_ERROR("Failed to get enough data (%d) according to command header (%d) defination.", n, header->m_size);
+            return -1;
+        }
+
+        executor()->execute(header, data);
+
+        return header->m_size;
     }
 
     /*

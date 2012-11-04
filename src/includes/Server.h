@@ -3,6 +3,7 @@
 
 #include "ogl.h"
 
+
 #include <ace/INET_Addr.h>
 
 #include <ace/Acceptor.h>
@@ -12,13 +13,15 @@
 
 #include <ace/Task.h>
 
+#include "Commands.h"
+
 namespace ogl
 {
 
     class Executor
     {
         public:
-            virtual void execute(ACE_Message_Block* msg) = 0;
+            virtual void execute(CommandHeader* header, ACE_Message_Block* msg) = 0;
             virtual ACE_Reactor* reactor() = 0;
     };
 

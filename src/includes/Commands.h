@@ -11,8 +11,27 @@ namespace ogl
         NONE
     };
 
+    class CommandHeader : Serializable
+    {
+        public:
+            ACE_CDR::ULong m_type;
+            ACE_CDR::ULong m_size;
+
+            static size_t size() 
+            {
+                return sizeof(ACE_CDR::ULong) + 
+                    sizeof(ACE_CDR::ULong);
+            };
+
+            static CommandHeader* build(ACE_Message_Block* data);
+
+            virtual ACE_Message_Block* serialize();
+            virtual void deserialize(ACE_Message_Block* );
+    };
+
     class JobOption;
     class TaskOption;
+
     class Command : public Serializable
     {
         public:

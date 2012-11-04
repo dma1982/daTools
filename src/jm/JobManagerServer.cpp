@@ -8,7 +8,7 @@ namespace ogl
         return JOBMGRSRV::instance();
     }
 
-    void JobManagerServer::execute(ACE_Message_Block* msg)
+    void JobManagerServer::execute(CommandHeader* header, ACE_Message_Block* msg)
     {
     }
 }

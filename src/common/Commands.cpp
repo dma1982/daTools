@@ -1,9 +1,35 @@
-#include <ace/CDR_Stream.h>
 #include "Commands.h"
 #include "ogl.h"
 
 namespace ogl
 {
+
+    CommandHeader* CommandHeader::build(ACE_Message_Block* data)
+    {
+        CommandHeader* header = 0;
+        ACE_NEW_RETURN(header, CommandHeader(), 0);
+        header->deserialize(data);
+        return header;
+    }
+
+    ACE_Message_Block* CommandHeader::serialize()
+    {
+        ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+
+        SERIALIZE_ULONG(os, m_type);
+        SERIALIZE_ULONG(os, m_size);
+
+        return os.begin() -> duplicate();
+    }
+
+    void CommandHeader::deserialize(ACE_Message_Block* msg)
+    {
+        ACE_InputCDR is(msg);
+
+        DESERIALIZE_ULONG(is, m_type);
+        DESERIALIZE_ULONG(is, m_size);
+    }
+
     Command* Command::build(ACE_Message_Block* msg)
     {
         Command* cmd = NULL;
@@ -70,14 +96,14 @@ namespace ogl
         m_jobOption->deserialize(is.steal_contents());
     }
 
-    ogl::JobOption* CreateJob::getJobOption()
-    {
-        return m_jobOption;
-    }
+ ogl::JobOption* CreateJob::getJobOption()
+         {
+                     return m_jobOption;
+                         }
 
-    void CreateJob::setJobOption(ogl::JobOption* jobOption)
-    {
-        this->m_jobOption = jobOption;
-    }
+     void CreateJob::setJobOption(ogl::JobOption* jobOption)
+             {
+                         this->m_jobOption = jobOption;
+                             }
 };
 
