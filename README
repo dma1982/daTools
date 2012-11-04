@@ -1,3 +1,13 @@
 OGL
 =======================
 Open Grid Laboratory
+
+
+Dependency
+=======================
+gcc 4.4.3
+
+ACE 5.6
+
+libconfig++8
+
