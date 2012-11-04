@@ -96,14 +96,14 @@ namespace ogl
         m_jobOption->deserialize(is.steal_contents());
     }
 
- ogl::JobOption* CreateJob::getJobOption()
-         {
-                     return m_jobOption;
-                         }
+    ogl::JobOption* CreateJob::getJobOption()
+    {
+        return m_jobOption;
+    }
 
-     void CreateJob::setJobOption(ogl::JobOption* jobOption)
-             {
-                         this->m_jobOption = jobOption;
-                             }
+    void CreateJob::setJobOption(ogl::JobOption* jobOption)
+    {
+        this->m_jobOption = jobOption;
+    }
 };
 

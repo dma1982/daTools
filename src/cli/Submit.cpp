@@ -1,4 +1,5 @@
 #include <ace/SOCK_Connector.h>
+#include "Object.h"
 
 #include "Commands.h"
 
@@ -35,24 +36,32 @@ int main(int argc, char** argv)
     }
 
     ogl::CommandHeader header;
-    header.m_type = 1;
+    header.m_type = ogl::CreateJobCommand;
     header.m_size = 0;
+
+    ogl::JobOption* jobOption = new ogl::JobOption();
+
+    char buf[] = {"test"};
+
+    jobOption->name(buf);
+    jobOption->command(argv[0]);
+    jobOption->arguments(argv);
+
+    ACE_Message_Block* option = jobOption->serialize();
+
+    header.m_size = option->length();
 
     ACE_Message_Block* data = header.serialize();
 
-    DUMP_MESSAGE_BLOCK(data);
-
-    ogl::CommandHeader ch;
-    ch.deserialize(data);
-
-    cout << data->length() << " : " << ogl::CommandHeader::size() << endl;
-
     if (server.send_n (data->rd_ptr(), data->length()) == -1)
     {
-        cout << "sdfsdf" << endl;
         return -1;
     }
 
+    if (server.send_n (option->rd_ptr(), option->length()) == -1)
+    {
+        return -1;
+    }
 
     server.close();
 

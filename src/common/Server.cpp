@@ -98,6 +98,9 @@ namespace ogl
             return -1;
         }
 
+        // set write pointer
+        data->wr_ptr(n);
+
         executor()->execute(header, data);
 
         return header->m_size;
