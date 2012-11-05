@@ -28,7 +28,7 @@ namespace ogl
         return 0;
     }
 
-    int JobManager::putCommand(Command* cmd)
+    int JobManager::sendCommand(Command* cmd)
     {
         ACE_Message_Block* msg = new ACE_Message_Block(reinterpret_cast<char*>(cmd), sizeof(Command*));
         return putq(msg);

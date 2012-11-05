@@ -27,7 +27,7 @@ namespace ogl
 
             virtual int close(unsigned long);
 
-            int putCommand(ogl::Command* cmd);
+            int sendCommand(ogl::Command* cmd);
 
             int addJob(const JobOption& option);
 

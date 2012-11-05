@@ -4,7 +4,9 @@ CC=g++
 
 LIBOBJS=JobManager.o \
      Job.o \
-     JobManagerServer.o 
+     JobManagerServer.o \
+     CreateJobCommand.o \
+     CommandBuilder.o
 
 OBJS=JobManagerDaemon.o ${LIBOBJS}
 

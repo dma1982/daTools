@@ -35,6 +35,8 @@ namespace ogl
         m_memPoolType = NGINX;
         m_masterPort = 9080;
         m_masterHost = "localhost";
+
+        this->read("ogl.conf");
     }
 
     Configuration::~Configuration()

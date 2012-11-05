@@ -67,7 +67,6 @@ namespace ogl
         // get the data of command header
         if ( n != headerSize)
         {
-            OGL_LOG_ERROR("Failed to get enough data (%d) for command header (%d).", n, CommandHeader::size());
             return -1;
         }
 
@@ -94,7 +93,6 @@ namespace ogl
 
         if (n < 0 || ((unsigned int)n) != header->m_size)
         {
-            OGL_LOG_ERROR("Failed to get enough data (%d) according to command header (%d) defination.", n, header->m_size);
             return -1;
         }
 
