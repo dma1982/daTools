@@ -12,6 +12,7 @@ TEST(Configuration, constructor)
     ogl::Configuration* conf = ogl::Configuration::instance();
     conf->read("./ogl.conf");
     ASSERT_EQ(conf->getMasterPort() , 9080);
+    ASSERT_EQ(string("9.123.145.253"), conf->getMasterHost());
 }
 
 int main(int argc, char **argv)

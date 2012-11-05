@@ -15,6 +15,8 @@
 #define OGL_LOG_LEVEL "log.level"
 #define OGL_MEM_POOL "mem.pool"
 
+#define OGL_DEFAULT_LOG_FILE "ogl.log"
+
 namespace ogl
 {
 

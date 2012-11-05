@@ -9,8 +9,6 @@
 using namespace std;
 using namespace libconfig;
 
-
-
 namespace ogl
 {
 
@@ -31,7 +29,6 @@ namespace ogl
     Configuration::Configuration()
     {
         m_conf = new Config ();
-        m_logFile = fopen("ogl.debug.log", "a+");
 
         m_logLevel = DEBUG;
 
@@ -70,6 +67,10 @@ namespace ogl
         if (m_conf->lookupValue(OGL_LOG_FILE, logFilePath))
         {
             m_logFile = fopen(logFilePath.c_str(), "a+");
+        }
+        else
+        {
+            m_logFile = fopen(OGL_DEFAULT_LOG_FILE, "a+");
         }
 
         return 0;
