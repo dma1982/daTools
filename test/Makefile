@@ -6,7 +6,7 @@ CC=g++
 INCS=-I../src/includes -I../src
 LIBS=-L../src/utils/ -L../src/jm -L../src/common -ljm  -lgtest -lACE -lpthread -lconfig++ -lcommon -lutils
 
-BINS=test_buffer test_fs test_tcp_serv test_tcp_client test_log test_mem TestCreateJobCommand TestJobOption TestConfig
+BINS=test_buffer test_fs test_tcp_serv test_tcp_client test_log test_mem TestJobOption TestConfig
 
 all: ${BINS}
 
@@ -15,7 +15,6 @@ OBJS=test_log \
      test_fs \
      test_tcp_serv \
      test_tcp_client \
-     TestCreateJobCommand \
      TestJobOption \
      TestConfig \
      test_mem 
