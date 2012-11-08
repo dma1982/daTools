@@ -2,11 +2,11 @@ include ../../make.misc
 CFLAGS=${OGL_CFLAGS}
 CC=g++
 
-OBJS=Submit.o Connection.o JobProxy.o TaskProxy.o
+OBJS=OglSubmit.o Connection.o JobProxy.o TaskProxy.o
 
-all: ogl
+all: oglsub
 
-ogl: ${OBJS}
+oglsub: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common  -lACE -lpthread -lcommon  -lutils -lconfig++
 
 ${OBJS}: %.o:%.cpp
@@ -14,4 +14,4 @@ ${OBJS}: %.o:%.cpp
 
 
 clean:
-	rm -f ogl *.o
+	rm -f oglsub *.o

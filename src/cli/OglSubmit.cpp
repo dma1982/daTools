@@ -1,12 +1,46 @@
 #include <ace/SOCK_Connector.h>
-#include "Object.h"
 
+#include "Object.h"
 #include "Commands.h"
+#include "Connection.h"
+#include "JobProxy.h"
+#include "TaskProxy.h"
+#include "Exception.h"
 
 #include <iostream>
+
 using namespace std;
+using namespace ogl;
 
 int main(int argc, char** argv)
+{
+    try
+    {
+        Connection connection;
+
+        JobOption jobOption;
+
+        JobProxy* job = connection.addJob(&jobOption);
+
+        TaskOption taskOption;
+
+        TaskProxy* task = job->addTask(&taskOption);
+
+        char buf[BUFSIZ] = {0};
+
+        size_t size = BUFSIZ;
+
+        task->output(buf, size);
+
+        cout << buf << endl;
+    }
+    catch (Exception& e)
+    {
+        cout << e.what() << endl;
+    }
+}
+
+int __back_main_backk__(int argc, char** argv)
 {
     /* Build ourselves a Stream socket. This is a connected socket that
        provides reliable end-to-end communications. We will use the

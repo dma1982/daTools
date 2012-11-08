@@ -128,7 +128,7 @@ namespace ogl
             cur = cur->next;
         }
     }
-    
+
     hash_table_t* table_create(size_t size)
     {
         hash_table_t* res = (hash_table_t*) malloc(sizeof(hash_table_t));
@@ -267,12 +267,12 @@ namespace ogl
     {
         switch ( Configuration::instance()->getMemPoolType() )
         {
-            case NGINX:
-                m_memPool = new NginxMemory(size);
-                break;
-            default:
-                m_memPool = new DefaultMemory(size);
-                break;
+        case NGINX:
+            m_memPool = new NginxMemory(size);
+            break;
+        default:
+            m_memPool = new DefaultMemory(size);
+            break;
         }
     }
 

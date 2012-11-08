@@ -6,21 +6,21 @@
 
 namespace ogl
 {
-class JobManagerServerHandler : public ServerHandler
-{
-    public:
-        virtual Executor* executor(void);
-};
+    class JobManagerServerHandler : public ServerHandler
+    {
+        public:
+            virtual Executor* executor(void);
+    };
 
-typedef ACE_Acceptor <JobManagerServerHandler, ACE_SOCK_ACCEPTOR > JobManagerServerAcceptor;
+    typedef ACE_Acceptor <JobManagerServerHandler, ACE_SOCK_ACCEPTOR > JobManagerServerAcceptor;
 
-class JobManagerServer : public Server <JobManagerServerAcceptor>
-{
-    public:
-        virtual void execute(CommandHeader* header, ACE_Message_Block* msg);
-};
+    class JobManagerServer : public Server <JobManagerServerAcceptor>
+    {
+        public:
+            virtual void execute(CommandHeader* header, ACE_Message_Block* msg);
+    };
 
-typedef ACE_Singleton<JobManagerServer, ACE_Null_Mutex> JOBMGRSRV;
+    typedef ACE_Singleton<JobManagerServer, ACE_Null_Mutex> JOBMGRSRV;
 
 }
 #endif

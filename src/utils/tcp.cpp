@@ -50,14 +50,14 @@ ogl::TcpServer::TcpServer(int& port)
         serv_addr.sin_port = htons(port);
     }
 
-    rc = bind(m_socket, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
+    rc = bind(m_socket, (struct sockaddr*) & serv_addr, sizeof(serv_addr));
     m_logger->Assert(rc >= 0);
 
     if (0 == port)
     {
         socklen_t n = sizeof(serv_addr);
         memset(&serv_addr, 0, n);
-        rc = getsockname(m_socket, (struct sockaddr*) &serv_addr, &n);
+        rc = getsockname(m_socket, (struct sockaddr*) & serv_addr, &n);
         m_logger->Assert(rc == 0);
         port = ntohs(serv_addr.sin_port);
     }
@@ -95,7 +95,7 @@ ogl::TcpConnection::TcpConnection(const std::string& host, int port)
           server->h_length);
 
     serv_addr.sin_port = htons(port);
-    int rc = connect(m_socket, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+    int rc = connect(m_socket, (struct sockaddr *) & serv_addr, sizeof(serv_addr));
     m_logger->Assert(rc >= 0);
 }
 

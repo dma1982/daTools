@@ -101,7 +101,7 @@ namespace ogl
 
     AutoTimer::AutoTimer(const char* label) : m_label(label)
     {
-        m_start= new timeval();
+        m_start = new timeval();
         gettimeofday((timeval*)m_start, NULL);
     }
 
@@ -115,8 +115,8 @@ namespace ogl
 
         seconds = ((timeval*)m_end)->tv_sec - ((timeval*)m_start)->tv_sec;
         useconds = ((timeval*)m_end)->tv_usec - ((timeval*)m_start)->tv_usec;
-        
-        mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+        mtime = ((seconds) * 1000 + useconds / 1000.0) + 0.5;
 
         char buffer[BUFSIZ] = {0};
 
@@ -127,6 +127,6 @@ namespace ogl
         delete (timeval*) m_start;
         delete (timeval*) m_end;
     }
-    
+
 
 }

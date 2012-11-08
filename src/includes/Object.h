@@ -22,23 +22,59 @@ namespace ogl
             JobOption();
             ~JobOption();
 
-            void priority(int p) {m_priority = p;} 
-            int priority() { return m_priority; }
+            void priority(int p)
+            {
+                m_priority = p;
+            }
+            int priority()
+            {
+                return m_priority;
+            }
 
-            void name(char* n) {m_name = n;} 
-            char* name(void) { return m_name; }
+            void name(char* n)
+            {
+                m_name = n;
+            }
+            char* name(void)
+            {
+                return m_name;
+            }
 
-            void command(char* c) { m_cmd = c; }
-            char* command(void) { return m_cmd; }
+            void command(char* c)
+            {
+                m_cmd = c;
+            }
+            char* command(void)
+            {
+                return m_cmd;
+            }
 
-            void arguments(char** a) { m_args = a; }
-            char** arguments(void) { return m_args; }
+            void arguments(char** a)
+            {
+                m_args = a;
+            }
+            char** arguments(void)
+            {
+                return m_args;
+            }
 
-            void environments(char** e) { m_env = e; }
-            char** environments(void) { return m_env; }
+            void environments(char** e)
+            {
+                m_env = e;
+            }
+            char** environments(void)
+            {
+                return m_env;
+            }
 
-            void work_directory(char* wd) { m_workDirectory = wd; }
-            char* work_directory() {return m_workDirectory; }
+            void work_directory(char* wd)
+            {
+                m_workDirectory = wd;
+            }
+            char* work_directory()
+            {
+                return m_workDirectory;
+            }
 
             /*
              * This function is used to release arguments & envrionment

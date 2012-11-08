@@ -74,5 +74,13 @@ namespace ogl
         }
 
     }
-    
+
+    TaskOption::~TaskOption()
+    {
+    }
+
+    TaskOption::TaskOption()
+    {
+    }
+
 }

@@ -6,5 +6,5 @@ int main(int argc, char** argv)
 {
     Logger* log = Logger::getLogger("mada.class");
     log->Debug("this is the first line");
-    log->Assert(1!=1);
+    log->Assert(1 != 1);
 }

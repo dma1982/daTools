@@ -22,10 +22,10 @@ namespace ogl
             ACE_CDR::ULong m_type;
             ACE_CDR::ULong m_size;
 
-            static size_t size() 
+            static size_t size()
             {
-                return sizeof(ACE_CDR::ULong) + 
-                    sizeof(ACE_CDR::ULong);
+                return sizeof(ACE_CDR::ULong) +
+                       sizeof(ACE_CDR::ULong);
             };
 
             static CommandHeader* build(ACE_Message_Block* data);
@@ -47,10 +47,10 @@ namespace ogl
             ACE_CDR::ULong m_code;
             ACE_CDR::ULong m_size;
 
-            static size_t size() 
+            static size_t size()
             {
-                return sizeof(ACE_CDR::ULong) + 
-                    sizeof(ACE_CDR::ULong);
+                return sizeof(ACE_CDR::ULong) +
+                       sizeof(ACE_CDR::ULong);
             };
 
             virtual ACE_Message_Block* serialize();

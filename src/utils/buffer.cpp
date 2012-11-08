@@ -5,7 +5,7 @@ ogl::Logger* ogl::Buffer::m_logger = ogl::Logger::getLogger("ogl.buffer");
 
 
 ogl::Data::Data(const Data& m_d) {}
-ogl::Data& ogl::Data::operator=(const Data& m_d)
+ogl::Data& ogl::Data::operator=(const Data & m_d)
 {
     return *this;
 }
@@ -106,7 +106,7 @@ ogl::Buffer::Buffer(const Buffer& buf)
     }
 }
 
-ogl::Buffer& ogl::Buffer::operator=(const Buffer& buf)
+ogl::Buffer& ogl::Buffer::operator=(const Buffer & buf)
 {
     m_data = buf.m_data;
     m_next = buf.m_next;

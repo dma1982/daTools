@@ -2,7 +2,15 @@
 
 namespace ogl
 {
-    int TaskProxy::output(char*& data, size_t size)
+    TaskProxy::TaskProxy()
+    {
+    }
+
+    TaskProxy::~TaskProxy()
+    {
+    }
+
+    int TaskProxy::output(char* data, size_t& size)
     {
         return 0;
     }

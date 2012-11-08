@@ -10,10 +10,10 @@ namespace ogl
 {
 
 // create a process
-pid_t spawn(const char* cmd, char* const* args);
+    pid_t spawn(const char* cmd, char* const* args);
 
 // waitfor the process
-int wait(const pid_t& p);
+    int wait(const pid_t& p);
 }
 
 #endif

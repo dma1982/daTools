@@ -9,107 +9,108 @@
 
 namespace ogl
 {
-class Data
-{
-private:
-    char* m_data;
-    size_t m_size;
-    size_t m_capacity;
-    long m_refcnt;
-
-    static Logger* m_logger;
-
-    Data(const Data& m_d);
-    Data& operator=(const Data& m_d); 
-
-public:
-
-    void _inc_ref_cnt();
-
-    void _dec_ref_cnt();
-
-    char* data() const 
+    class Data
     {
-        return m_data;
-    }
+        private:
+            char* m_data;
+            size_t m_size;
+            size_t m_capacity;
+            long m_refcnt;
 
-    size_t size() const 
+            static Logger* m_logger;
+
+            Data(const Data& m_d);
+            Data& operator=(const Data& m_d);
+
+        public:
+
+            void _inc_ref_cnt();
+
+            void _dec_ref_cnt();
+
+            char* data() const
+            {
+                return m_data;
+            }
+
+            size_t size() const
+            {
+                return m_size;
+            }
+
+            size_t capacity() const
+            {
+                return m_capacity;
+            }
+
+            void size(size_t s);
+
+            size_t idle() const
+            {
+                return m_capacity - m_size;
+            }
+
+            Data(char* msg, size_t len);
+
+            Data(int size = BUFSIZ);
+
+            ~Data();
+    };
+
+
+    class Buffer
     {
-        return m_size;
-    }
+        private:
+            Data* m_data;
+            Buffer* m_next;
 
-    size_t capacity() const 
-    {
-        return m_capacity;
-    }
+            long m_refcnt;
 
-    void size(size_t s);
+            static Logger* m_logger;
 
-    size_t idle() const 
-    {
-        return m_capacity - m_size;
-    }
+        protected:
+            void _inc_ref_cnt();
 
-    Data(char* msg, size_t len);
+            void _dec_ref_cnt();
 
-    Data(int size = BUFSIZ);
+        public:
 
-    ~Data();
-};
+            Buffer(char* msg, int len);
 
+            Buffer(int size = BUFSIZ);
 
-class Buffer
-{
-    private:
-    Data* m_data;
-    Buffer* m_next;
+            Buffer(const Buffer& buf);
 
-    long m_refcnt;
+            Buffer& operator=(const Buffer& buf);
 
-    static Logger* m_logger;
+            Buffer* next() const
+            {
+                return m_next;
+            }
 
-protected:
-    void _inc_ref_cnt();
+            void append(Buffer* next);
 
-    void _dec_ref_cnt();
+            void append(char* msg, size_t len);
 
-public:
+            char* data() const
+            {
+                return m_data->data();
+            }
 
-    Buffer(char* msg, int len);
+            size_t size() const
+            {
+                return m_data->size();
+            }
 
-    Buffer(int size = BUFSIZ);
+            size_t capacity() const
+            {
+                return m_data->capacity();
+            }
 
-    Buffer(const Buffer& buf);
+            void size(size_t s);
 
-    Buffer& operator=(const Buffer& buf);
-
-    Buffer* next() const {
-        return m_next;
-    }
-
-    void append(Buffer* next);
-
-    void append(char* msg, size_t len);
-
-    char* data() const 
-    {
-        return m_data->data();
-    }
-
-    size_t size() const 
-    {
-        return m_data->size();
-    }
-
-    size_t capacity() const 
-    {
-        return m_data->capacity();
-    }
-
-    void size(size_t s);
-
-    ~Buffer();
-};
+            ~Buffer();
+    };
 
 
 }

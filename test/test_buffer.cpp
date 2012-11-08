@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     char data[] = "123";
     buf.append(data, 4);
 
-    *(buf.data()+4) = 0;
+    *(buf.data() + 4) = 0;
 
     std::cout << (buf.data()) << std::endl;
     cout << buf.size() << endl;

@@ -60,7 +60,7 @@ namespace ogl
             {
                 cmd->execute();
             }
-            catch(...)
+            catch (...)
             {
             }
         }

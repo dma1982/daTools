@@ -16,7 +16,7 @@ namespace ogl
             JobId id();
 
         private:
-              ACE_SOCK_Stream* m_jmServer;
+            ACE_SOCK_Stream* m_jmServer;
     };
 }
 

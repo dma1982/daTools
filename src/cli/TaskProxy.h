@@ -9,7 +9,9 @@ namespace ogl
     class TaskProxy
     {
         public:
-            int output(char*& data, size_t size);
+            TaskProxy();
+            ~TaskProxy();
+            int output(char* data, size_t& size);
             int exitCode();
             TaskId id();
     };

@@ -58,8 +58,8 @@ namespace ogl
         int headerSize = CommandHeader::size();
 
         ACE_NEW_RETURN(data,
-                ACE_Message_Block(headerSize), 
-                -1);
+                       ACE_Message_Block(headerSize),
+                       -1);
 
         int n = -1;
         n = this->peer().recv_n(data->wr_ptr(), headerSize);

@@ -4,7 +4,8 @@ CC=g++
 
 LIBOBJS=Server.o \
         Commands.o \
-        Object.o
+        Object.o \
+        Exception.o
 
 OBJS=${LIBOBJS}
 
