@@ -15,6 +15,10 @@ namespace ogl
     {
         // release JobProxys
         std::for_each(m_jobProxyList.begin(), m_jobProxyList.end(), releaseObject<JobProxy>);
+        if (m_jmServer)
+        {
+            m_jmServer->close();
+        }
         releaseObject<ACE_SOCK_Stream>(m_jmServer);
     }
 
@@ -45,6 +49,13 @@ namespace ogl
 
         if (connector.connect (*m_jmServer, addr) == -1)
         {
+
+            if (m_jmServer)
+            {
+                m_jmServer->close();
+            }
+            releaseObject<ACE_SOCK_Stream>(m_jmServer);
+
             char buf[BUFSIZ] = {0};
             snprintf(buf, BUFSIZ, "Failed to connection to target Job Manager Server at (%s:%d).",
                      Configuration::instance()->getMasterHost().c_str(),
