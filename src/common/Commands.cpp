@@ -30,5 +30,24 @@ namespace ogl
         DESERIALIZE_ULONG(is, m_size);
     }
 
+    ACE_Message_Block* ResponseHeader::serialize()
+    {
+        ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+
+        SERIALIZE_ULONG(os, m_code);
+        SERIALIZE_ULONG(os, m_size);
+
+        return os.begin() -> duplicate();
+    }
+
+    void ResponseHeader::deserialize(ACE_Message_Block* msg)
+    {
+        ACE_InputCDR is(msg);
+
+        DESERIALIZE_ULONG(is, m_code);
+        DESERIALIZE_ULONG(is, m_size);
+    }
+
+
 };
 

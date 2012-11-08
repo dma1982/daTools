@@ -2,7 +2,7 @@ include ../../make.misc
 CFLAGS=${OGL_CFLAGS}
 CC=g++
 
-OBJS=Submit.o 
+OBJS=Submit.o Connection.o JobProxy.o TaskProxy.o
 
 all: ogl
 
