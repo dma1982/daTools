@@ -14,5 +14,6 @@ namespace ogl
             return new CreateJob(jobOption);
         }
 
+        return 0;
     }
 }
