@@ -9,4 +9,5 @@ Ubuntu 10.04.4 LTS
     |- gcc 4.4.3
     |- ACE 5.6
     |- libconfig++8
+    |- gtest
 
