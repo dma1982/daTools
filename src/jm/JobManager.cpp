@@ -55,10 +55,9 @@ namespace ogl
 
         while (!m_shutdown)
         {
-            auto_ptr<Command> cmd(nextCommand());
             try
             {
-                cmd->execute();
+                nextCommand()->execute();
             }
             catch (...)
             {

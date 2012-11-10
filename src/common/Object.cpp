@@ -62,13 +62,32 @@ namespace ogl
         return sizeof(ACE_CDR::ULong);
     }
 
-    int send(ACE_SOCK_Stream& handle, Header& head, Serializable& data)
+    int send(ACE_SOCK_Stream& handle, Header& head, Serializable* data)
     {
-        ACE_Message_Block* dataMsg = data.serialize();
+        ACE_Message_Block*  dataMsg;
+        ACE_Message_Block*  headMsg;
+
+        if (NULL == data)
+        {
+            head.dataSize(0);
+
+            headMsg = head.serialize();
+
+            if (handle.send_n (headMsg->rd_ptr(), headMsg->length()) == -1)
+            {
+                headMsg->release();
+                return -1;
+            }
+            headMsg->release();
+            return head.dataSize();
+
+        }
+
+        dataMsg = data->serialize();
 
         head.dataSize(dataMsg->length());
 
-        ACE_Message_Block* headMsg = head.serialize();
+        headMsg = head.serialize();
 
         if (handle.send_n (headMsg->rd_ptr(), headMsg->length()) == -1)
         {

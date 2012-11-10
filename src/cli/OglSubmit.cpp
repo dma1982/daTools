@@ -15,7 +15,7 @@ using namespace ogl;
 
 void print_help()
 {
-    char* help = "oglsub: Submit a job to OGL Job Manager Server.\n"
+    const char* help = "oglsub: Submit a job to OGL Job Manager Server.\n"
                  "    -j: Job name\n"
                  "    -c: Job command\n";
     cout << help ;

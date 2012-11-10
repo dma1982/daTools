@@ -10,7 +10,11 @@ namespace ogl
     class CreateJob: public Command
     {
         public:
+
             CreateJob(ogl::JobOption* jobOption);
+
+            ~CreateJob();
+
             virtual void execute(void);
 
             void setJobOption(ogl::JobOption* );

@@ -21,18 +21,17 @@ namespace ogl
     class Executor
     {
         public:
-            virtual void execute(CommandHeader* header, ACE_Message_Block* msg) = 0;
-            virtual ACE_Reactor* reactor() = 0;
+            virtual void execute(Command* cmd) = 0;
     };
 
-    class ServerHandler : public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
+    class ServerHandler : public Executor, public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
     {
         public:
             virtual int open (void *);
             virtual void destroy (void);
             virtual int close (u_long flags = 0);
 
-            virtual Executor* executor(void) = 0;
+            virtual void execute(Command* cmd) = 0;
 
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
@@ -40,7 +39,7 @@ namespace ogl
     };
 
     template <class SA>
-    class Server : public Executor, public ACE_Task<ACE_MT_SYNCH>
+    class Server : public ACE_Task<ACE_MT_SYNCH>
     {
         public:
 
@@ -54,11 +53,11 @@ namespace ogl
 
             virtual int svc()
             {
-                reactor()->owner( ACE_Thread::self());
+                m_reactor.owner( ACE_Thread::self());
 
                 while (!m_shutdown)
                 {
-                    reactor()->handle_events ();
+                    m_reactor.handle_events ();
                 }
 
                 return 0;
@@ -70,16 +69,11 @@ namespace ogl
                 return 0;
             }
 
-            virtual ACE_Reactor* reactor()
-            {
-                return &m_reactor;
-            }
-
             virtual void start(int port)
             {
                 m_port = port;
 
-                if (m_acceptor.open(ACE_INET_Addr(m_port), reactor()) < 0)
+                if (m_acceptor.open(ACE_INET_Addr(m_port), &m_reactor) < 0)
                 {
                     return;
                 }

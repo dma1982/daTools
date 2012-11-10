@@ -69,24 +69,22 @@ namespace ogl
     {
 
         ogl::CommandHeader cmdHeader(ogl::CreateJobCommand);
-        if (ogl::send(*m_jmServer, cmdHeader, *jobOption) < 0)
+        if (ogl::send(*m_jmServer, cmdHeader, jobOption) < 0)
         {
-            return 0;
+            OGL_THROW_EXCEPTION("Failed to send create job request to Job Manager Server.");
         }
 
-        ACE_Message_Block* msg;
-
-        ACE_NEW_RETURN(msg, ACE_Message_Block(ogl::ResponseHeader::size()), 0);
-
+        ACE_Message_Block msg;
         ogl::ResponseHeader respHeader;
-        if (ogl::recv(*m_jmServer, respHeader, *msg) < 0)
+
+        if (ogl::recv(*m_jmServer, respHeader, msg) < 0)
         {
-            return 0;
+            OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
         }
 
         if (respHeader.fail())
         {
-            return 0;
+            OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.code());
         }
 
         JobProxy* res = new JobProxy(m_jmServer);

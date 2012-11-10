@@ -52,12 +52,32 @@ namespace ogl
     {
         public:
             virtual void execute(void) = 0;
+
+            virtual int response(int code, Serializable* resp = 0);
+
+            void peer(ACE_SOCK_Stream* peer)
+            {
+                m_peer = peer;
+            };
+
+            ACE_SOCK_Stream& peer()
+            {
+                return *m_peer;
+            };
+
             static Command* build(CommandHeader* header, ACE_Message_Block* msg);
+
+        protected:
+            ACE_SOCK_Stream* m_peer;
     };
 
     class ResponseHeader : public Header
     {
         public:
+
+            ResponseHeader() {};
+            ResponseHeader(int code) : m_code(code) {};
+
             static size_t size()
             {
                 return sizeof(ACE_CDR::ULong) + Header::size();
@@ -76,6 +96,11 @@ namespace ogl
             {
                 return m_code == OGL_SUCCESS;
             } ;
+
+            int code()
+            {
+                return m_code;
+            }
 
             virtual ACE_Message_Block* serialize();
             virtual void deserialize(ACE_Message_Block* );

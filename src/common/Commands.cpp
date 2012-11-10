@@ -49,5 +49,12 @@ namespace ogl
     }
 
 
+    int Command::response(int code, Serializable* resp)
+    {
+        ResponseHeader header(code);
+
+        return ogl::send(peer(), header, resp);
+    }
+
 };
 

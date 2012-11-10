@@ -7,12 +7,6 @@ namespace ogl
 {
     int ServerHandler::open(void *)
     {
-        if (executor() == 0 || executor()->reactor() == 0)
-        {
-            ogl::logger->Error("no executor in handler.");
-            return -1;
-        }
-
         ACE_INET_Addr addr;
 
         /*
@@ -29,8 +23,7 @@ namespace ogl
          This is where we have to grab that global pointer.
          Notice that we again use the READ_MASK so that handle_input() will be called when the client does something.
          */
-        if (executor()->reactor()->register_handler (this,
-                ACE_Event_Handler::READ_MASK) == -1)
+        if (reactor()->register_handler (this, ACE_Event_Handler::READ_MASK) == -1)
         {
             return -1;
         }
@@ -41,8 +34,7 @@ namespace ogl
     void ServerHandler::destroy (void)
     {
         /* Remove ourselves from the reactor */
-        executor()->reactor()->remove_handler(this,
-                                              ACE_Event_Handler::READ_MASK | ACE_Event_Handler::DONT_CALL);
+        reactor()->remove_handler(this, ACE_Event_Handler::READ_MASK | ACE_Event_Handler::DONT_CALL);
 
         /* Shut down the connection to the client.  */
         this->peer ().close ();
@@ -55,66 +47,22 @@ namespace ogl
     int ServerHandler::handle_input (ACE_HANDLE)
     {
 
-        CommandHeader* header = new CommandHeader();
-        ACE_Message_Block* data;
-        ACE_NEW_RETURN(data, ACE_Message_Block(), -1);
+        CommandHeader header;
+        ACE_Message_Block data;
 
-        if (ogl::recv(this->peer(), *header, *data) < 0)
+        if (ogl::recv(this->peer(), header, data) < 0)
         {
             return -1;
         }
 
-        /*
-        ACE_Message_Block* data = 0;
-        int headerSize = CommandHeader::size();
+        Command* command = Command::build(&header, &data);
 
-        ACE_NEW_RETURN(data,
-                       ACE_Message_Block(headerSize),
-                       -1);
+        command->peer(&(peer()));
 
-        int n = -1;
-        n = this->peer().recv_n(data->wr_ptr(), headerSize);
+        // the executor will cleanup the command
+        this->execute(command);
 
-        // get the data of command header
-        if ( n != headerSize)
-        {
-            return -1;
-        }
-
-        // set data's write pointer
-        data->wr_ptr(n);
-
-        CommandHeader* header = CommandHeader::build(data);
-
-        // release the data of header
-        delete data;
-        data = 0;
-
-        // if no command data; just execute the command and return
-        if (header->dataSize() == 0)
-        {
-            executor()->execute(header, 0);
-            return headerSize;
-        }
-
-        // get the data of options
-        ACE_NEW_RETURN(data, ACE_Message_Block(header->dataSize()), -1);
-
-        n = this->peer().recv_n(data->wr_ptr(), header->dataSize());
-
-        if (n < 0 || ((unsigned int)n) != header->dataSize())
-        {
-            return -1;
-        }
-
-        // set write pointer
-        data->wr_ptr(n);
-
-        */
-        executor()->execute(header, data);
-
-
-        return header->dataSize();
+        return header.dataSize();
     }
 
     /*

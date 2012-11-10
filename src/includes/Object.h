@@ -142,7 +142,7 @@ namespace ogl
             ACE_CDR::ULong m_dataSize;
     };
 
-    int send(ACE_SOCK_Stream& handle, Header& head, Serializable& data);
+    int send(ACE_SOCK_Stream& handle, Header& head, Serializable* data = 0);
 
     int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data);
 
