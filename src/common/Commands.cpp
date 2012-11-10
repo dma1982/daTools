@@ -17,7 +17,7 @@ namespace ogl
         ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
 
         SERIALIZE_ULONG(os, m_type);
-        SERIALIZE_ULONG(os, m_size);
+        SERIALIZE_ULONG(os, Header::m_dataSize);
 
         return os.begin() -> duplicate();
     }
@@ -27,7 +27,7 @@ namespace ogl
         ACE_InputCDR is(msg);
 
         DESERIALIZE_ULONG(is, m_type);
-        DESERIALIZE_ULONG(is, m_size);
+        DESERIALIZE_ULONG(is, Header::m_dataSize);
     }
 
     ACE_Message_Block* ResponseHeader::serialize()
@@ -35,7 +35,7 @@ namespace ogl
         ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
 
         SERIALIZE_ULONG(os, m_code);
-        SERIALIZE_ULONG(os, m_size);
+        SERIALIZE_ULONG(os, Header::m_dataSize);
 
         return os.begin() -> duplicate();
     }
@@ -45,7 +45,7 @@ namespace ogl
         ACE_InputCDR is(msg);
 
         DESERIALIZE_ULONG(is, m_code);
-        DESERIALIZE_ULONG(is, m_size);
+        DESERIALIZE_ULONG(is, Header::m_dataSize);
     }
 
 

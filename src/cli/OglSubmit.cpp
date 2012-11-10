@@ -1,4 +1,5 @@
 #include <ace/SOCK_Connector.h>
+#include <ace/Get_Opt.h>
 
 #include "Object.h"
 #include "Commands.h"
@@ -12,13 +13,52 @@
 using namespace std;
 using namespace ogl;
 
+void print_help()
+{
+    char* help = "oglsub: Submit a job to OGL Job Manager Server.\n"
+                 "    -j: Job name\n"
+                 "    -c: Job command\n";
+    cout << help ;
+    return;
+}
+
 int main(int argc, char** argv)
 {
+
+    ACE_Get_Opt getOpt(argc, argv, "hj:c:");
+    int arg;
+
+    JobOption jobOption;
+    while ((arg = getOpt()) != EOF)
+    {
+        switch (arg)
+        {
+        case 'j':
+            jobOption.name(getOpt.optarg);
+            break;
+        case 'c':
+            jobOption.command(getOpt.optarg);
+            break;
+
+        case 'h':
+        default:
+            print_help();
+            return 0;
+        }
+    }
+
+    if (jobOption.name() == 0 ||
+        jobOption.command() == 0)
+    {
+        print_help();
+        return -1;
+    }
+
+    printf("INFO: Creating job <%s> with command <%s>.\n", jobOption.name(), jobOption.command());
+
     try
     {
         Connection connection;
-
-        JobOption jobOption;
 
         JobProxy* job = connection.addJob(&jobOption);
 
@@ -36,68 +76,8 @@ int main(int argc, char** argv)
     }
     catch (Exception& e)
     {
-        cout << e.what() << endl;
+        cout << "*ERROR*: " << e.what() << endl;
     }
 }
 
-int __back_main_backk__(int argc, char** argv)
-{
-    /* Build ourselves a Stream socket. This is a connected socket that
-       provides reliable end-to-end communications. We will use the
-       server object to send data to the server we connect to.  */
-    ACE_SOCK_Stream server;
 
-    /* And we need a connector object to establish that connection. The
-       ACE_SOCK_Connector object provides all of the tools we need to
-       establish a connection once we know the server's network
-       address...  */
-    ACE_SOCK_Connector connector;
-
-
-    /* Which we create with an ACE_INET_Addr object. This object is
-       given the TCP/IP port and hostname of the server we want to
-       connect to.  */
-    ACE_INET_Addr addr (9080, "9.123.145.253");
-
-    /* So, we feed the Addr object and the Stream object to the
-       connector's connect() member function. Given this information, it
-       will establish the network connection to the server and attach
-       that connection to the server object.  */
-    if (connector.connect (server, addr) == -1)
-    {
-        cout << "asdf" << endl;
-        return -1;
-    }
-
-    ogl::CommandHeader header;
-    header.m_type = ogl::CreateJobCommand;
-    header.m_size = 0;
-
-    ogl::JobOption* jobOption = new ogl::JobOption();
-
-    char buf[] = {"test"};
-
-    jobOption->name(buf);
-    jobOption->command(argv[0]);
-    jobOption->arguments(argv);
-
-    ACE_Message_Block* option = jobOption->serialize();
-
-    header.m_size = option->length();
-
-    ACE_Message_Block* data = header.serialize();
-
-    if (server.send_n (data->rd_ptr(), data->length()) == -1)
-    {
-        return -1;
-    }
-
-    if (server.send_n (option->rd_ptr(), option->length()) == -1)
-    {
-        return -1;
-    }
-
-    server.close();
-
-    return 0;
-}

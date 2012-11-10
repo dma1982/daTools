@@ -67,6 +67,30 @@ namespace ogl
 
     JobProxy* Connection::addJob(JobOption* jobOption)
     {
-        return 0;
+
+        ogl::CommandHeader cmdHeader(ogl::CreateJobCommand);
+        if (ogl::send(*m_jmServer, cmdHeader, *jobOption) < 0)
+        {
+            return 0;
+        }
+
+        ACE_Message_Block* msg;
+
+        ACE_NEW_RETURN(msg, ACE_Message_Block(ogl::ResponseHeader::size()), 0);
+
+        ogl::ResponseHeader respHeader;
+        if (ogl::recv(*m_jmServer, respHeader, *msg) < 0)
+        {
+            return 0;
+        }
+
+        if (respHeader.fail())
+        {
+            return 0;
+        }
+
+        JobProxy* res = new JobProxy(m_jmServer);
+
+        return res;
     }
 };

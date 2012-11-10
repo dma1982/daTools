@@ -57,4 +57,78 @@ namespace ogl
     {
     }
 
+    size_t Header::size()
+    {
+        return sizeof(ACE_CDR::ULong);
+    }
+
+    int send(ACE_SOCK_Stream& handle, Header& head, Serializable& data)
+    {
+        ACE_Message_Block* dataMsg = data.serialize();
+
+        head.dataSize(dataMsg->length());
+
+        ACE_Message_Block* headMsg = head.serialize();
+
+        if (handle.send_n (headMsg->rd_ptr(), headMsg->length()) == -1)
+        {
+            headMsg->release();
+            return -1;
+        }
+        headMsg->release();
+
+        if (handle.send_n (dataMsg->rd_ptr(), dataMsg->length()) == -1)
+        {
+            dataMsg->release();
+            return -1;
+        }
+        dataMsg->release();
+
+        return head.dataSize();
+    }
+
+    int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data)
+    {
+        ACE_Message_Block* headMsg;
+        ACE_NEW_RETURN(headMsg,
+                       ACE_Message_Block(head.headerSize()),
+                       -1);
+
+        int n = -1;
+        n = handle.recv_n(headMsg->wr_ptr(), head.headerSize());
+
+        // get the data of command header
+        if ( n < 0 || (size_t) n != head.headerSize())
+        {
+            headMsg->release();
+            return -1;
+        }
+
+        // set data's write pointer
+        headMsg->wr_ptr(n);
+
+        head.deserialize(headMsg);
+
+        headMsg->release();
+
+        if (head.dataSize() == 0)
+        {
+            return 0;
+        }
+
+        data.size(head.dataSize());
+
+        n = handle.recv_n(data.wr_ptr(), head.dataSize());
+
+        if (n < 0 || ((unsigned int)n) != head.dataSize())
+        {
+            return -1;
+        }
+
+        // set write pointer
+        data.wr_ptr(n);
+
+        return n;
+    }
+
 }

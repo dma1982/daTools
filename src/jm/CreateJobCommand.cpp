@@ -8,6 +8,7 @@ namespace ogl
 
     void CreateJob::execute()
     {
-        ogl::logger->Error("failed to create a job.");
+        OGL_LOG_DEBUG("TODO: create a job for name: <%s>, command: <%s>",
+                      m_jobOption->name(), m_jobOption->command());
     }
 };

@@ -16,22 +16,36 @@ namespace ogl
         CreateJobCommand,
     };
 
-    class CommandHeader : Serializable
+    class CommandHeader : public Header
     {
         public:
-            ACE_CDR::ULong m_type;
-            ACE_CDR::ULong m_size;
+
+            CommandHeader () { };
+
+            CommandHeader (CommandType ct) : m_type(ct) { };
+
+            CommandType commandType()
+            {
+                return (CommandType) m_type;
+            } ;
 
             static size_t size()
             {
-                return sizeof(ACE_CDR::ULong) +
-                       sizeof(ACE_CDR::ULong);
+                return sizeof(ACE_CDR::ULong) + Header::size();
+            };
+
+            virtual size_t headerSize()
+            {
+                return CommandHeader::size();
             };
 
             static CommandHeader* build(ACE_Message_Block* data);
 
             virtual ACE_Message_Block* serialize();
             virtual void deserialize(ACE_Message_Block* );
+
+        private:
+            ACE_CDR::ULong m_type;
     };
 
     class Command
@@ -41,21 +55,33 @@ namespace ogl
             static Command* build(CommandHeader* header, ACE_Message_Block* msg);
     };
 
-    class ResponseHeader : Serializable
+    class ResponseHeader : public Header
     {
         public:
-            ACE_CDR::ULong m_code;
-            ACE_CDR::ULong m_size;
-
             static size_t size()
             {
-                return sizeof(ACE_CDR::ULong) +
-                       sizeof(ACE_CDR::ULong);
+                return sizeof(ACE_CDR::ULong) + Header::size();
             };
+
+            virtual size_t headerSize()
+            {
+                return ResponseHeader::size();
+            };
+
+            bool fail()
+            {
+                return m_code != OGL_SUCCESS;
+            };
+            bool good()
+            {
+                return m_code == OGL_SUCCESS;
+            } ;
 
             virtual ACE_Message_Block* serialize();
             virtual void deserialize(ACE_Message_Block* );
 
+        private:
+            ACE_CDR::ULong m_code;
     };
 
 };

@@ -1,6 +1,7 @@
 #ifndef __OGL_OBJECT_H__
 #define __OGL_OBJECT_H__
 
+#include <ace/SOCK_Connector.h>
 #include <ace/Message_Block.h>
 #include <ace/CDR_Stream.h>
 #include <string>
@@ -120,6 +121,32 @@ namespace ogl
             ogl::TaskId m_id;
 
     };
+
+    class Header : public Serializable
+    {
+        public:
+            static size_t size();
+
+            virtual size_t headerSize() = 0;
+
+            void dataSize(size_t size)
+            {
+                m_dataSize = size;
+            };
+            size_t dataSize()
+            {
+                return m_dataSize;
+            };
+
+        protected:
+            ACE_CDR::ULong m_dataSize;
+    };
+
+    int send(ACE_SOCK_Stream& handle, Header& head, Serializable& data);
+
+    int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data);
+
+
 }
 
 //serialize

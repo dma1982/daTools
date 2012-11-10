@@ -54,6 +54,17 @@ namespace ogl
     /* Respond to input just like Tutorial 1.  */
     int ServerHandler::handle_input (ACE_HANDLE)
     {
+
+        CommandHeader* header = new CommandHeader();
+        ACE_Message_Block* data;
+        ACE_NEW_RETURN(data, ACE_Message_Block(), -1);
+
+        if (ogl::recv(this->peer(), *header, *data) < 0)
+        {
+            return -1;
+        }
+
+        /*
         ACE_Message_Block* data = 0;
         int headerSize = CommandHeader::size();
 
@@ -80,18 +91,18 @@ namespace ogl
         data = 0;
 
         // if no command data; just execute the command and return
-        if (header->m_size == 0)
+        if (header->dataSize() == 0)
         {
             executor()->execute(header, 0);
             return headerSize;
         }
 
         // get the data of options
-        ACE_NEW_RETURN(data, ACE_Message_Block(header->m_size), -1);
+        ACE_NEW_RETURN(data, ACE_Message_Block(header->dataSize()), -1);
 
-        n = this->peer().recv_n(data->wr_ptr(), header->m_size);
+        n = this->peer().recv_n(data->wr_ptr(), header->dataSize());
 
-        if (n < 0 || ((unsigned int)n) != header->m_size)
+        if (n < 0 || ((unsigned int)n) != header->dataSize())
         {
             return -1;
         }
@@ -99,9 +110,11 @@ namespace ogl
         // set write pointer
         data->wr_ptr(n);
 
+        */
         executor()->execute(header, data);
 
-        return header->m_size;
+
+        return header->dataSize();
     }
 
     /*
