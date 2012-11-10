@@ -31,18 +31,18 @@ namespace ogl
                 return m_priority;
             }
 
-            void name(char* n)
+            void name(const char* n)
             {
-                m_name = n;
+                m_name = ogl::dumpString(n);
             }
             char* name(void)
             {
                 return m_name;
             }
 
-            void command(char* c)
+            void command(const char* c)
             {
-                m_cmd = c;
+                m_cmd = ogl::dumpString(c);
             }
             char* command(void)
             {
@@ -51,7 +51,7 @@ namespace ogl
 
             void arguments(char** a)
             {
-                m_args = a;
+                m_args = ogl::dumpStringArray(a);
             }
             char** arguments(void)
             {
@@ -60,16 +60,16 @@ namespace ogl
 
             void environments(char** e)
             {
-                m_env = e;
+                m_env = ogl::dumpStringArray(e);
             }
             char** environments(void)
             {
                 return m_env;
             }
 
-            void work_directory(char* wd)
+            void work_directory(const char* wd)
             {
-                m_workDirectory = wd;
+                m_workDirectory = ogl::dumpString(wd);
             }
             char* work_directory()
             {
@@ -177,7 +177,7 @@ namespace ogl
     } \
     else \
     { \
-        str = new char[len + 1];\
+        str = (char*) malloc(len + 1);\
         str[len] = 0; \
         is.read_char_array(str, len); \
     } \

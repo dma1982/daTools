@@ -1,3 +1,4 @@
+#include "ogl.h"
 #include "Object.h"
 
 namespace ogl
@@ -40,39 +41,12 @@ namespace ogl
        */
     JobOption::~JobOption()
     {
-        if (m_name)
-        {
-            delete m_name;
-        }
+        ogl::releaseString(m_name);
+        ogl::releaseString(m_workDirectory);
+        ogl::releaseString(m_cmd);
 
-        if (m_args)
-        {
-            for (char** cur = m_args; *cur != 0; cur++)
-            {
-                delete cur;
-            }
-            delete m_args;
-        }
-
-        if (m_env)
-        {
-            for (char** cur = m_env; *cur != 0; cur++)
-            {
-                delete cur;
-            }
-            delete m_env;
-        }
-
-        if (m_workDirectory)
-        {
-            delete m_workDirectory;
-        }
-
-        if (m_cmd)
-        {
-            delete m_cmd;
-        }
-
+        ogl::releaseStringArray(m_args);
+        ogl::releaseStringArray(m_env);
     }
 
     TaskOption::~TaskOption()

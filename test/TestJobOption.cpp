@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <cstring>
+#include <string>
 using namespace std;
 
 TEST(JobOption, constructor)
@@ -24,6 +25,25 @@ TEST(JobOption, empty_serialize)
     ASSERT_EQ(msg->length() , 7 * sizeof (ACE_CDR::ULong));
 
     delete cmd;
+    msg->release();
+}
+
+TEST(JobOption, serialize)
+{
+    ogl::JobOption* jobOption = new ogl::JobOption();
+
+    jobOption->name("dma");
+    jobOption->command("/bin/date");
+
+    ACE_Message_Block* msg = jobOption->serialize();
+
+    ogl::JobOption* target = new ogl::JobOption();
+    target->deserialize(msg);
+
+    ASSERT_EQ(std::string("dma"), target->name());
+
+    delete jobOption;
+    delete target;
     msg->release();
 }
 

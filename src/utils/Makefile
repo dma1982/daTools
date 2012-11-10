@@ -6,7 +6,8 @@ OBJS=log.o \
      event.o \
      buffer.o \
      conf.o \
-     mem.o
+     mem.o \
+     utils.o
 
 all: libutils.a
 

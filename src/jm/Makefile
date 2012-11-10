@@ -13,7 +13,7 @@ OBJS=JobManagerDaemon.o ${LIBOBJS}
 all: JobManagerDaemon libjm.a 
 
 JobManagerDaemon: ${OBJS}
-	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lutils -lACE -lpthread -lcommon -lconfig++
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lACE -lpthread -lcommon -lconfig++ -lutils
 
 libjm.a: ${LIBOBJS}
 	ar cr libjm.a ${LIBOBJS}
