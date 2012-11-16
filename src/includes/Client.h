@@ -16,8 +16,7 @@
 
 namespace ogl
 {
-
-    class ServerHandler : public Executor, public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
+    class ClientHandler : public Executor, public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
     {
         public:
             virtual int open (void *);
@@ -31,18 +30,18 @@ namespace ogl
                                       ACE_Reactor_Mask);
     };
 
-    template <class SA>
-    class Server : public ACE_Task<ACE_MT_SYNCH>
+    template <class SCH>
+    class Client : public ACE_Task<ACE_MT_SYNCH>
     {
         public:
 
-            Server()
+            Client ()
             {
                 m_shutdown = false;
                 m_port = -1;
             }
 
-            virtual ~Server() { }
+            virtual ~Client() { }
 
             virtual int svc()
             {
@@ -58,15 +57,18 @@ namespace ogl
 
             virtual int close(unsigned long)
             {
-                m_acceptor.close();
+                m_connector.close();
                 return 0;
             }
 
-            virtual void start(int port)
+            virtual void start(const std::string& host, int port)
             {
                 m_port = port;
+				m_host = host;
 
-                if (m_acceptor.open(ACE_INET_Addr(m_port), &m_reactor) < 0)
+				ACE_INET_Addr master(port, m_host.c_str());
+
+				if (m_connector.connect(&m_handler, master) < 0)
                 {
                     return;
                 }
@@ -81,9 +83,11 @@ namespace ogl
 
         private:
             ACE_Reactor m_reactor;
-            SA m_acceptor;
+            typename ACE_Connector<SCH, ACE_SOCK_CONNECTOR> m_connector;
+			SCH m_handler;
             bool m_shutdown;
             int m_port;
+			std::string m_host;
     };
 
 }

@@ -14,7 +14,9 @@ namespace ogl
     Job::~Job()
     {
         if (m_jobOption)
+        {
             delete m_jobOption;
+        }
     }
 
     void Job::addTask(ogl::TaskOption* taskOption)

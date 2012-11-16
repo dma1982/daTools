@@ -9,6 +9,8 @@
 
 namespace ogl
 {
+
+
     class Serializable
     {
         public:

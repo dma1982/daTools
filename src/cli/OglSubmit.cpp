@@ -15,17 +15,16 @@ using namespace ogl;
 
 void print_help()
 {
-    const char* help = 
-                 "Usage: oglsub -j job name -c commad line [OPTION]\n"
-                 "Submit a command line as job to Job Manager Server.\n"
-                 "\n"
-                 "    -j        Job name\n"
-                 "    -c        Job command\n"
-                 "\n"
-                 "Home & Bugs: <https://github.com/dma1982/ogl>\n"
-                 "\n";
+    const char* help =
+        "Usage: oglsub -j job name -c commad line [OPTION]\n"
+        "Submit a command line as job to Job Manager Server.\n"
+        "\n"
+        "    -j        Job name\n"
+        "    -c        Job command\n"
+        "\n"
+        "Home & Bugs: <https://github.com/dma1982/ogl>\n"
+        "\n";
     cout << help ;
-    return;
 }
 
 int main(int argc, char** argv)

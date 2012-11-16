@@ -109,6 +109,12 @@ namespace ogl
             ACE_CDR::ULong m_code;
     };
 
+    class Executor
+    {
+        public:
+            virtual void execute(Command* cmd) = 0;
+    };
+
 };
 
 #endif
