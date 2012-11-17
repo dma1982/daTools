@@ -10,16 +10,12 @@ namespace ogl
     {
         public:
             virtual void execute(Command* cmd);
-        private:
-            Command* m_command;
     };
 
-    typedef ACE_Connector <JobRunnerClientHandler, ACE_SOCK_ACCEPTOR > JobRunnerClientConnector;
-
-    class JobRunnerServer : public Client <JobRunnerClientConnector>
+    class JobRunnerServer : public Client <JobRunnerClientHandler>
     {
     };
 
-    typedef ACE_Singleton<JobRunnerServer, ACE_Null_Mutex> JOBRUNNERSRV; 
+    typedef ACE_Singleton<JobRunnerServer, ACE_Null_Mutex> JOBRUNNERSRV;
 }
 #endif

@@ -3,10 +3,10 @@
 
 namespace ogl
 {
-	class JobRunner : public ACE_Task
-	{
-		
-	};
+    class JobRunner : public ACE_Task
+    {
+
+    };
 }
 
 #endif

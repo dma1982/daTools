@@ -5,6 +5,7 @@ CC=g++
 LIBOBJS=Server.o \
         Commands.o \
         Object.o \
+        Client.o \
         Exception.o
 
 OBJS=${LIBOBJS}

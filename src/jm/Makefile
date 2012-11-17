@@ -10,9 +10,9 @@ LIBOBJS=JobManager.o \
 
 OBJS=JobManagerDaemon.o ${LIBOBJS}
 
-all: JobManagerDaemon libjm.a 
+all: jmd libjm.a 
 
-JobManagerDaemon: ${OBJS}
+jmd: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lACE -lpthread -lcommon -lconfig++ -lutils
 
 libjm.a: ${LIBOBJS}
@@ -24,4 +24,4 @@ ${OBJS}: %.o:%.cpp
 
 
 clean:
-	rm -f JobManagerDaemon *.o libjm.a
+	rm -f jmd *.o libjm.a
