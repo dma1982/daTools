@@ -55,7 +55,7 @@ namespace ogl
             return -1;
         }
 
-        Command* command = Command::build(&header, &data);
+        Command* command = this->buildCommand(&header, &data);
 
         command->peer(&(peer()));
 

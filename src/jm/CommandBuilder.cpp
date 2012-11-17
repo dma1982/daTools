@@ -1,10 +1,10 @@
-#include "Commands.h"
+#include "CommandBuilder.h"
 
 #include "CreateJobCommand.h"
 
 namespace ogl
 {
-    Command* Command::build(CommandHeader* header, ACE_Message_Block* msg)
+    Command* CommandBuilder::build(CommandHeader* header, ACE_Message_Block* msg)
     {
         switch (header->commandType())
         {

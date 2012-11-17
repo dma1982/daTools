@@ -21,4 +21,4 @@ ${OBJS}: %.o:%.cpp
 
 
 clean:
-	rm -f jrd *.o libjm.a
+	rm -f jrd *.o libjr.a

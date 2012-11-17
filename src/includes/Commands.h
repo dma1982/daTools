@@ -65,8 +65,6 @@ namespace ogl
                 return *m_peer;
             };
 
-            static Command* build(CommandHeader* header, ACE_Message_Block* msg);
-
         protected:
             ACE_SOCK_Stream* m_peer;
     };
@@ -113,6 +111,7 @@ namespace ogl
     {
         public:
             virtual void execute(Command* cmd) = 0;
+            virtual Command* buildCommand(CommandHeader* header, ACE_Message_Block* msg) = 0;
     };
 
 };

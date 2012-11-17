@@ -39,7 +39,7 @@ namespace ogl
         /* Which we create with an ACE_INET_Addr object. This object is
            given the TCP/IP port and hostname of the server we want to
            connect to.  */
-        ACE_INET_Addr addr (Configuration::instance()->getMasterPort(),
+        ACE_INET_Addr addr (Configuration::instance()->getMasterCliPort(),
                             Configuration::instance()->getMasterHost().c_str());
 
         /* So, we feed the Addr object and the Stream object to the
@@ -59,7 +59,7 @@ namespace ogl
             char buf[BUFSIZ] = {0};
             snprintf(buf, BUFSIZ, "Failed to connection to target Job Manager Server at (%s:%d).",
                      Configuration::instance()->getMasterHost().c_str(),
-                     Configuration::instance()->getMasterPort());
+                     Configuration::instance()->getMasterCliPort());
 
             throw Exception(buf);
         }

@@ -11,9 +11,9 @@ int main(int argc, char** argv)
     // start job manager
     ogl::JOBMANAGER::instance()->open();
 
-    ogl::JOBMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterPort());
+    ogl::JOBMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
 
-    OGL_LOG_INFO("Job Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterPort());
+    OGL_LOG_INFO("Job Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterCliPort());
 
     if (ACE_Thread_Manager::instance()->wait() < 0)
     {

@@ -18,7 +18,7 @@
 namespace ogl
 {
 
-    class ClientHandler : public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
+    class ClientHandler : public Executor, public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
     {
         public:
             virtual int open (void *);
@@ -26,6 +26,7 @@ namespace ogl
             virtual int close (u_long flags = 0);
 
             virtual void execute(Command* cmd) = 0;
+            virtual Command* buildCommand(CommandHeader* header, ACE_Message_Block* msg) = 0;
 
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
@@ -39,11 +40,13 @@ namespace ogl
 
             Client ()
             {
-                m_shutdown = false;
-                m_port = -1;
+                m_handler = new SCH();
             }
 
-            virtual ~Client() { }
+            virtual ~Client()
+            {
+                releaseObject<SCH>(m_handler);
+            }
 
             virtual int svc()
             {
@@ -65,12 +68,11 @@ namespace ogl
 
             virtual void start(const std::string& host, int port)
             {
-                m_port = port;
-                m_host = host;
+                ACE_INET_Addr master(port, host.c_str());
 
-                ACE_INET_Addr master(m_port, m_host.c_str());
+                m_master.set(master);
 
-                if (m_connector.connect(&m_handler, master) < 0)
+                if (m_connector.connect(m_handler, m_master) < 0)
                 {
                     return;
                 }
@@ -86,10 +88,9 @@ namespace ogl
         private:
             ACE_Reactor m_reactor;
             ACE_Connector <SCH, ACE_SOCK_Connector> m_connector;
-            SCH m_handler;
+            SCH* m_handler;
             bool m_shutdown;
-            int m_port;
-            std::string m_host;
+            ACE_INET_Addr m_master;
     };
 
 }

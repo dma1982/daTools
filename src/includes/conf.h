@@ -10,7 +10,8 @@
 #include <libconfig.h++>
 
 #define OGL_MASTER_HOST "ogl.master"
-#define OGL_MASTER_PORT "ogl.port"
+#define OGL_MASTER_JR_PORT "ogl.port.jr"
+#define OGL_MASTER_CLI_PORT "ogl.port.cli"
 #define OGL_LOG_FILE "log.file"
 #define OGL_LOG_LEVEL "log.level"
 #define OGL_MEM_POOL "mem.pool"
@@ -36,7 +37,8 @@ namespace ogl
 
             MEM_POOL_TYPE m_memPoolType;
 
-            int m_masterPort;
+            int m_masterJrPort;
+            int m_masterCliPort;
 
             std::string m_masterHost;
 
@@ -50,7 +52,9 @@ namespace ogl
 
             FILE* getLogFile();
 
-            int getMasterPort();
+            int getMasterCliPort();
+
+            int getMasterJrPort();
 
             const std::string& getMasterHost();
 

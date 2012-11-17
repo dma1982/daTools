@@ -9,4 +9,9 @@ namespace ogl
     {
         JOBRUNNERMGR::instance()->sendCommand(cmd);
     }
+
+    Command* JobRunnerClientHandler::buildCommand(CommandHeader* header, ACE_Message_Block* msg)
+    {
+        return 0;
+    }
 }

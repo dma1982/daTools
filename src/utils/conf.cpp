@@ -33,7 +33,8 @@ namespace ogl
         m_logLevel = DEBUG;
 
         m_memPoolType = NGINX;
-        m_masterPort = 9080;
+        m_masterCliPort = 9080;
+        m_masterJrPort = 9081;
         m_masterHost = "localhost";
 
         this->read("ogl.conf");
@@ -51,7 +52,8 @@ namespace ogl
     {
         m_conf->readFile(path);
 
-        m_conf->lookupValue(OGL_MASTER_PORT, m_masterPort);
+        m_conf->lookupValue(OGL_MASTER_JR_PORT, m_masterJrPort);
+        m_conf->lookupValue(OGL_MASTER_CLI_PORT, m_masterCliPort);
         m_conf->lookupValue(OGL_MASTER_HOST, m_masterHost);
         int poolType = -1;
         if (m_conf->lookupValue(OGL_MEM_POOL, poolType))
@@ -78,9 +80,14 @@ namespace ogl
         return 0;
     }
 
-    int Configuration::getMasterPort()
+    int Configuration::getMasterJrPort()
     {
-        return m_masterPort;
+        return m_masterJrPort;
+    }
+
+    int Configuration::getMasterCliPort()
+    {
+        return m_masterCliPort;
     }
 
     const string& Configuration::getMasterHost()

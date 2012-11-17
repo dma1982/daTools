@@ -25,6 +25,7 @@ namespace ogl
             virtual int close (u_long flags = 0);
 
             virtual void execute(Command* cmd) = 0;
+            virtual Command* buildCommand(CommandHeader* header, ACE_Message_Block* msg) = 0;
 
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
