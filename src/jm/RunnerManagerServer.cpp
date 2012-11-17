@@ -7,6 +7,11 @@ namespace ogl
 
     void RunnerManagerServerHandler::execute(Command* cmd)
     {
-        RUNMANAGER::instance()->sendCommand(cmd);
     }
+
+    Command* RunnerManagerServerHandler::buildCommand(CommandHeader* header, ACE_Message_Block* msg)
+    {
+        return 0;
+    }
+
 }

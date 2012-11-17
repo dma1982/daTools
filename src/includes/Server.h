@@ -14,6 +14,8 @@
 
 #include "Commands.h"
 
+#include "Exception.h"
+
 namespace ogl
 {
 
@@ -69,7 +71,8 @@ namespace ogl
 
                 if (m_acceptor.open(ACE_INET_Addr(m_port), &m_reactor) < 0)
                 {
-                    return;
+                    OGL_THROW_EXCEPTION("Failed to start service at <%d> because of <%d>",
+                                        m_port, ACE_OS::last_error());
                 }
 
                 this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);

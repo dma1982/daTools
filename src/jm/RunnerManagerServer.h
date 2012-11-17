@@ -10,6 +10,7 @@ namespace ogl
     {
         public:
             virtual void execute(Command* cmd);
+            Command* buildCommand(CommandHeader* header, ACE_Message_Block* msg);
         private:
             Command* m_command;
     };

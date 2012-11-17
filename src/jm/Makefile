@@ -6,7 +6,8 @@ LIBOBJS=JobManager.o \
      Job.o \
      JobManagerServer.o \
      CreateJobCommand.o \
-     CommandBuilder.o
+     CommandBuilder.o \
+     RunnerManagerServer.o
 
 OBJS=JobManagerDaemon.o ${LIBOBJS}
 
