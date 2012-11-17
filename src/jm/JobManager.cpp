@@ -17,6 +17,14 @@ namespace ogl
         //ogl::logger->Backtrace();
     }
 
+    int JobManager::addJob(const JobOption& option)
+    {
+
+        Job* job = new Job(m_nextJobId++, new JobOption(option));
+        m_jobs[job->getJobId()] = job;
+		return -1;
+    }
+
     void JobManager::shutdown()
     {
         m_shutdown = true;

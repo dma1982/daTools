@@ -20,10 +20,10 @@ int main(int argc, char** argv)
 
     if (ACE_Thread_Manager::instance()->wait() < 0)
     {
-        ogl::logger->Error("Failed to wait all thread.");
+        OGL_LOG_ERROR("Failed to wait all thread.");
     }
 
-    ogl::logger->Info("Job Manager Server stop.");
+    OGL_LOG_INFO("Job Manager Server stop.");
 
     ACE::fini();
 

@@ -15,6 +15,8 @@
 
 #include "Commands.h"
 
+#include "Exception.h"
+
 namespace ogl
 {
 
@@ -63,6 +65,7 @@ namespace ogl
             virtual int close(unsigned long)
             {
                 m_connector.close();
+                this->shutdown();
                 return 0;
             }
 
@@ -74,7 +77,8 @@ namespace ogl
 
                 if (m_connector.connect(m_handler, m_master) < 0)
                 {
-                    return;
+                    OGL_THROW_EXCEPTION("Failed to connect to server <%s:%d> because of <%d>.",
+                                        m_master.get_host_name(), m_master.get_port_number(), ACE_OS::last_error());
                 }
 
                 this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
