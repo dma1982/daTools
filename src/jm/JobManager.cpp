@@ -22,7 +22,7 @@ namespace ogl
 
         Job* job = new Job(m_nextJobId++, new JobOption(option));
         m_jobs[job->getJobId()] = job;
-		return -1;
+        return -1;
     }
 
     void JobManager::shutdown()

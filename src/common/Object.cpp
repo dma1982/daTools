@@ -41,12 +41,105 @@ namespace ogl
        */
     JobOption::~JobOption()
     {
+        this->release();
+    }
+
+    void JobOption::release()
+    {
         ogl::releaseString(m_name);
         ogl::releaseString(m_workDirectory);
         ogl::releaseString(m_cmd);
 
         ogl::releaseStringArray(m_args);
         ogl::releaseStringArray(m_env);
+    }
+
+    void JobOption::dump(const JobOption& jobOption)
+    {
+        m_priority = jobOption.m_priority;
+        m_workDirectory = ogl::dumpString(jobOption.m_workDirectory);
+        m_env = ogl::dumpStringArray(jobOption.m_env);
+        m_args = ogl::dumpStringArray(jobOption.m_args);
+        m_cmd = ogl::dumpString(jobOption.m_cmd);
+        m_name = ogl::dumpString(jobOption.m_name);
+        m_id = jobOption.m_id;
+    }
+
+    JobOption::JobOption(const JobOption& jobOption)
+    {
+        this->dump(jobOption);
+    }
+
+    JobOption& JobOption::operator=(const JobOption& jobOption)
+    {
+        this->release();
+        this->dump(jobOption);
+        return *this;
+    }
+
+
+    void JobOption::priority(int p)
+    {
+        m_priority = p;
+    }
+
+    int JobOption::priority()
+    {
+        return m_priority;
+    }
+
+    void JobOption::name(const char* n)
+    {
+        ogl::releaseString(m_name);
+        m_name = ogl::dumpString(n);
+    }
+
+    char* JobOption::name(void)
+    {
+        return m_name;
+    }
+
+    void JobOption::command(const char* c)
+    {
+        ogl::releaseString(m_cmd);
+        m_cmd = ogl::dumpString(c);
+    }
+    char* JobOption::command(void)
+    {
+        return m_cmd;
+    }
+
+    void JobOption::arguments(char** a)
+    {
+        ogl::releaseStringArray(m_args);
+        m_args = ogl::dumpStringArray(a);
+    }
+
+    char** JobOption::arguments(void)
+    {
+        return m_args;
+    }
+
+    void JobOption::environments(char** e)
+    {
+        ogl::releaseStringArray(m_env);
+        m_env = ogl::dumpStringArray(e);
+    }
+
+    char** JobOption::environments(void)
+    {
+        return m_env;
+    }
+
+    void JobOption::work_directory(const char* wd)
+    {
+        ogl::releaseString(m_workDirectory);
+        m_workDirectory = ogl::dumpString(wd);
+    }
+
+    char* JobOption::work_directory()
+    {
+        return m_workDirectory;
     }
 
     TaskOption::~TaskOption()
@@ -56,6 +149,7 @@ namespace ogl
     TaskOption::TaskOption()
     {
     }
+
 
     size_t Header::size()
     {

@@ -7,7 +7,11 @@ namespace ogl
 {
     char* dumpString(const char* s)
     {
-        return ::strdup(s);
+        if (s)
+        {
+            return ::strdup(s);
+        }
+        return 0;
     }
 
     void releaseString(char*& s)

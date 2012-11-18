@@ -47,6 +47,31 @@ TEST(JobOption, serialize)
     msg->release();
 }
 
+
+TEST(JobOption, copyConstructor)
+{
+    ogl::JobOption job;
+    job.name("dma");
+    job.command("/bind/date");
+
+    ogl::JobOption job1(job);
+
+    ASSERT_EQ(std::string(job.name()), job1.name());
+    ASSERT_EQ(std::string(job.command()), job1.command());
+
+    ogl::JobOption job2;
+    job2.name("dma");
+    job2.command("/bin/ls");
+    job2.name("dma1982ZZ");
+
+    job1 = job2;
+
+
+    ASSERT_EQ(std::string(job1.name()), job2.name());
+    ASSERT_EQ(std::string(job1.command()), job2.command());
+
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

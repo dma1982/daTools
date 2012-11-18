@@ -8,4 +8,4 @@ clean:
 
 astyle:
 	astyle `find . -name *.cpp -o -name *.h`
-	rm `find . -name *.orig | xargs`
+	rm -f `find . -name *.orig | xargs`

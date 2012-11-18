@@ -23,61 +23,26 @@ namespace ogl
         public:
 
             JobOption();
+            JobOption(const JobOption& jobOption);
             ~JobOption();
 
-            void priority(int p)
-            {
-                m_priority = p;
-            }
-            int priority()
-            {
-                return m_priority;
-            }
+            JobOption& operator=(const JobOption& jobOption);
 
-            void name(const char* n)
-            {
-                m_name = ogl::dumpString(n);
-            }
-            char* name(void)
-            {
-                return m_name;
-            }
-
-            void command(const char* c)
-            {
-                m_cmd = ogl::dumpString(c);
-            }
-            char* command(void)
-            {
-                return m_cmd;
-            }
-
-            void arguments(char** a)
-            {
-                m_args = ogl::dumpStringArray(a);
-            }
-            char** arguments(void)
-            {
-                return m_args;
-            }
-
-            void environments(char** e)
-            {
-                m_env = ogl::dumpStringArray(e);
-            }
-            char** environments(void)
-            {
-                return m_env;
-            }
-
-            void work_directory(const char* wd)
-            {
-                m_workDirectory = ogl::dumpString(wd);
-            }
-            char* work_directory()
-            {
-                return m_workDirectory;
-            }
+            /*
+             * attributes
+             */
+            void priority(int p);
+            int priority();
+            void name(const char* n);
+            char* name(void);
+            void command(const char* c);
+            char* command(void);
+            void arguments(char** a);
+            char** arguments(void);
+            void environments(char** e);
+            char** environments(void);
+            void work_directory(const char* wd);
+            char* work_directory();
 
             /*
              * This function is used to release arguments & envrionment
@@ -86,6 +51,9 @@ namespace ogl
             virtual void deserialize(ACE_Message_Block* msg);
 
         private:
+
+            void release();
+            void dump(const JobOption& jobOption);
 
             // The priority of the job
             int m_priority;
