@@ -2,13 +2,26 @@
 #define __OGL_UTILS_H__
 
 #include <stdlib.h>
+#include <map>
 
 namespace ogl
 {
     template<class T>
     inline void releaseObject(T* o)
     {
-        if (o) delete o;
+        if (o)
+        {
+            delete o;
+        }
+    }
+
+    template<typename T, typename P>
+    inline void releasePairSecond(std::pair<T, P>& p)
+    {
+        if (p.second)
+        {
+            delete (p.second);
+        }
     }
 
 

@@ -3,7 +3,7 @@
 
 namespace ogl
 {
-    JobProxy::JobProxy(ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
+    JobProxy::JobProxy(JobId id, ACE_SOCK_Stream* jmServer) : m_id(id), m_jmServer(jmServer)
     {
     }
 

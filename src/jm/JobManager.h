@@ -38,6 +38,7 @@ namespace ogl
             bool m_shutdown;
             std::map<JobId, Job*> m_jobs;
             JobId m_nextJobId;
+            ACE_Thread_Mutex m_jobMapMutex;
     };
 
     typedef ACE_Singleton<JobManager, ACE_Null_Mutex> JOBMANAGER;

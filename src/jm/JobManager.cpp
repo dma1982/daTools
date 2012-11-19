@@ -5,7 +5,7 @@
 
 namespace ogl
 {
-    JobManager::JobManager() : m_shutdown(false)
+    JobManager::JobManager() : m_shutdown(false), m_nextJobId(1)
     {
     }
 
@@ -15,14 +15,21 @@ namespace ogl
          * Uncommnet the code to see who cleanup this object.
          */
         //ogl::logger->Backtrace();
+
+        // release jobs
+        for_each(m_jobs.begin(), m_jobs.end(), releasePairSecond<const JobId, Job*>);
     }
 
     int JobManager::addJob(const JobOption& option)
     {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
 
-        Job* job = new Job(m_nextJobId++, new JobOption(option));
+        JobOption* jobOption;
+        Job* job;
+        ACE_NEW_RETURN(jobOption, JobOption(option), -1);
+        ACE_NEW_RETURN(job, Job(m_nextJobId++, jobOption), -1);
         m_jobs[job->getJobId()] = job;
-        return -1;
+        return job->getJobId();
     }
 
     void JobManager::shutdown()

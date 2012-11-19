@@ -1,4 +1,5 @@
 #include "CreateJobCommand.h"
+#include "JobManager.h"
 
 namespace ogl
 {
@@ -19,6 +20,8 @@ namespace ogl
         OGL_LOG_DEBUG("TODO: create a job for name: <%s>, command: <%s>",
                       m_jobOption->name(), m_jobOption->command());
 
-        Command::response(-1, 0);
+        int hr = JOBMANAGER::instance()->addJob(*m_jobOption);
+
+        Command::response(hr, 0);
     }
 };

@@ -67,7 +67,6 @@ namespace ogl
 
     JobProxy* Connection::addJob(JobOption* jobOption)
     {
-
         ogl::CommandHeader cmdHeader(ogl::CreateJobCommand);
         if (ogl::send(*m_jmServer, cmdHeader, jobOption) < 0)
         {
@@ -87,7 +86,7 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.code());
         }
 
-        JobProxy* res = new JobProxy(m_jmServer);
+        JobProxy* res = new JobProxy(respHeader.code(), m_jmServer);
 
         return res;
     }
