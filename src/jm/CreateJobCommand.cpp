@@ -24,7 +24,8 @@ namespace ogl
 
         if (hr > 0)
         {
-            Command::response(SendNextTask, 0);
+            m_jobOption->id(hr);
+            Command::response(SendNextTask, m_jobOption);
         }
         else
         {

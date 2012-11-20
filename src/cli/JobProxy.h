@@ -11,12 +11,13 @@ namespace ogl
     class JobProxy
     {
         public:
-            JobProxy (JobId, ACE_SOCK_Stream*);
+            JobProxy (ACE_Message_Block* msg, ACE_SOCK_Stream*);
             TaskProxy* addTask(TaskOption* taskOption);
-            JobId id();
+
+            JobOption& option();
 
         private:
-            JobId m_id;
+            JobOption m_jobOption;
             ACE_SOCK_Stream* m_jmServer;
     };
 }

@@ -3,8 +3,15 @@
 
 namespace ogl
 {
-    JobProxy::JobProxy(JobId id, ACE_SOCK_Stream* jmServer) : m_id(id), m_jmServer(jmServer)
+
+    JobOption& JobProxy::option()
     {
+        return m_jobOption;
+    }
+
+    JobProxy::JobProxy(ACE_Message_Block* msg, ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
+    {
+        m_jobOption.deserialize(msg);
     }
 
     TaskProxy* JobProxy::addTask(TaskOption* taskOption)

@@ -86,6 +86,6 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.commandType());
         }
 
-        return new JobProxy(respHeader.commandType(), m_jmServer);
+        return new JobProxy(&msg, m_jmServer);
     }
 };

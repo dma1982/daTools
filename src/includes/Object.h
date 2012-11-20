@@ -44,6 +44,9 @@ namespace ogl
             void work_directory(const char* wd);
             char* work_directory();
 
+            void id(ogl::JobId id);
+            ogl::JobId id();
+
             /*
              * This function is used to release arguments & envrionment
              */

@@ -65,6 +65,16 @@ namespace ogl
         m_id = jobOption.m_id;
     }
 
+    void JobOption::id(ogl::JobId id)
+    {
+        m_id = id;
+    }
+
+    ogl::JobId JobOption::id()
+    {
+        return m_id;
+    }
+
     JobOption::JobOption(const JobOption& jobOption)
     {
         this->dump(jobOption);
