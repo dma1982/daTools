@@ -74,20 +74,18 @@ namespace ogl
         }
 
         ACE_Message_Block msg;
-        ogl::ResponseHeader respHeader;
+        ogl::CommandHeader respHeader;
 
         if (ogl::recv(*m_jmServer, respHeader, msg) < 0)
         {
             OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
         }
 
-        if (respHeader.fail())
+        if (respHeader.commandType() == ogl::CommandFailed)
         {
-            OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.code());
+            OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.commandType());
         }
 
-        JobProxy* res = new JobProxy(respHeader.code(), m_jmServer);
-
-        return res;
+        return new JobProxy(respHeader.commandType(), m_jmServer);
     }
 };

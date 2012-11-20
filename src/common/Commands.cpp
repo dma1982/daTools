@@ -30,28 +30,9 @@ namespace ogl
         DESERIALIZE_ULONG(is, Header::m_dataSize);
     }
 
-    ACE_Message_Block* ResponseHeader::serialize()
+    int Command::response(CommandType code, Serializable* resp)
     {
-        ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
-
-        SERIALIZE_ULONG(os, m_code);
-        SERIALIZE_ULONG(os, Header::m_dataSize);
-
-        return os.begin() -> duplicate();
-    }
-
-    void ResponseHeader::deserialize(ACE_Message_Block* msg)
-    {
-        ACE_InputCDR is(msg);
-
-        DESERIALIZE_ULONG(is, m_code);
-        DESERIALIZE_ULONG(is, Header::m_dataSize);
-    }
-
-
-    int Command::response(int code, Serializable* resp)
-    {
-        ResponseHeader header(code);
+        CommandHeader header(code);
 
         return ogl::send(peer(), header, resp);
     }

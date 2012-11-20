@@ -13,7 +13,9 @@ namespace ogl
     enum CommandType
     {
         Unknown,
+        CommandFailed,
         CreateJobCommand,
+        SendNextTask,
     };
 
     class CommandHeader : public Header
@@ -27,7 +29,7 @@ namespace ogl
             CommandType commandType()
             {
                 return (CommandType) m_type;
-            } ;
+            };
 
             static size_t size()
             {
@@ -53,7 +55,7 @@ namespace ogl
         public:
             virtual void execute(void) = 0;
 
-            virtual int response(int code, Serializable* resp = 0);
+            virtual int response(CommandType code, Serializable* resp = 0);
 
             void peer(ACE_SOCK_Stream* peer)
             {
@@ -67,44 +69,6 @@ namespace ogl
 
         protected:
             ACE_SOCK_Stream* m_peer;
-    };
-
-    class ResponseHeader : public Header
-    {
-        public:
-
-            ResponseHeader() {};
-            ResponseHeader(int code) : m_code(code) {};
-
-            static size_t size()
-            {
-                return sizeof(ACE_CDR::ULong) + Header::size();
-            };
-
-            virtual size_t headerSize()
-            {
-                return ResponseHeader::size();
-            };
-
-            bool fail()
-            {
-                return m_code != OGL_SUCCESS;
-            };
-            bool good()
-            {
-                return m_code == OGL_SUCCESS;
-            } ;
-
-            int code()
-            {
-                return m_code;
-            }
-
-            virtual ACE_Message_Block* serialize();
-            virtual void deserialize(ACE_Message_Block* );
-
-        private:
-            ACE_CDR::ULong m_code;
     };
 
     class Executor

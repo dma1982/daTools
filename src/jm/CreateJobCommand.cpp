@@ -22,6 +22,14 @@ namespace ogl
 
         int hr = JOBMANAGER::instance()->addJob(*m_jobOption);
 
-        Command::response(hr, 0);
+        if (hr > 0)
+        {
+            Command::response(SendNextTask, 0);
+        }
+        else
+        {
+            Command::response(CommandFailed, 0);
+        }
+
     }
 };
