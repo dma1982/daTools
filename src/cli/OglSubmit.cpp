@@ -21,17 +21,30 @@ void print_help()
         "\n"
         "    -j        Job name\n"
         "    -c        Job command\n"
+        "    -n        The number of tasks\n"
         "\n"
         "Home & Bugs: <https://github.com/dma1982/ogl>\n"
         "\n";
     cout << help ;
 }
 
+void printTaskInfo(TaskProxy* task)
+{
+    char buf[BUFSIZ] = {0};
+
+    size_t size = BUFSIZ;
+
+    task->output(buf, size);
+
+    cout << buf << endl;
+}
+
 int main(int argc, char** argv)
 {
 
-    ACE_Get_Opt getOpt(argc, argv, "hj:c:");
+    ACE_Get_Opt getOpt(argc, argv, "hj:c:n:");
     int arg;
+    int taskCount = 0;
 
     JobOption jobOption;
     while ((arg = getOpt()) != EOF)
@@ -43,6 +56,10 @@ int main(int argc, char** argv)
             break;
         case 'c':
             jobOption.command(getOpt.optarg);
+            break;
+
+        case 'n':
+            taskCount = atoi(getOpt.optarg);
             break;
 
         case 'h':
@@ -69,17 +86,18 @@ int main(int argc, char** argv)
 
         printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().id()));
 
-        TaskOption taskOption;
+        list<TaskProxy*> taskList;
 
-        TaskProxy* task = job->addTask(&taskOption);
+        for ( int i = 0; i < taskCount; i++)
+        {
+            TaskOption taskOption;
 
-        char buf[BUFSIZ] = {0};
+            TaskProxy* task = job->addTask(&taskOption);
 
-        size_t size = BUFSIZ;
+            taskList.push_back(task);
+        }
 
-        task->output(buf, size);
-
-        cout << buf << endl;
+        for_each(taskList.begin(), taskList.end(), printTaskInfo);
     }
     catch (Exception& e)
     {
