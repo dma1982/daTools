@@ -2,20 +2,24 @@
 #define __OGL_EXCEPTION_H__
 
 #include "ogl.h"
+#include "Object.h"
 #include <string>
 
 namespace ogl
 {
-    class Exception
+    class Exception : public Serializable
     {
         public:
-            Exception(const std::string& );
+            Exception(const char* msg );
             virtual ~Exception();
-            virtual const std::string& what();
+            virtual const char* what();
             void printStackTrace();
 
+            virtual ACE_Message_Block* serialize();
+            virtual void deserialize(ACE_Message_Block* msg);
+
         private:
-            std::string m_message;
+            char* m_message;
             char** m_callStack;
     };
 }
