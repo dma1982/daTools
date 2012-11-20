@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
         JobProxy* job = connection.addJob(&jobOption);
 
-        printf("INFO: Create job successfully, job id is <%d>.\n", job->option().id());
+        printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().id()));
 
         TaskOption taskOption;
 
