@@ -14,8 +14,9 @@ namespace ogl
         public:
 
             Task(const TaskId& taskId, TaskOption* option)
-                    : m_taskId(taskId), m_taskOption(option)
+                    : m_taskOption(option)
             {
+                m_taskOption->taskId(taskId);
             };
 
             ~Task()
@@ -24,13 +25,12 @@ namespace ogl
                     delete m_taskOption;
             }
 
-            TaskId getTaskId() const
+            TaskId taskId() const
             {
-                return m_taskId;
+                return m_taskOption->taskId();
             };
 
         private:
-            TaskId m_taskId;
             TaskOption* m_taskOption;
     };
 }

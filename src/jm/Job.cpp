@@ -19,11 +19,17 @@ namespace ogl
         }
     }
 
-    void Job::addTask(ogl::TaskOption* taskOption)
+    void Job::addTask(ogl::TaskOption& option)
     {
         ogl::TaskId taskId = m_nextTaskId++;
+        TaskOption* taskOption;
+        Task* task;
+        ACE_NEW_NORETURN(taskOption, TaskOption(option));
+        ACE_NEW_NORETURN(task, Task(taskId, taskOption));
 
-        m_tasks[taskId] = new ogl::Task(taskId, taskOption);
+        option.taskId(taskId);
+
+        m_tasks[taskId] = task;
     }
 
 }

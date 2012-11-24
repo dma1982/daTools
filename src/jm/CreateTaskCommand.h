@@ -9,6 +9,10 @@ namespace ogl
     class CreateTask : public Command
     {
         public:
+            CreateTask();
+            CreateTask(TaskOption* taskOption);
+            ~CreateTask();
+
             virtual void execute();
         private:
             TaskOption* m_taskOption;

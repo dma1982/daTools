@@ -2,9 +2,14 @@
 
 namespace ogl
 {
-    TaskProxy::TaskProxy()
+    TaskProxy::TaskProxy() : m_jmServer(0)
     {
     }
+
+	TaskProxy::TaskProxy(ACE_Message_Block* msg, ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
+	{
+		m_taskOption.deserialize(msg);
+	}
 
     TaskProxy::~TaskProxy()
     {
@@ -20,8 +25,8 @@ namespace ogl
         return 0;
     }
 
-    TaskId TaskProxy::id()
+    TaskId TaskProxy::taskId()
     {
-        return 0;
+        return m_taskOption.taskId();
     }
 }

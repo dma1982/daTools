@@ -3,6 +3,8 @@
 #include "JobManagerServer.h"
 #include "RunnerManagerServer.h"
 
+#include <iostream>
+
 typedef ACE_Acceptor <ogl::JobManagerServerHandler, ACE_SOCK_ACCEPTOR> Logging_Acceptor;
 
 int main(int argc, char** argv)
@@ -10,6 +12,8 @@ int main(int argc, char** argv)
     ACE::init();
 
     // start job manager
+    try
+    {
     ogl::JOBMANAGER::instance()->open();
 
     ogl::JOBMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
@@ -24,6 +28,11 @@ int main(int argc, char** argv)
     }
 
     OGL_LOG_INFO("Job Manager Server stop.");
+    }
+    catch(ogl::Exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 
     ACE::fini();
 

@@ -94,6 +94,8 @@ int main(int argc, char** argv)
 
             TaskProxy* task = job->addTask(&taskOption);
 
+            printf("        Create task <%d>.\n", (int)(task->taskId()));
+
             taskList.push_back(task);
         }
 
