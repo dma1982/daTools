@@ -5,6 +5,34 @@ using namespace std;
 
 namespace ogl
 {
+
+    int dumpArray(void*& dest, void* src, size_t size)
+    {
+        if (src  == 0 || size == 0)
+        {
+            dest = 0;
+            return 0;
+        }
+
+        dest = ::malloc(size);
+
+        if (dest == 0)
+        {
+            return 0;
+        }
+
+        ::memcpy(dest, src, size);
+
+        return size;
+    }
+
+    void releaseArray(void*& dest, size_t& size)
+    {
+        ::free(dest);
+        dest = 0;
+        size = 0;
+    }
+
     char* dumpString(const char* s)
     {
         if (s)

@@ -154,12 +154,105 @@ namespace ogl
 
     TaskOption::~TaskOption()
     {
+        ogl::releaseString(m_jobName);
     }
 
-    TaskOption::TaskOption()
+    TaskOption::TaskOption() : m_jobName(0)
     {
     }
 
+    TaskOption::TaskOption(const TaskOption& taskOption)
+    {
+        m_jobId = taskOption.m_jobId;
+        m_id = taskOption.m_id;
+        m_jobName = ogl::dumpString(taskOption.m_jobName);
+        m_taskInput = taskOption.m_taskInput;
+        m_taskOutput = taskOption.m_taskOutput;
+    }
+
+    TaskOption& TaskOption::operator=(const TaskOption& taskOption)
+    {
+        m_jobId = taskOption.m_jobId;
+        m_id = taskOption.m_id;
+        m_jobName = ogl::dumpString(taskOption.m_jobName);
+        m_taskInput = taskOption.m_taskInput;
+        m_taskOutput = taskOption.m_taskOutput;
+
+        return *this;
+    }
+
+    ACE_Message_Block* TaskOption::serialize()
+    {
+        ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+
+        SERIALIZE_ULONG(os, m_jobId);
+        SERIALIZE_ULONG(os, m_id);
+        SERIALIZE_CSTRING(os, m_jobName);
+        SERIALIZE_BUFFER(os, &m_taskInput);
+        SERIALIZE_BUFFER(os, &m_taskOutput);
+
+        return os.begin()->duplicate();
+    }
+
+    void TaskOption::deserialize(ACE_Message_Block* msg)
+    {
+        ACE_InputCDR is(msg);
+        DESERIALIZE_ULONG(is, m_jobId);
+        DESERIALIZE_ULONG(is, m_id);
+        DESERIALIZE_CSTRING(is, m_jobName);
+        DESERIALIZE_BUFFER(is, (&m_taskInput));
+        DESERIALIZE_BUFFER(is, (&m_taskOutput));
+    }
+
+    JobId TaskOption::jobId()
+    {
+        return m_jobId;
+    }
+
+    void TaskOption::jobId(JobId id)
+    {
+        m_jobId = id;
+    }
+
+    TaskId TaskOption::taskId()
+    {
+        return m_id;
+    }
+
+    void TaskOption::taskId(TaskId id)
+    {
+        m_id = id;
+    }
+
+    char* TaskOption::jobName()
+    {
+        return m_jobName;
+    }
+
+    void TaskOption::jobName(const char* jobName)
+    {
+        m_jobName = ogl::dumpString(jobName);
+    }
+
+    void TaskOption::taskInput(const Buffer& taskInput)
+    {
+        m_taskInput = taskInput;
+    }
+
+    const Buffer& TaskOption::taskInput()
+    {
+        return m_taskInput;
+    }
+
+    void TaskOption::taskOutput(const Buffer& taskOutput)
+    {
+        m_taskOutput = taskOutput;
+    }
+
+    const Buffer& TaskOption::taskOutput()
+    {
+        return m_taskOutput;
+    }
 
     size_t Header::size()
     {

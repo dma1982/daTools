@@ -6,6 +6,7 @@ LIBOBJS=JobManager.o \
      Job.o \
      JobManagerServer.o \
      CreateJobCommand.o \
+	CreateTaskCommand.o \
      CommandBuilder.o \
      RunnerManagerServer.o
 

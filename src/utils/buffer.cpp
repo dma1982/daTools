@@ -34,7 +34,7 @@ void ogl::Data::size(size_t s)
 }
 
 
-ogl::Data::Data(char* msg, size_t len)
+ogl::Data::Data(const char* msg, size_t len)
 {
     m_logger->Assert(msg != 0, ERR_NULL_BUFFER);
     m_size = len;
@@ -79,7 +79,7 @@ void ogl::Buffer::_dec_ref_cnt()
     }
 };
 
-ogl::Buffer::Buffer(char* msg, int len)
+ogl::Buffer::Buffer(const char* msg, int len)
 {
     m_data = new Data(msg, len);
     m_next = 0;
@@ -130,7 +130,7 @@ void ogl::Buffer::append(Buffer* next)
     m_next = next;
 };
 
-void ogl::Buffer::append(char* msg, size_t len)
+void ogl::Buffer::append(const char* msg, size_t len)
 {
     m_logger->Assert(msg != 0, ERR_NULL_BUFFER);
     size_t idle = m_data->idle();

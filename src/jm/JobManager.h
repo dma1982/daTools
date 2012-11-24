@@ -30,8 +30,8 @@ namespace ogl
             int sendCommand(ogl::Command* cmd);
 
             int addJob(const JobOption& option);
-			
-			Job* getJob(JobId id);
+
+            Job* getJob(JobId id);
 
             void shutdown(void);
 

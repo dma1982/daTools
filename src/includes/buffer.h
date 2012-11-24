@@ -50,7 +50,7 @@ namespace ogl
                 return m_capacity - m_size;
             }
 
-            Data(char* msg, size_t len);
+            Data(const char* msg, size_t len);
 
             Data(int size = BUFSIZ);
 
@@ -75,7 +75,7 @@ namespace ogl
 
         public:
 
-            Buffer(char* msg, int len);
+            Buffer( const char* msg, int len);
 
             Buffer(int size = BUFSIZ);
 
@@ -90,7 +90,7 @@ namespace ogl
 
             void append(Buffer* next);
 
-            void append(char* msg, size_t len);
+            void append(const char* msg, size_t len);
 
             char* data() const
             {

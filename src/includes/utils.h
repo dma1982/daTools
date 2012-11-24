@@ -24,6 +24,9 @@ namespace ogl
         }
     }
 
+    int dumpArray(void*& dest, void* src, size_t size);
+
+    void releaseArray(void*& dest, size_t& size);
 
     char* dumpString(const char* s);
 

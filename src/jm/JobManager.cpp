@@ -32,17 +32,17 @@ namespace ogl
         return job->getJobId();
     }
 
-	Job* JobManager::getJob(JobId id)
-	{
-		ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
-		if (m_jobs.find(id) == m_jobs.end())
-		{
-			OGL_LOG_ERROR("Failed to get job by id <%d>.",(int) id);
-			return 0;
-		}
+    Job* JobManager::getJob(JobId id)
+    {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
+        if (m_jobs.find(id) == m_jobs.end())
+        {
+            OGL_LOG_ERROR("Failed to get job by id <%d>.", (int) id);
+            return 0;
+        }
 
-		return m_jobs[id];
-	}
+        return m_jobs[id];
+    }
 
     void JobManager::shutdown()
     {
