@@ -1,11 +1,12 @@
-#ifndef __OGL_JOB_MANAGER_H__
-#define __OGL_JOB_MANAGER_H__
+#ifndef __OGL_JOB_RUNNER_MANAGER_H__
+#define __OGL_JOB_RUNNER_MANAGER_H__
 
 #include <ace/Singleton.h>
 #include <ace/Task.h>
 
 #include <map>
 
+#include "JobRunnerObject.h"
 #include "Commands.h"
 #include "Job.h"
 #include "ogl.h"
@@ -13,13 +14,13 @@
 namespace ogl
 {
     /**
-     * Job manager
+     * Job Runner manager
      */
-    class JobManager : public ACE_Task<ACE_MT_SYNCH>
+    class JobRunnerManager : public ACE_Task<ACE_MT_SYNCH>
     {
         public:
-            JobManager();
-            ~JobManager();
+            JobRunnerManager();
+            ~JobRunnerManager();
 
             virtual int open();
 
@@ -29,18 +30,17 @@ namespace ogl
 
             int sendCommand(ogl::Command* cmd);
 
-            int addJob(const JobOption& option);
-
             void shutdown(void);
 
         private:
             Command* nextCommand();
             bool m_shutdown;
-            std::map<JobId, Job*> m_jobs;
-            JobId m_nextJobId;
+
+			// key: UUID for JR_ID, value: jro pointer
+            std::map<std::string, JobRunnerObject*> m_jobRunners;
     };
 
-    typedef ACE_Singleton<JobManager, ACE_Null_Mutex> JOBMANAGER;
+    typedef ACE_Singleton<JobRunnerManager, ACE_Null_Mutex> RUNNERMANAGER;
 };
 
 

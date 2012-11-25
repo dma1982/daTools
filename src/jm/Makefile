@@ -3,12 +3,13 @@ CFLAGS=${OGL_CFLAGS}
 CC=g++
 
 LIBOBJS=JobManager.o \
-     Job.o \
-     JobManagerServer.o \
-     CreateJobCommand.o \
-	CreateTaskCommand.o \
-     CommandBuilder.o \
-     RunnerManagerServer.o
+    Job.o \
+    JobManagerServer.o \
+    CreateJobCommand.o \
+    CreateTaskCommand.o \
+    CommandBuilder.o \
+    RunnerManager.o \
+    RunnerManagerServer.o
 
 OBJS=JobManagerDaemon.o ${LIBOBJS}
 
