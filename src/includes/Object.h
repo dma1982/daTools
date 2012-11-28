@@ -141,10 +141,34 @@ namespace ogl
             ACE_CDR::ULong m_dataSize;
     };
 
+	class JobRunnerOption : public Serializable
+	{
+	public:
+		JobRunnerOption();
+		
+		JobRunnerOption(const JobRunnerOption& );
+		
+		JobRunnerOption& operator=(const JobRunnerOption&);
+		
+		~JobRunnerOption();
+		
+		ogl::UUID id();
+		void id(ogl::UUID _id);
+
+		long pid();
+		void pid(long _pid);
+
+		virtual ACE_Message_Block* serialize();
+		virtual void deserialize(ACE_Message_Block* msg);
+
+	private:
+		ogl::UUID m_id;
+		long m_pid;
+	};
+
     int send(ACE_SOCK_Stream& handle, Header& head, Serializable* data = 0);
 
     int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data);
-
 
 }
 
