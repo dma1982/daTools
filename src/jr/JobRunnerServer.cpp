@@ -5,6 +5,20 @@
 namespace ogl
 {
 
+    int JobRunnerClientHandler::open(void* args)
+    {
+        int hr = ClientHandler::open(args);
+        if (hr < 0)
+        {
+            return hr;
+        }
+
+        // TODO: send CreateJobRunner command back to JobManager
+        CommandHeader header(CreateJobRunnerCommand);
+        return ogl::send(this->peer(), header,
+                         JOBRUNNERMGR::instance()->getJobRunnerOption());
+    }
+
     void JobRunnerClientHandler::execute(Command* cmd)
     {
         JOBRUNNERMGR::instance()->sendCommand(cmd);

@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 {
 
     ACE::init();
+
     try
     {
         ogl::JOBRUNNERMGR::instance()->open();

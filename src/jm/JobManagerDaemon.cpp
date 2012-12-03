@@ -13,29 +13,29 @@ int main(int argc, char** argv)
     // start job manager
     try
     {
-		ogl::JOBMANAGER::instance()->open();
+        ogl::JOBMANAGER::instance()->open();
 
-		ogl::RUNNERMANAGER::instance()->open();
-		
-		ogl::JOBMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
-		
-		ogl::JRMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
-		
-		OGL_LOG_INFO("Job Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterCliPort());
-		
-		if (ACE_Thread_Manager::instance()->wait() < 0)
-		{
-			OGL_LOG_ERROR("Failed to wait all thread.");
-		}
-		
-		OGL_LOG_INFO("Job Manager Server stop.");
+        ogl::RUNNERMANAGER::instance()->open();
+
+        ogl::JOBMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
+
+        ogl::JRMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
+
+        OGL_LOG_INFO("Job Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterCliPort());
+
+        if (ACE_Thread_Manager::instance()->wait() < 0)
+        {
+            OGL_LOG_ERROR("Failed to wait all thread.");
+        }
+
+        OGL_LOG_INFO("Job Manager Server stop.");
     }
-    catch(ogl::Exception& e)
+    catch (ogl::Exception& e)
     {
         std::cout << e.what() << std::endl;
     }
-	
+
     ACE::fini();
-	
+
     return 0;
 }

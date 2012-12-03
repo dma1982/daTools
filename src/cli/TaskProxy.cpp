@@ -6,10 +6,10 @@ namespace ogl
     {
     }
 
-	TaskProxy::TaskProxy(ACE_Message_Block* msg, ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
-	{
-		m_taskOption.deserialize(msg);
-	}
+    TaskProxy::TaskProxy(ACE_Message_Block* msg, ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
+    {
+        m_taskOption.deserialize(msg);
+    }
 
     TaskProxy::~TaskProxy()
     {

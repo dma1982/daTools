@@ -17,6 +17,7 @@ namespace ogl
         CreateJobCommand,
         SendNextTask,
         CreateTaskCommand,
+        CreateJobRunnerCommand,
     };
 
     class CommandHeader : public Header

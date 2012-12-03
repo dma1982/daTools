@@ -66,7 +66,7 @@ namespace ogl
     }
 
     /*
-     Clean ourselves up when handle_input() (or handle_timer()) returns -1
+     * Clean ourselves up when handle_input() (or handle_timer()) returns -1
      */
     int ClientHandler::handle_close(ACE_HANDLE, ACE_Reactor_Mask _mask)
     {

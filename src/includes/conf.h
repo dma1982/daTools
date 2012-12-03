@@ -12,6 +12,9 @@
 #define OGL_MASTER_HOST "ogl.master"
 #define OGL_MASTER_JR_PORT "ogl.port.jr"
 #define OGL_MASTER_CLI_PORT "ogl.port.cli"
+
+#define OGL_JR_ID "jr.id"
+
 #define OGL_LOG_FILE "log.file"
 #define OGL_LOG_LEVEL "log.level"
 #define OGL_MEM_POOL "mem.pool"
@@ -20,7 +23,6 @@
 
 namespace ogl
 {
-
     class Configuration
     {
         private:
@@ -42,6 +44,8 @@ namespace ogl
 
             std::string m_masterHost;
 
+            std::string m_runnerId;
+
         public:
 
             static Configuration* instance();
@@ -55,6 +59,8 @@ namespace ogl
             int getMasterCliPort();
 
             int getMasterJrPort();
+
+            const std::string& getRunnerId();
 
             const std::string& getMasterHost();
 

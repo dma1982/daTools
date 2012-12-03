@@ -20,6 +20,8 @@ namespace ogl
             JobRunnerManager();
             ~JobRunnerManager();
 
+            JobRunnerOption* getJobRunnerOption();
+
             virtual int open();
 
             virtual int svc();
@@ -31,7 +33,10 @@ namespace ogl
             void shutdown(void);
 
         private:
+
             Command* nextCommand();
+
+            JobRunnerOption* m_jobRunnerOption;
             bool m_shutdown;
     };
 

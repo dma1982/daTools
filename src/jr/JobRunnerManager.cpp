@@ -22,8 +22,15 @@ namespace ogl
         m_shutdown = true;
     }
 
+    JobRunnerOption* JobRunnerManager::getJobRunnerOption()
+    {
+        return m_jobRunnerOption;
+    }
+
     int JobRunnerManager::open()
     {
+        m_jobRunnerOption = new JobRunnerOption();
+
         this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
         return 0;
     }
@@ -74,6 +81,11 @@ namespace ogl
          * it will take the resposiblity to delete it.
          */
         // delete this
+        if (m_jobRunnerOption != 0)
+        {
+            delete m_jobRunnerOption;
+        }
+
         return 0;
     }
 

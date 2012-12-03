@@ -25,7 +25,7 @@ namespace ogl
     typedef unsigned long TaskId;
     typedef unsigned long JobId;
 
-	typedef char* UUID;
+    typedef char* UUID;
 
     enum LOG_LEVEL
     {

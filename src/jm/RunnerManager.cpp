@@ -19,7 +19,7 @@ namespace ogl
         // release jobs
         for_each(m_jobRunners.begin(), m_jobRunners.end(), releasePairSecond<const std::string, JobRunnerObject*>);
     }
-	/*
+    /*
     int JobRunnerManager::addJobRunner(const JobOption& option)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
@@ -43,7 +43,7 @@ namespace ogl
 
         return m_jobs[id];
     }
-	*/
+    */
     void JobRunnerManager::shutdown()
     {
         m_shutdown = true;

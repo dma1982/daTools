@@ -36,6 +36,7 @@ namespace ogl
         m_masterCliPort = 9080;
         m_masterJrPort = 9081;
         m_masterHost = "localhost";
+        m_runnerId = "test";
 
         this->read("ogl.conf");
     }
@@ -55,6 +56,8 @@ namespace ogl
         m_conf->lookupValue(OGL_MASTER_JR_PORT, m_masterJrPort);
         m_conf->lookupValue(OGL_MASTER_CLI_PORT, m_masterCliPort);
         m_conf->lookupValue(OGL_MASTER_HOST, m_masterHost);
+        m_conf->lookupValue(OGL_JR_ID, m_runnerId);
+
         int poolType = -1;
         if (m_conf->lookupValue(OGL_MEM_POOL, poolType))
         {
@@ -93,6 +96,11 @@ namespace ogl
     const string& Configuration::getMasterHost()
     {
         return m_masterHost;
+    }
+
+    const string& Configuration::getRunnerId()
+    {
+        return m_runnerId;
     }
 
     FILE* Configuration::getLogFile()

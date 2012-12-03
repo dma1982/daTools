@@ -5,10 +5,10 @@ namespace ogl
 {
     class JobRunnerObject
     {
-	public:
-		JobRunnerObject() {};
-		~JobRunnerObject(){};
-                
+        public:
+            JobRunnerObject() {};
+            ~JobRunnerObject() {};
+
     };
 }
 

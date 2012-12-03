@@ -17,9 +17,9 @@ namespace ogl
             int exitCode();
             TaskId taskId();
 
-	private:
-			TaskOption m_taskOption;
-			ACE_SOCK_Stream* m_jmServer;
+        private:
+            TaskOption m_taskOption;
+            ACE_SOCK_Stream* m_jmServer;
     };
 }
 

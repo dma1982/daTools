@@ -36,7 +36,7 @@ namespace ogl
             Command* nextCommand();
             bool m_shutdown;
 
-			// key: UUID for JR_ID, value: jro pointer
+            // key: UUID for JR_ID, value: jro pointer
             std::map<std::string, JobRunnerObject*> m_jobRunners;
     };
 

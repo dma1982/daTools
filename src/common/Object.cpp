@@ -260,67 +260,69 @@ namespace ogl
     }
 
 
-	JobRunnerOption::JobRunnerOption(): m_id(0), m_pid(ACE_INVALID_PID)
-	{
-	}
+    JobRunnerOption::JobRunnerOption()
+    {
+        m_id = ogl::dumpString(ogl::Configuration::instance()->getRunnerId().c_str());
+        m_pid = ACE_OS::getpid();
+    }
 
-	JobRunnerOption::JobRunnerOption(const JobRunnerOption& option)
-	{
-		m_id = ogl::dumpString(option.m_id);
-		m_pid = option.m_pid;
-	}
-
-	JobRunnerOption& JobRunnerOption::operator=(const JobRunnerOption& option)
-	{
-		ogl::releaseString(m_id);
+    JobRunnerOption::JobRunnerOption(const JobRunnerOption& option)
+    {
         m_id = ogl::dumpString(option.m_id);
         m_pid = option.m_pid;
-		return *this;
-	}
+    }
 
-	JobRunnerOption::~JobRunnerOption()
-	{
-		ogl::releaseString(m_id);
-		m_pid = ACE_INVALID_PID;
-	}
+    JobRunnerOption& JobRunnerOption::operator=(const JobRunnerOption& option)
+    {
+        ogl::releaseString(m_id);
+        m_id = ogl::dumpString(option.m_id);
+        m_pid = option.m_pid;
+        return *this;
+    }
 
-	ogl::UUID JobRunnerOption::id()
-	{
-		return m_id;
-	}
+    JobRunnerOption::~JobRunnerOption()
+    {
+        ogl::releaseString(m_id);
+        m_pid = ACE_INVALID_PID;
+    }
 
-	void JobRunnerOption::id(ogl::UUID _id)
-	{
-		ogl::releaseString(m_id);
-		m_id = ogl::dumpString(_id);
-	}
+    ogl::UUID JobRunnerOption::id()
+    {
+        return m_id;
+    }
 
-	long JobRunnerOption::pid()
-	{
-		return m_pid;
-	}
+    void JobRunnerOption::id(const ogl::UUID _id)
+    {
+        ogl::releaseString(m_id);
+        m_id = ogl::dumpString(_id);
+    }
 
-	void JobRunnerOption::pid(long _pid)
-	{
-		m_pid = _pid;
-	}
+    long JobRunnerOption::pid()
+    {
+        return m_pid;
+    }
 
-	ACE_Message_Block* JobRunnerOption::serialize()
-	{
+    void JobRunnerOption::pid(long _pid)
+    {
+        m_pid = _pid;
+    }
+
+    ACE_Message_Block* JobRunnerOption::serialize()
+    {
         ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
 
         SERIALIZE_ULONG(os, m_pid);
         SERIALIZE_CSTRING(os, m_id);
 
-		return os.begin()->duplicate();
-	}
+        return os.begin()->duplicate();
+    }
 
-	void JobRunnerOption::deserialize(ACE_Message_Block* msg)
-	{
-		ACE_InputCDR is(msg);
+    void JobRunnerOption::deserialize(ACE_Message_Block* msg)
+    {
+        ACE_InputCDR is(msg);
         DESERIALIZE_ULONG(is, m_pid);
         DESERIALIZE_CSTRING(is, m_id);
-	}
+    }
 
 
     int send(ACE_SOCK_Stream& handle, Header& head, Serializable* data)

@@ -9,6 +9,7 @@ namespace ogl
     class JobRunnerClientHandler : public ClientHandler
     {
         public:
+            virtual int open(void*);
             virtual void execute(Command* cmd);
             virtual Command* buildCommand(CommandHeader* header, ACE_Message_Block* msg);
     };
