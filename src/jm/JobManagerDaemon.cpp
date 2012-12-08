@@ -1,8 +1,7 @@
 #include "ogl.h"
 #include "JobManager.h"
-#include "JobManagerServer.h"
-#include "RunnerManager.h"
-#include "RunnerManagerServer.h"
+#include "ClientManager.h"
+#include "JobRunnerManager.h"
 
 #include <iostream>
 
@@ -13,22 +12,19 @@ int main(int argc, char** argv)
     // start job manager
     try
     {
-        ogl::JOBMANAGER::instance()->open();
+        ogl::CLIMGR::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
 
-        ogl::RUNNERMANAGER::instance()->open();
-
-        ogl::JOBMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
-
-        ogl::JRMGRSRV::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
+        ogl::JRMGR::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
 
         OGL_LOG_INFO("Job Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterCliPort());
+        OGL_LOG_INFO("JobRunner Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterJrPort());
 
         if (ACE_Thread_Manager::instance()->wait() < 0)
         {
             OGL_LOG_ERROR("Failed to wait all thread.");
         }
 
-        OGL_LOG_INFO("Job Manager Server stop.");
+        OGL_LOG_INFO("Job Manager Daemon stop.");
     }
     catch (ogl::Exception& e)
     {

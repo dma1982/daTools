@@ -29,13 +29,5 @@ namespace ogl
         DESERIALIZE_ULONG(is, m_type);
         DESERIALIZE_ULONG(is, Header::m_dataSize);
     }
-
-    int Command::response(CommandType code, Serializable* resp)
-    {
-        CommandHeader header(code);
-
-        return ogl::send(peer(), header, resp);
-    }
-
 };
 

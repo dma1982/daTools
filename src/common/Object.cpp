@@ -325,6 +325,29 @@ namespace ogl
     }
 
 
+    int send(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data)
+    {
+        ACE_Message_Block*  headMsg;
+
+        head.dataSize(data.length());
+
+        headMsg = head.serialize();
+
+        if (handle.send_n (headMsg->rd_ptr(), headMsg->length()) == -1)
+        {
+            headMsg->release();
+            return -1;
+        }
+        headMsg->release();
+
+        if (handle.send_n (data.rd_ptr(), data.length()) == -1)
+        {
+            return -1;
+        }
+
+        return head.dataSize();
+    }
+
     int send(ACE_SOCK_Stream& handle, Header& head, Serializable* data)
     {
         ACE_Message_Block*  dataMsg;
@@ -348,25 +371,11 @@ namespace ogl
 
         dataMsg = data->serialize();
 
-        head.dataSize(dataMsg->length());
+        int hr = ogl::send(handle, head, *dataMsg);
 
-        headMsg = head.serialize();
-
-        if (handle.send_n (headMsg->rd_ptr(), headMsg->length()) == -1)
-        {
-            headMsg->release();
-            return -1;
-        }
-        headMsg->release();
-
-        if (handle.send_n (dataMsg->rd_ptr(), dataMsg->length()) == -1)
-        {
-            dataMsg->release();
-            return -1;
-        }
         dataMsg->release();
 
-        return head.dataSize();
+        return hr;
     }
 
     int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data)

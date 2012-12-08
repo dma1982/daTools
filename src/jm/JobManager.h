@@ -15,29 +15,18 @@ namespace ogl
     /**
      * Job manager
      */
-    class JobManager : public ACE_Task<ACE_MT_SYNCH>
+    class JobManager
     {
         public:
             JobManager();
             ~JobManager();
 
-            virtual int open();
-
-            virtual int svc();
-
-            virtual int close(unsigned long);
-
-            int sendCommand(ogl::Command* cmd);
-
             int addJob(const JobOption& option);
 
             Job* getJob(JobId id);
 
-            void shutdown(void);
-
         private:
-            Command* nextCommand();
-            bool m_shutdown;
+
             std::map<JobId, Job*> m_jobs;
             JobId m_nextJobId;
             ACE_Thread_Mutex m_jobMapMutex;

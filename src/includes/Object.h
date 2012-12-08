@@ -168,6 +168,8 @@ namespace ogl
 
     int send(ACE_SOCK_Stream& handle, Header& head, Serializable* data = 0);
 
+    int send(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data);
+
     int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data);
 
 }

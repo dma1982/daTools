@@ -1,92 +1,26 @@
-#include <ace/Message_Block.h>
 #include "JobRunnerManager.h"
-#include "Commands.h"
-#include "ogl.h"
 
 namespace ogl
 {
-    JobRunnerManager::JobRunnerManager() : m_shutdown(false)
+    int JobRunnerManager::CreateJobRunnerManager()
     {
+        ACE_NEW_RETURN(m_jobRunnerOption, ogl::JobRunnerOption(), -1);
+        return HandlerObject::sendResponse(CreateJobRunnerCommand, m_jobRunnerOption);
     }
 
-    JobRunnerManager::~JobRunnerManager()
+    int JobRunnerManager::open(void* args)
     {
-        /*
-         * Uncommnet the code to see who cleanup this object.
-         */
-        //ogl::logger->Backtrace();
-    }
-
-    void JobRunnerManager::shutdown()
-    {
-        m_shutdown = true;
-    }
-
-    JobRunnerOption* JobRunnerManager::getJobRunnerOption()
-    {
-        return m_jobRunnerOption;
-    }
-
-    int JobRunnerManager::open()
-    {
-        m_jobRunnerOption = new JobRunnerOption();
-
-        this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
-        return 0;
-    }
-
-    int JobRunnerManager::sendCommand(Command* cmd)
-    {
-        ACE_Message_Block* msg = new ACE_Message_Block(reinterpret_cast<char*>(cmd), sizeof(Command*));
-        return putq(msg);
-    }
-
-    ogl::Command* JobRunnerManager::nextCommand()
-    {
-        ACE_Message_Block* msg;
-        Command* cmd = 0;
-
-        if (getq(msg) < 0)
+        int hr = HandlerObject::open(args);
+        if (hr < 0)
         {
-            return 0;
+            return hr;
         }
 
-        cmd = reinterpret_cast<Command*>(msg->rd_ptr());
-        msg->release();
-
-        return cmd;
+        return CreateJobRunnerManager();
     }
 
-    int JobRunnerManager::svc()
+    int JobRunnerManager::executeRequest(CommandType cmd, ACE_Message_Block& data)
     {
-
-        while (!m_shutdown)
-        {
-            try
-            {
-                nextCommand()->execute();
-            }
-            catch (...)
-            {
-            }
-        }
-
         return 0;
     }
-
-    int JobRunnerManager::close(unsigned long)
-    {
-        /*
-         * DO NOT delete this in close when it's managed by ACE_Object_Manager;
-         * it will take the resposiblity to delete it.
-         */
-        // delete this
-        if (m_jobRunnerOption != 0)
-        {
-            delete m_jobRunnerOption;
-        }
-
-        return 0;
-    }
-
 }

@@ -2,10 +2,9 @@ include ../../make.misc
 CFLAGS=${OGL_CFLAGS}
 CC=g++
 
-LIBOBJS=Server.o \
+LIBOBJS=Network.o \
         Commands.o \
         Object.o \
-        Client.o \
         Exception.o
 
 OBJS=${LIBOBJS}

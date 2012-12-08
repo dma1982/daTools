@@ -1,48 +1,26 @@
-#ifndef __OGL_JOB_MANAGER_H__
-#define __OGL_JOB_MANAGER_H__
+#ifndef __OGL_JOB_RUNNER_MANAGER_H__
+#define __OGL_JOB_RUNNER_MANAGER_H__
 
-#include <ace/Singleton.h>
-#include <ace/Task.h>
-
-#include <map>
-
+#include "Network.h"
 #include "Commands.h"
-#include "ogl.h"
 
 namespace ogl
 {
-    /**
-     * Job manager
-     */
-    class JobRunnerManager : public ACE_Task<ACE_MT_SYNCH>
+    class JobRunnerManager : public HandlerObject
     {
         public:
-            JobRunnerManager();
-            ~JobRunnerManager();
-
-            JobRunnerOption* getJobRunnerOption();
-
-            virtual int open();
-
-            virtual int svc();
-
-            virtual int close(unsigned long);
-
-            int sendCommand(ogl::Command* cmd);
-
-            void shutdown(void);
+            int open(void* );
+            int CreateJobRunnerManager();
+            virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
 
         private:
-
-            Command* nextCommand();
-
             JobRunnerOption* m_jobRunnerOption;
-            bool m_shutdown;
     };
 
-    typedef ACE_Singleton<JobRunnerManager, ACE_Null_Mutex> JOBRUNNERMGR;
-};
+    class JobManagerClient : public Client <JobRunnerManager>
+    {
+    };
 
-
+    typedef ACE_Singleton<JobManagerClient, ACE_Null_Mutex> JMCLI;
+}
 #endif
-

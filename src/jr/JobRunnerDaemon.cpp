@@ -1,5 +1,4 @@
 #include "ogl.h"
-#include "JobRunnerServer.h"
 #include "JobRunnerManager.h"
 
 #include <iostream>
@@ -13,9 +12,7 @@ int main(int argc, char** argv)
 
     try
     {
-        ogl::JOBRUNNERMGR::instance()->open();
-
-        ogl::JOBRUNNERSRV::instance()->start(ogl::Configuration::instance()->getMasterHost(),
+        ogl::JMCLI::instance()->start(ogl::Configuration::instance()->getMasterHost(),
                                              ogl::Configuration::instance()->getMasterJrPort());
 
         OGL_LOG_INFO("The job runner connect to <%s:%d> successfully.",
@@ -27,6 +24,7 @@ int main(int argc, char** argv)
     {
         cout << e.what() << endl;;
     }
+
     if (ACE_Thread_Manager::instance()->wait() < 0)
     {
         OGL_LOG_ERROR("Failed to wait all thread.");

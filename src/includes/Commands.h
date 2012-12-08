@@ -15,9 +15,12 @@ namespace ogl
         Unknown,
         CommandFailed,
         CreateJobCommand,
+        CreateJobFailed,
         SendNextTask,
         CreateTaskCommand,
+        CreateTaskFailed,
         CreateJobRunnerCommand,
+        CreateJobRunnerFailed,
     };
 
     class CommandHeader : public Header
@@ -55,31 +58,12 @@ namespace ogl
     class Command
     {
         public:
-            virtual void execute(void) = 0;
+            Command(CommandHeader* header, ACE_Message_Block* data)
+                    : m_header(header), m_data(data) {} ;
 
-            virtual int response(CommandType code, Serializable* resp = 0);
-
-            void peer(ACE_SOCK_Stream* peer)
-            {
-                m_peer = peer;
-            };
-
-            ACE_SOCK_Stream& peer()
-            {
-                return *m_peer;
-            };
-
-        protected:
-            ACE_SOCK_Stream* m_peer;
+            CommandHeader* m_header;
+            ACE_Message_Block* m_data;
     };
-
-    class Executor
-    {
-        public:
-            virtual void execute(Command* cmd) = 0;
-            virtual Command* buildCommand(CommandHeader* header, ACE_Message_Block* msg) = 0;
-    };
-
 };
 
 #endif
