@@ -21,7 +21,7 @@ namespace ogl
             JobManager();
             ~JobManager();
 
-            int addJob(const JobOption& option);
+            int addJob(JobOption& option);
 
             Job* getJob(JobId id);
 

@@ -6,9 +6,10 @@
 namespace ogl
 {
 
-    Job::Job(const JobId& jobId, JobOption* option)
-            : m_jobOption(option), m_nextTaskId(0), m_jobId(jobId)
+    Job::Job(const JobId& jobId, const JobOption& option)
+            : m_nextTaskId(0), m_jobId(jobId)
     {
+        ACE_NEW_NORETURN(m_jobOption, JobOption(option));
     }
 
     Job::~Job()

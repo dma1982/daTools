@@ -1,4 +1,4 @@
-#include "ClientManager.h"
+#include "ClientObjectManager.h"
 
 #include "JobManager.h"
 
@@ -66,5 +66,6 @@ namespace ogl
         default:
             return 0;
         }
+        return 0;
     }
 }

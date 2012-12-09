@@ -1,7 +1,7 @@
 #include "ogl.h"
 #include "JobManager.h"
-#include "ClientManager.h"
-#include "JobRunnerManager.h"
+#include "ClientObjectManager.h"
+#include "JobRunnerObjectManager.h"
 
 #include <iostream>
 
@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     {
         ogl::CLIMGR::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
 
-        ogl::JRMGR::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
+        ogl::JROMGR::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
 
         OGL_LOG_INFO("Job Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterCliPort());
         OGL_LOG_INFO("JobRunner Manager Server start at <%d>.", ogl::Configuration::instance()->getMasterJrPort());

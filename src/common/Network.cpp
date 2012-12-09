@@ -9,20 +9,11 @@ namespace ogl
     {
         ACE_INET_Addr addr;
 
-        /*
-         Ask the peer() (held in our baseclass) to tell us the address of the cient which has connected.
-         There may be valid reasons for this to fail where we wouldn't want to drop the connection but I can't think of one.
-         */
         if (this->peer ().get_remote_addr (addr) == -1)
         {
             return -1;
         }
 
-        /*
-         The Acceptor<> won't register us with it's reactor, so we have to do so ourselves.
-         This is where we have to grab that global pointer.
-         Notice that we again use the READ_MASK so that handle_input() will be called when the client does something.
-         */
         if (reactor()->register_handler (this, ACE_Event_Handler::READ_MASK) == -1)
         {
             return -1;
@@ -41,6 +32,12 @@ namespace ogl
 
         /* Free our memory.  */
         delete this;
+    }
+
+    int HandlerObject::recvRequest()
+    {
+        this->reactor()->schedule_wakeup(this,  ACE_Event_Handler::READ_MASK);
+        return 0;
     }
 
     int HandlerObject::sendResponse(CommandType cmd, Serializable* option)
@@ -64,28 +61,29 @@ namespace ogl
             header.dataSize(data->length());
         }
 
-        if (this->msg_queue()->is_empty())
-        {
-            // send command header
-            ACE_Message_Block* headMsg = header.serialize();
-            hr = this->peer().send_n (headMsg->rd_ptr(), headMsg->length());
-            headMsg->release();
-
-            // push data to output queue
-            if (data != 0)
-            {
-                this->msg_queue()->enqueue_tail(data);
-                this->reactor()->schedule_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
-            }
-        }
-        else
-        {
-            this->msg_queue()->enqueue_tail(header.serialize());
-            if (data != 0)
-            {
-                this->msg_queue()->enqueue_tail(data);
-            }
-        }
+		if ( this->msg_queue()->is_empty())
+		{
+			// send command header
+			ACE_Message_Block* headMsg = header.serialize();
+			hr = this->peer().send_n (headMsg->rd_ptr(), headMsg->length());
+			headMsg->release();
+			
+			// push data to output queue
+			if (data != 0)
+			{
+				this->msg_queue()->enqueue_tail(data);
+				this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
+			}
+		}
+		else
+		{
+			// push data to output queue
+			this->msg_queue()->enqueue_tail(header.serialize());
+			if (data != 0)
+			{
+				this->msg_queue()->enqueue_tail(data);
+			}
+		}
 
         return 0;
     }
@@ -119,20 +117,20 @@ namespace ogl
                 // did not send all message, move the read pointer and push it back
                 msg->rd_ptr(n);
                 this->msg_queue()->enqueue_head(msg);
-                return n;
+                return 1;
             }
             else
             {
                 // all message has been sent; release the mesage
                 msg->release();
-                return 1;
+                return 0;
             }
         }
 
         return 0;
     }
 
-    /* Respond to input just like Tutorial 1.  */
+
     int HandlerObject::handle_input (ACE_HANDLE)
     {
         CommandHeader header;
@@ -145,21 +143,22 @@ namespace ogl
 
         this->executeRequest(header.commandType(), data);
 
-        return header.dataSize();
+        return 0;
     }
 
-    /*
-     *  Clean ourselves up when handle_input() (or handle_timer()) returns -1
-     */
-    int HandlerObject::handle_close(ACE_HANDLE, ACE_Reactor_Mask _mask)
+
+    int HandlerObject::handle_close(ACE_HANDLE, ACE_Reactor_Mask mask)
     {
-        this->destroy();
+		if (mask != ACE_Event_Handler::WRITE_MASK)
+		{
+			this->destroy();
+		}
+
         return 0;
     }
 
     int HandlerObject::close (u_long)
     {
-        /* Clean up and go away. */
         this->destroy ();
         return 0;
     }

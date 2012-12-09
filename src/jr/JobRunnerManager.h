@@ -9,7 +9,7 @@ namespace ogl
     class JobRunnerManager : public HandlerObject
     {
         public:
-            int open(void* );
+		//            int open(void* );
             int CreateJobRunnerManager();
             virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
 
@@ -19,6 +19,8 @@ namespace ogl
 
     class JobManagerClient : public Client <JobRunnerManager>
     {
+	public:
+		int CreateJobRunnerManager();
     };
 
     typedef ACE_Singleton<JobManagerClient, ACE_Null_Mutex> JMCLI;

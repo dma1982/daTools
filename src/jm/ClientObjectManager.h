@@ -1,5 +1,5 @@
-#ifndef __OGL_CLIENT_MANAGER_H__
-#define __OGL_CLIENT_MANAGER_H__
+#ifndef __OGL_CLIENT_OBJECT_MANAGER_H__
+#define __OGL_CLIENT_OBJECT_MANAGER_H__
 
 #include "Network.h"
 #include "Commands.h"
@@ -22,11 +22,11 @@ namespace ogl
 
     typedef ACE_Acceptor <ClientHandlerObject, ACE_SOCK_ACCEPTOR > ClientManagerAcceptor;
 
-    class ClientManager: public Server <ClientManagerAcceptor>
+    class ClientObjectManager: public Server <ClientManagerAcceptor>
     {
     };
 
-    typedef ACE_Singleton<ClientManager, ACE_Null_Mutex> CLIMGR;
+    typedef ACE_Singleton<ClientObjectManager, ACE_Null_Mutex> CLIMGR;
 }
 
 #endif

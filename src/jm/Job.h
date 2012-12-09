@@ -11,7 +11,7 @@ namespace ogl
     class Job
     {
         public:
-            Job(const JobId& jobId, JobOption* option);
+            Job(const JobId& jobId, const JobOption& option);
             ~Job();
 
             JobId getJobId()

@@ -37,7 +37,7 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
         }
 
-        if (respHeader.commandType() == ogl::CommandFailed)
+        if (respHeader.commandType() == ogl::CreateTaskFailed)
         {
             OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.commandType());
         }

@@ -14,22 +14,23 @@ namespace ogl
         /*
          * Uncommnet the code to see who cleanup this object.
          */
-        //ogl::logger->Backtrace();
 
         // release jobs
         for_each(m_jobs.begin(), m_jobs.end(), releasePairSecond<const JobId, Job*>);
     }
 
-    int JobManager::addJob(const JobOption& option)
+    int JobManager::addJob(JobOption& option)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
 
-        JobOption* jobOption;
         Job* job;
-        ACE_NEW_RETURN(jobOption, JobOption(option), -1);
-        ACE_NEW_RETURN(job, Job(m_nextJobId++, jobOption), -1);
+        ACE_NEW_RETURN(job, Job(m_nextJobId++, option), -1);
+
         m_jobs[job->getJobId()] = job;
-        return job->getJobId();
+
+        option.id(job->getJobId());
+
+        return 1;
     }
 
     Job* JobManager::getJob(JobId id)

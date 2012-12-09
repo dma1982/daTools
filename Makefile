@@ -1,3 +1,6 @@
+bin:
+	cd src; make
+
 all:
 	cd src; make
 	cd test; make
