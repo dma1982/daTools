@@ -28,10 +28,10 @@ namespace ogl
             virtual void destroy (void);
             virtual int close (u_long flags = 0);
 
+            virtual int recvRequest();
             virtual int executeRequest(CommandType cmd, ACE_Message_Block& data) = 0;
 
             virtual int sendResponse(CommandType cmd, Serializable* data = 0);
-            virtual int recvRequest();
 
             virtual int handle_output (ACE_HANDLE);
             virtual int handle_input (ACE_HANDLE);
@@ -106,10 +106,10 @@ namespace ogl
 
             Client ()
             {
-				ACE_NEW_NORETURN(m_handler, SCH());
+                ACE_NEW_NORETURN(m_handler, SCH());
 
-				//*** Reset connector's Reactor ***
-				m_connector.reactor(&m_reactor);
+                //*** Reset connector's Reactor ***
+                m_connector.reactor(&m_reactor);
             }
 
             virtual ~Client()
@@ -156,10 +156,10 @@ namespace ogl
                 m_shutdown = true;
             }
 
-			SCH* get_handler() 
-			{ 
-				return m_handler;
-			}
+            SCH* get_handler()
+            {
+                return m_handler;
+            }
 
         private:
             ACE_Reactor m_reactor;

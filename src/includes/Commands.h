@@ -13,14 +13,41 @@ namespace ogl
     enum CommandType
     {
         Unknown,
-        CommandFailed,
+
+        // client send to JobManager to crate a job
         CreateJobCommand,
         CreateJobFailed,
-        SendNextTask,
+        CreateJobComplete,
+
+        // client send to JobManager to create a task
         CreateTaskCommand,
         CreateTaskFailed,
-        CreateJobRunnerCommand,
-        CreateJobRunnerFailed,
+        CreateTaskComplete,
+
+        // jr send to JobManager to register a job runner manager
+        RegisterJobRunnerCommand,
+        RegisterJobRunnerFailed,
+        RegisterJobRunnerComplete,
+
+        // JobManager send to jr to create a JobRunner
+        BindJobRunnerCommand,
+        BindJobRunnerFailed,
+        BindJobRunnerComplete,
+
+        // JobManager send to jr to execute a task
+        ExecuteTaskCommand,
+        ExecuteTaskFailed,
+        ExecuteTaskComplete,
+
+        // jr send to JobManager to report task status
+        TaskFinishCommand,
+        TaskFinishFailed,
+        TaskFinishComplete,
+
+        // client sent to JobManager to fetch task output
+        FetchTaskOutputCommand,
+        FetchTaskOutputFailed,
+        FetchTaskOutputComplete,
     };
 
     class CommandHeader : public Header
@@ -58,11 +85,12 @@ namespace ogl
     class Command
     {
         public:
-            Command(CommandHeader* header, ACE_Message_Block* data)
-                    : m_header(header), m_data(data) {} ;
+            Command(CommandType cmd = Unknown, Serializable* opt = 0, ACE_Message_Block* rawData = 0 ):
+                    m_command(cmd), m_option(opt), m_rawData(rawData) {};
 
-            CommandHeader* m_header;
-            ACE_Message_Block* m_data;
+            CommandType m_command;
+            Serializable* m_option;
+            ACE_Message_Block* m_rawData;
     };
 };
 

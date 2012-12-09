@@ -6,21 +6,32 @@
 
 namespace ogl
 {
+
+    class JobRunner;
+
     class JobRunnerManager : public HandlerObject
     {
         public:
-		//            int open(void* );
-            int CreateJobRunnerManager();
+            // bind the job runner to a job
+            int BindJobRunner(ogl::JobOption& jobOption);
+
+            // execute a task of the job
+            int ExecuteTask(ogl::TaskOption& taskOption);
+
+            // start all JobRunner
+            int StartJobRunnerManager();
+
             virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
 
         private:
-            JobRunnerOption* m_jobRunnerOption;
+            std::map<std::string, JobRunner*> m_jobRunners;
+
     };
 
     class JobManagerClient : public Client <JobRunnerManager>
     {
-	public:
-		int CreateJobRunnerManager();
+        public:
+            int StartJobRunnerManager();
     };
 
     typedef ACE_Singleton<JobManagerClient, ACE_Null_Mutex> JMCLI;

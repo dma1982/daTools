@@ -44,6 +44,9 @@ namespace ogl
             void work_directory(const char* wd);
             char* work_directory();
 
+            char* runnerId();
+            void runnerId(const char* runnerId);
+
             void id(ogl::JobId id);
             ogl::JobId id();
 
@@ -70,6 +73,8 @@ namespace ogl
             char** m_env;
             // The work directory of command
             char* m_workDirectory;
+
+            char* m_runnerId;
 
             ogl::JobId m_id;
 
@@ -98,6 +103,8 @@ namespace ogl
             char* jobName();
             void jobName(const char* jobName);
 
+            char* runnerId();
+            void runnerId(const char* runnerId);
 
             void taskInput(const Buffer&);
             const Buffer& taskInput();
@@ -116,6 +123,7 @@ namespace ogl
             int m_priority;
 
             char* m_jobName;
+            char* m_runnerId;
             ogl::JobId m_jobId;
             ogl::TaskId m_id;
 

@@ -2,7 +2,7 @@ include ../../make.misc
 CFLAGS=${OGL_CFLAGS}
 CC=g++
 
-LIBOBJS=JobRunnerManager.o 
+LIBOBJS=JobRunner.o JobRunnerManager.o 
 
 OBJS=JobRunnerDaemon.o ${LIBOBJS}
 

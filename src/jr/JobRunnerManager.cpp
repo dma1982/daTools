@@ -1,48 +1,64 @@
 #include "JobRunnerManager.h"
+#include "JobRunner.h"
 
 namespace ogl
 {
-    int JobRunnerManager::CreateJobRunnerManager()
+    int JobRunnerManager::StartJobRunnerManager()
     {
-        ACE_NEW_RETURN(m_jobRunnerOption, ogl::JobRunnerOption(), -1);
-		return HandlerObject::sendResponse(CreateJobRunnerCommand, m_jobRunnerOption);
-		/*
-		CommandHeader header(CreateJobRunnerCommand);
+        int n = 1;
 
-		ogl::send(this->peer(), header, m_jobRunnerOption);
-
-		return 0;
-		*/
-    }
-
-	int JobManagerClient::CreateJobRunnerManager()
-	{
-		return this->get_handler()->CreateJobRunnerManager();
-	}
-
-	/*
-    int JobRunnerManager::open(void* args)
-    {
-        int hr = HandlerObject::open(args);
-        if (hr < 0)
+        for (int i = 0; i < n; i++)
         {
-            return hr;
+            JobRunner* jobRunner;
+            ACE_NEW_RETURN(jobRunner, JobRunner(this), -1);
+            jobRunner->start();
+            m_jobRunners[jobRunner->id()] = jobRunner;
         }
 
-        return CreateJobRunnerManager();
+        return n;
     }
-	*/
+
+    int JobRunnerManager::BindJobRunner(ogl::JobOption& jobOption)
+    {
+        JobRunner* jobRunner = m_jobRunners[jobOption.runnerId()];
+        return jobRunner->BindJobRunner(jobOption);
+    }
+
+    int JobRunnerManager::ExecuteTask(ogl::TaskOption& taskOption)
+    {
+        JobRunner* jobRunner = m_jobRunners[taskOption.runnerId()];
+        return jobRunner->ExecuteTask(taskOption);
+    }
+
+
     int JobRunnerManager::executeRequest(CommandType cmd, ACE_Message_Block& data)
     {
         switch (cmd)
         {
-        case CreateJobRunnerCommand:
+        case ExecuteTaskCommand:
         {
-            OGL_LOG_DEBUG("Create job runner response.");
+            ogl::TaskOption taskOption;
+            taskOption.deserialize(&data);
+            ExecuteTask(taskOption);
             break;
         }
+        case BindJobRunnerCommand:
+        {
+            ogl::JobOption jobOption;
+            jobOption.deserialize(&data);
+            BindJobRunner(jobOption);
+            break;
+        }
+        default:
+            return 0;
         }
 
         return 0;
     }
+
+    int JobManagerClient::StartJobRunnerManager()
+    {
+        return this->get_handler()->StartJobRunnerManager();
+    }
+
 }

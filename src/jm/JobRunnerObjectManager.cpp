@@ -9,14 +9,14 @@ namespace ogl
 
         OGL_LOG_DEBUG("Create job runner for <%ld> at <%s>.", m_jobRunnerOption->pid(), m_jobRunnerOption->id());
 
-        return HandlerObject::sendResponse(CreateJobRunnerCommand, m_jobRunnerOption);;
+        return HandlerObject::sendResponse(RegisterJobRunnerCommand, m_jobRunnerOption);;
     }
 
     int JobRunnerObject::executeRequest(CommandType cmd, ACE_Message_Block& data)
     {
         switch (cmd)
         {
-        case CreateJobRunnerCommand:
+        case RegisterJobRunnerCommand:
         {
             JobRunnerOption jobRunnerOption;
             jobRunnerOption.deserialize(&data);

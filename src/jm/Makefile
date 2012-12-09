@@ -6,6 +6,8 @@ LIBOBJS=JobManager.o \
     Job.o \
     ClientObjectManager.o \
     JobRunnerObjectManager.o \
+    JobScheduler.o \
+    P_FCFS.o 
 
 OBJS=JobManagerDaemon.o ${LIBOBJS}
 

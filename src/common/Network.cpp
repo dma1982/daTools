@@ -61,29 +61,29 @@ namespace ogl
             header.dataSize(data->length());
         }
 
-		if ( this->msg_queue()->is_empty())
-		{
-			// send command header
-			ACE_Message_Block* headMsg = header.serialize();
-			hr = this->peer().send_n (headMsg->rd_ptr(), headMsg->length());
-			headMsg->release();
-			
-			// push data to output queue
-			if (data != 0)
-			{
-				this->msg_queue()->enqueue_tail(data);
-				this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
-			}
-		}
-		else
-		{
-			// push data to output queue
-			this->msg_queue()->enqueue_tail(header.serialize());
-			if (data != 0)
-			{
-				this->msg_queue()->enqueue_tail(data);
-			}
-		}
+        if ( this->msg_queue()->is_empty())
+        {
+            // send command header
+            ACE_Message_Block* headMsg = header.serialize();
+            hr = this->peer().send_n (headMsg->rd_ptr(), headMsg->length());
+            headMsg->release();
+
+            // push data to output queue
+            if (data != 0)
+            {
+                this->msg_queue()->enqueue_tail(data);
+                this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
+            }
+        }
+        else
+        {
+            // push data to output queue
+            this->msg_queue()->enqueue_tail(header.serialize());
+            if (data != 0)
+            {
+                this->msg_queue()->enqueue_tail(data);
+            }
+        }
 
         return 0;
     }
@@ -149,10 +149,10 @@ namespace ogl
 
     int HandlerObject::handle_close(ACE_HANDLE, ACE_Reactor_Mask mask)
     {
-		if (mask != ACE_Event_Handler::WRITE_MASK)
-		{
-			this->destroy();
-		}
+        if (mask != ACE_Event_Handler::WRITE_MASK)
+        {
+            this->destroy();
+        }
 
         return 0;
     }

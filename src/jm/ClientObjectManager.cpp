@@ -19,7 +19,7 @@ namespace ogl
             return HandlerObject::sendResponse(CreateJobFailed);
         }
 
-        return HandlerObject::sendResponse(SendNextTask, &jobOption);
+        return HandlerObject::sendResponse(CreateJobComplete, &jobOption);
     }
 
     int ClientHandlerObject::CreateTask(ogl::TaskOption& taskOption)
@@ -38,7 +38,7 @@ namespace ogl
             return HandlerObject::sendResponse(CreateTaskFailed);
         }
 
-        return HandlerObject::sendResponse(SendNextTask, &taskOption);
+        return HandlerObject::sendResponse(CreateTaskComplete, &taskOption);
     }
 
     /*

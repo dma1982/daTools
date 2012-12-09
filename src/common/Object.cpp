@@ -12,6 +12,7 @@ namespace ogl
         SERIALIZE_CSTRING_ARRAY(os, m_args);
         SERIALIZE_CSTRING_ARRAY(os, m_env);
         SERIALIZE_CSTRING(os, m_workDirectory);
+        SERIALIZE_CSTRING(os, m_runnerId);
         SERIALIZE_ULONG(os, m_id);
 
         return os.begin()->duplicate();
@@ -26,13 +27,15 @@ namespace ogl
         DESERIALIZE_CSTRING_ARRAY(is, m_args);
         DESERIALIZE_CSTRING_ARRAY(is, m_env);
         DESERIALIZE_CSTRING(is, m_workDirectory);
+        DESERIALIZE_CSTRING(is, m_runnerId);
         DESERIALIZE_ULONG(is, m_id);
     }
 
     JobOption::JobOption() : m_name(0), m_cmd(0),
             m_args(0),
             m_env(0),
-            m_workDirectory(0)
+            m_workDirectory(0),
+            m_runnerId(0)
     {
     }
 
@@ -49,6 +52,7 @@ namespace ogl
         ogl::releaseString(m_name);
         ogl::releaseString(m_workDirectory);
         ogl::releaseString(m_cmd);
+        ogl::releaseString(m_runnerId);
 
         ogl::releaseStringArray(m_args);
         ogl::releaseStringArray(m_env);
@@ -61,6 +65,7 @@ namespace ogl
         m_env = ogl::dumpStringArray(jobOption.m_env);
         m_args = ogl::dumpStringArray(jobOption.m_args);
         m_cmd = ogl::dumpString(jobOption.m_cmd);
+        m_runnerId = ogl::dumpString(jobOption.m_runnerId);
         m_name = ogl::dumpString(jobOption.m_name);
         m_id = jobOption.m_id;
     }
@@ -119,6 +124,17 @@ namespace ogl
         return m_cmd;
     }
 
+    void JobOption::runnerId(const char* r)
+    {
+        ogl::releaseString(m_runnerId);
+        m_runnerId = ogl::dumpString(r);
+    }
+
+    char* JobOption::runnerId(void)
+    {
+        return m_runnerId;
+    }
+
     void JobOption::arguments(char** a)
     {
         ogl::releaseStringArray(m_args);
@@ -155,9 +171,10 @@ namespace ogl
     TaskOption::~TaskOption()
     {
         ogl::releaseString(m_jobName);
+        ogl::releaseString(m_runnerId);
     }
 
-    TaskOption::TaskOption() : m_jobName(0)
+    TaskOption::TaskOption() : m_jobName(0), m_runnerId(0)
     {
     }
 
@@ -166,6 +183,7 @@ namespace ogl
         m_jobId = taskOption.m_jobId;
         m_id = taskOption.m_id;
         m_jobName = ogl::dumpString(taskOption.m_jobName);
+        m_runnerId = ogl::dumpString(taskOption.m_runnerId);
         m_taskInput = taskOption.m_taskInput;
         m_taskOutput = taskOption.m_taskOutput;
     }
@@ -174,7 +192,12 @@ namespace ogl
     {
         m_jobId = taskOption.m_jobId;
         m_id = taskOption.m_id;
+
+        ogl::releaseString(m_jobName);
         m_jobName = ogl::dumpString(taskOption.m_jobName);
+        ogl::releaseString(m_runnerId);
+        m_runnerId = ogl::dumpString(taskOption.m_runnerId);
+
         m_taskInput = taskOption.m_taskInput;
         m_taskOutput = taskOption.m_taskOutput;
 
@@ -188,6 +211,7 @@ namespace ogl
         SERIALIZE_ULONG(os, m_jobId);
         SERIALIZE_ULONG(os, m_id);
         SERIALIZE_CSTRING(os, m_jobName);
+        SERIALIZE_CSTRING(os, m_runnerId);
         SERIALIZE_BUFFER(os, &m_taskInput);
         SERIALIZE_BUFFER(os, &m_taskOutput);
 
@@ -200,6 +224,7 @@ namespace ogl
         DESERIALIZE_ULONG(is, m_jobId);
         DESERIALIZE_ULONG(is, m_id);
         DESERIALIZE_CSTRING(is, m_jobName);
+        DESERIALIZE_CSTRING(is, m_runnerId);
         DESERIALIZE_BUFFER(is, (&m_taskInput));
         DESERIALIZE_BUFFER(is, (&m_taskOutput));
     }
@@ -252,6 +277,17 @@ namespace ogl
     const Buffer& TaskOption::taskOutput()
     {
         return m_taskOutput;
+    }
+
+    char* TaskOption::runnerId()
+    {
+        return m_runnerId;
+    }
+
+    void TaskOption::runnerId(const char* runnerId)
+    {
+        ogl::releaseString(m_runnerId);
+        m_runnerId = ogl::dumpString(runnerId);
     }
 
     size_t Header::size()

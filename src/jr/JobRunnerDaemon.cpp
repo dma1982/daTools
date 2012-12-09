@@ -15,7 +15,7 @@ int main(int argc, char** argv)
         ogl::JMCLI::instance()->start(ogl::Configuration::instance()->getMasterHost(),
                                       ogl::Configuration::instance()->getMasterJrPort());
 
-		ogl::JMCLI::instance()->CreateJobRunnerManager();
+        ogl::JMCLI::instance()->StartJobRunnerManager();
 
         OGL_LOG_INFO("The job runner connect to <%s:%d> successfully.",
                      ogl::Configuration::instance()->getMasterHost().c_str(),
