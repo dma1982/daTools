@@ -2,7 +2,6 @@
 #define __OGL_JOB_SCHEDULER_H__
 
 #include <ace/Task.h>
-
 #include <list>
 
 namespace ogl
@@ -14,29 +13,21 @@ namespace ogl
             virtual int prepare() = 0;
             virtual int dispatch() = 0;
             virtual int uninitialize() = 0;
-
-            static void registerPolicy(Policy* policy);
-
-            static bool hasNext();
-            static Policy* next();
-            static void reset();
-
-        private:
-            static std::list<Policy*> m_policyList;
-            static std::list<Policy*>::iterator m_policyPtr;
     };
 
     class JobScheduler : public ACE_Task<ACE_MT_SYNCH>
     {
-
         public:
             virtual int loadPolicy();
             virtual int start();
             virtual int svc();
+
+        private:
+            std::list<ogl::Policy*> m_policyList;
     };
 
     typedef ACE_Singleton<JobScheduler, ACE_Null_Mutex> JOBSCH;
 
 }
-#endif
 
+#endif

@@ -4,28 +4,6 @@
 
 namespace ogl
 {
-    std::list<Policy*> Policy::m_policyList;
-    std::list<Policy*>::iterator Policy::m_policyPtr = Policy::m_policyList.begin();
-
-    void Policy::registerPolicy(Policy* policy)
-    {
-        m_policyList.push_back(policy);
-    }
-
-    bool Policy::hasNext()
-    {
-        return m_policyPtr != m_policyList.end();
-    }
-
-    Policy* Policy:: next()
-    {
-        return *(m_policyPtr++);
-    }
-
-    void Policy::reset()
-    {
-        m_policyPtr = m_policyList.begin();
-    }
 
     int JobScheduler::start()
     {
@@ -35,8 +13,28 @@ namespace ogl
 
     int JobScheduler::loadPolicy()
     {
-        ogl::Policy::registerPolicy(new P_FCFS());
+        m_policyList.push_back(new P_FCFS());
         return 1;
+    }
+
+    static void policy_initialize(ogl::Policy* p)
+    {
+        p->initialize();
+    }
+
+    static void policy_prepare(ogl::Policy* p)
+    {
+        p->prepare();
+    }
+
+    static void policy_dispatch(ogl::Policy* p)
+    {
+        p->dispatch();
+    }
+
+    static void policy_uninitialize(ogl::Policy* p)
+    {
+        p->uninitialize();
     }
 
     int JobScheduler::svc()
@@ -49,33 +47,13 @@ namespace ogl
 
         while (1)
         {
-            ogl::Policy::reset();
-            while (ogl::Policy::hasNext())
-            {
-                ogl::Policy* policy = ogl::Policy::next();
-                policy->initialize();
-            }
+            for_each(m_policyList.begin(), m_policyList.end(), policy_initialize);
 
-            ogl::Policy::reset();
-            while (ogl::Policy::hasNext())
-            {
-                ogl::Policy* policy = ogl::Policy::next();
-                policy->prepare();
-            }
+            for_each(m_policyList.begin(), m_policyList.end(), policy_prepare);
 
-            ogl::Policy::reset();
-            while (ogl::Policy::hasNext())
-            {
-                ogl::Policy* policy = ogl::Policy::next();
-                policy->dispatch();
-            }
+            for_each(m_policyList.begin(), m_policyList.end(), policy_dispatch);
 
-            ogl::Policy::reset();
-            while (ogl::Policy::hasNext())
-            {
-                ogl::Policy* policy = ogl::Policy::next();
-                policy->uninitialize();
-            }
+            for_each(m_policyList.begin(), m_policyList.end(), policy_uninitialize);
 
         }
         return 0;
