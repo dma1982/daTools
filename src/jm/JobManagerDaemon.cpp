@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     {
         ogl::CLIMGR::instance()->start(ogl::Configuration::instance()->getMasterCliPort());
 
-        ogl::JROMGR::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
+        ogl::JRMPool::instance()->start(ogl::Configuration::instance()->getMasterJrPort());
 
         ogl::JOBSCH::instance()->start();
 
