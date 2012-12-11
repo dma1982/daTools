@@ -21,8 +21,12 @@ namespace ogl
 
             ~Task()
             {
-                if (m_taskOption)
-                    delete m_taskOption;
+                ogl::releaseObject<TaskOption>(m_taskOption);
+            }
+
+            TaskOption* taskOption()
+            {
+                return m_taskOption;
             }
 
             TaskId taskId() const

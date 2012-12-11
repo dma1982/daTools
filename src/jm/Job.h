@@ -19,6 +19,11 @@ namespace ogl
                 return m_jobId;
             };
 
+            ogl::JobOption* jobOption()
+            {
+                return m_jobOption;
+            };
+
             int addTask(ogl::TaskOption& taskOption);
 
         private:

@@ -9,6 +9,10 @@
 
 namespace ogl
 {
+
+    class Job;
+    class Task;
+
     class JobRunnerManagerObject;
 
     class JobRunnerObject
@@ -16,9 +20,9 @@ namespace ogl
         public:
             JobRunnerObject(JobRunnerManagerObject* jrmObject, const JobRunnerOption& jobRunnerOption);
 
-            int BindJobRunner(ogl::JobOption& jobOption);
+            int BindJobRunner(ogl::Job* job);
 
-            int ExecuteTask(ogl::TaskOption& taskOption);
+            int ExecuteTask(ogl::Task* task);
 
             JobRunnerOption* runnerOption();
 
@@ -28,6 +32,9 @@ namespace ogl
 
             JobRunnerManagerObject* m_jrmObject;
             JobRunnerOption* m_jobRunnerOption;
+
+            ogl::Job* m_job;
+            ogl::Task* m_task;
     };
 
     class JobRunnerManagerObject : public HandlerObject

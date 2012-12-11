@@ -9,7 +9,7 @@ namespace ogl
     {
         public:
             virtual int initialize();
-			virtual int prepare(std::list<ogl::Job*>&, std::list<ogl::JobRunnerObject*>& );
+            virtual int prepare(std::list<ogl::Job*>&, std::list<ogl::JobRunnerObject*>& );
             virtual int dispatch(std::list<ogl::Job*>&, std::list<ogl::JobRunnerObject*>& );
             virtual int uninitialize();
     };

@@ -1,4 +1,7 @@
+#include "Object.h"
 #include "JobRunnerObjectManager.h"
+#include "Job.h"
+#include "Task.h"
 
 namespace ogl
 {
@@ -12,13 +15,24 @@ namespace ogl
         ACE_NEW_NORETURN(m_jobRunnerOption, JobRunnerOption(jobRunnerOption));
     }
 
-    int JobRunnerObject::BindJobRunner(ogl::JobOption& jobOption)
+    int JobRunnerObject::BindJobRunner(ogl::Job* job)
     {
+        m_job = job;
+
+        ogl::JobOption jobOption(*(job->jobOption()));
+        jobOption.runnerId(this->id());
+
         return this->m_jrmObject->sendResponse(BindJobRunnerCommand, &jobOption);
     }
 
-    int JobRunnerObject::ExecuteTask(ogl::TaskOption& taskOption)
+    int JobRunnerObject::ExecuteTask(ogl::Task* task)
     {
+
+        m_task = task;
+
+        ogl::TaskOption taskOption(*(task->taskOption()));
+        taskOption.runnerId(this->id());
+
         return this->m_jrmObject->sendResponse(ExecuteTaskCommand, &taskOption);
     }
 
