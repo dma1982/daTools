@@ -5,6 +5,7 @@
 #include <ace/Task.h>
 
 #include <map>
+#include <list>
 
 #include "Commands.h"
 #include "Job.h"
@@ -24,6 +25,8 @@ namespace ogl
             int addJob(JobOption& option);
 
             Job* getJob(JobId id);
+
+            int getAllJobs(std::list<Job*>& jobList);
 
         private:
 

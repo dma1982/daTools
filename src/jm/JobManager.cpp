@@ -44,4 +44,22 @@ namespace ogl
 
         return m_jobs[id];
     }
+
+    int JobManager::getAllJobs(std::list<Job*>& jobList)
+    {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
+
+        jobList.clear();
+
+        std::map<ogl::JobId, Job*>::iterator itB = m_jobs.begin();
+        std::map<ogl::JobId, Job*>::iterator itE = m_jobs.end();
+
+        for (; itB != itE; ++itB)
+        {
+            jobList.push_back(itB->second);
+        }
+
+        return jobList.size();
+    }
+
 }

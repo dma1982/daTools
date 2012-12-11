@@ -1,6 +1,9 @@
+#include "JobSchedulerExecutor.h"
 #include "JobScheduler.h"
 
 #include "P_FCFS.h"
+
+#include "JobManager.h"
 
 namespace ogl
 {
@@ -17,26 +20,6 @@ namespace ogl
         return 1;
     }
 
-    static void policy_initialize(ogl::Policy* p)
-    {
-        p->initialize();
-    }
-
-    static void policy_prepare(ogl::Policy* p)
-    {
-        p->prepare();
-    }
-
-    static void policy_dispatch(ogl::Policy* p)
-    {
-        p->dispatch();
-    }
-
-    static void policy_uninitialize(ogl::Policy* p)
-    {
-        p->uninitialize();
-    }
-
     int JobScheduler::svc()
     {
 
@@ -47,15 +30,20 @@ namespace ogl
 
         while (1)
         {
-            for_each(m_policyList.begin(), m_policyList.end(), policy_initialize);
+            InitializeExecutor doInitialize(m_jobList, m_runnerList);
+            PrepareExecutor doPrepare(m_jobList, m_runnerList);
+            DispatchExecutor doDispatch(m_jobList, m_runnerList);
+            UninitializeExecutor doUninitialize(m_jobList, m_runnerList);
 
-            for_each(m_policyList.begin(), m_policyList.end(), policy_prepare);
+            for_each(m_policyList.begin(), m_policyList.end(), doInitialize);
 
-            for_each(m_policyList.begin(), m_policyList.end(), policy_dispatch);
+            for_each(m_policyList.begin(), m_policyList.end(), doPrepare);
 
-            for_each(m_policyList.begin(), m_policyList.end(), policy_uninitialize);
+            for_each(m_policyList.begin(), m_policyList.end(), doDispatch);
 
+            for_each(m_policyList.rbegin(), m_policyList.rend(), doUninitialize);
         }
+
         return 0;
     }
 }
