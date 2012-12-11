@@ -11,6 +11,14 @@ namespace ogl
     class Job
     {
         public:
+
+            enum JobState
+            {
+                CLOSED,
+                OPEN,
+                ABORT,
+            };
+
             Job(const JobId& jobId, const JobOption& option);
             ~Job();
 
@@ -24,9 +32,16 @@ namespace ogl
                 return m_jobOption;
             };
 
+            bool isClosed();
+
             int addTask(ogl::TaskOption& taskOption);
 
+            int closeJob();
+
         private:
+
+            ogl::Job::JobState m_state;
+
             ogl::JobOption* m_jobOption;
             std::map<ogl::TaskId, ogl::Task*> m_tasks;
             ogl::TaskId m_nextTaskId;

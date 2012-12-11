@@ -22,11 +22,15 @@ namespace ogl
 
             int BindJobRunner(ogl::Job* job);
 
+            int UnbindJobRunner();
+
             int ExecuteTask(ogl::Task* task);
 
             JobRunnerOption* runnerOption();
 
             const char* id();
+
+            bool isIdle();
 
         private:
 

@@ -15,6 +15,11 @@ namespace ogl
         ACE_NEW_NORETURN(m_jobRunnerOption, JobRunnerOption(jobRunnerOption));
     }
 
+    int JobRunnerObject::UnbindJobRunner()
+    {
+        return 0;
+    }
+
     int JobRunnerObject::BindJobRunner(ogl::Job* job)
     {
         m_job = job;
@@ -27,13 +32,18 @@ namespace ogl
 
     int JobRunnerObject::ExecuteTask(ogl::Task* task)
     {
-
         m_task = task;
 
         ogl::TaskOption taskOption(*(task->taskOption()));
         taskOption.runnerId(this->id());
 
         return this->m_jrmObject->sendResponse(ExecuteTaskCommand, &taskOption);
+    }
+
+    bool JobRunnerObject::isIdle()
+    {
+        // JobRunnerObject is idle, if and only if not bind to and job
+        return NULL == m_job;
     }
 
     JobRunnerOption* JobRunnerObject::runnerOption()

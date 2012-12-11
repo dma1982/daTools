@@ -48,6 +48,12 @@ namespace ogl
         FetchTaskOutputCommand,
         FetchTaskOutputFailed,
         FetchTaskOutputComplete,
+
+        // client sent to JobManager to close a job
+        CloseJobCommand,
+        CloseJobFailed,
+        CloseJobComplete,
+
     };
 
     class CommandHeader : public Header

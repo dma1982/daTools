@@ -41,6 +41,25 @@ namespace ogl
         return HandlerObject::sendResponse(CreateTaskComplete, &taskOption);
     }
 
+    int ClientHandlerObject::CloseJob(ogl::JobOption& jobOption)
+    {
+        Job* job = m_jobManager->getJob(jobOption.id());
+
+        if (job == 0)
+        {
+            return HandlerObject::sendResponse(CloseJobFailed);
+        }
+
+        int hr = job->closeJob();
+
+        if (hr < 0)
+        {
+            return HandlerObject::sendResponse(CloseJobFailed);
+        }
+
+        return HandlerObject::sendResponse(CloseJobComplete, &jobOption);
+    }
+
     /*
      * Command router
      */
@@ -61,6 +80,12 @@ namespace ogl
             taskOption.deserialize(&data);
             CreateTask(taskOption);
             break;
+        }
+        case CloseJobCommand:
+        {
+            ogl::JobOption jobOption;
+            jobOption.deserialize(&data);
+            CloseJob(jobOption);
         }
         case Unknown:
         default:

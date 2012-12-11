@@ -1,5 +1,7 @@
 #include "ogl.h"
 #include "P_FCFS.h"
+#include "Job.h"
+#include "JobRunnerObjectManager.h"
 
 namespace ogl
 {
@@ -15,9 +17,30 @@ namespace ogl
         return 0;
     }
 
-    int P_FCFS::dispatch(std::list<ogl::Job*>&, std::list<ogl::JobRunnerObject*>& )
+    int P_FCFS::dispatch(std::list<ogl::Job*>& jobList, std::list<ogl::JobRunnerObject*>& runnerList)
     {
-        OGL_LOG_DEBUG("FCFS dispatch");
+
+        for (std::list<ogl::Job*>::iterator jobIter = jobList.begin();
+             jobIter != jobList.end() ; ++jobIter)
+        {
+            ogl::Job* job = *jobIter;
+
+            if (job->isClosed())
+            {
+                continue;
+            }
+
+            for (std::list<ogl::JobRunnerObject*>::iterator runnerIter = runnerList.begin();
+                 runnerIter != runnerList.end(); ++runnerIter)
+            {
+                ogl::JobRunnerObject* runner = *runnerIter;
+                if (runner->isIdle())
+                {
+                    runner->BindJobRunner(job);
+                }
+            }
+        }
+
         return 0;
     }
 

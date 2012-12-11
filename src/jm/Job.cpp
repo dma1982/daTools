@@ -10,14 +10,23 @@ namespace ogl
             : m_nextTaskId(0), m_jobId(jobId)
     {
         ACE_NEW_NORETURN(m_jobOption, JobOption(option));
+        m_state = OPEN;
     }
 
     Job::~Job()
     {
-        if (m_jobOption)
-        {
-            delete m_jobOption;
-        }
+        ogl::releaseObject<JobOption>(m_jobOption);
+    }
+
+    bool Job::isClosed()
+    {
+        return m_state == CLOSED;
+    }
+
+    int Job::closeJob()
+    {
+        m_state = CLOSED;
+        return 0;
     }
 
     int Job::addTask(ogl::TaskOption& option)
@@ -35,4 +44,3 @@ namespace ogl
     }
 
 }
-

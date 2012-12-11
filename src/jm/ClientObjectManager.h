@@ -14,6 +14,7 @@ namespace ogl
         public:
             ClientHandlerObject();
             virtual int CreateJob(ogl::JobOption& );
+            virtual int CloseJob(ogl::JobOption& );
             virtual int CreateTask(ogl::TaskOption& );
             virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
         private:
