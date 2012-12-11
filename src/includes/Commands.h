@@ -56,6 +56,9 @@ namespace ogl
 
     };
 
+    const char* toString(CommandType cmd);
+
+
     class CommandHeader : public Header
     {
         public:

@@ -4,6 +4,58 @@
 namespace ogl
 {
 
+    static const char* Cmd2Str[] =
+    {
+        "Unknown",
+
+        // client send to JobManager to crate a job
+        "CreateJobCommand",
+        "CreateJobFailed",
+        "CreateJobComplete",
+
+        // client send to JobManager to create a task
+        "CreateTaskCommand",
+        "CreateTaskFailed",
+        "CreateTaskComplete",
+
+        // jr send to JobManager to register a job runner manager
+        "RegisterJobRunnerCommand",
+        "RegisterJobRunnerFailed",
+        "RegisterJobRunnerComplete",
+
+        // JobManager send to jr to create a JobRunner
+        "BindJobRunnerCommand",
+        "BindJobRunnerFailed",
+        "BindJobRunnerComplete",
+
+        // JobManager send to jr to execute a task
+        "ExecuteTaskCommand",
+        "ExecuteTaskFailed",
+        "ExecuteTaskComplete",
+
+        // jr send to JobManager to report task status
+        "TaskFinishCommand",
+        "TaskFinishFailed",
+        "TaskFinishComplete",
+
+        // client sent to JobManager to fetch task output
+        "FetchTaskOutputCommand",
+        "FetchTaskOutputFailed",
+        "FetchTaskOutputComplete",
+
+        // client sent to JobManager to close a job
+        "CloseJobCommand",
+        "CloseJobFailed",
+        "CloseJobComplete",
+
+        0
+    };
+
+    const char* toString(CommandType cmd)
+    {
+        return Cmd2Str[cmd];
+    }
+
     CommandHeader* CommandHeader::build(ACE_Message_Block* data)
     {
         CommandHeader* header = 0;

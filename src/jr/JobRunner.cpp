@@ -13,6 +13,7 @@ namespace ogl
     int JobRunner::start()
     {
         this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
+        this->RegisterJobRunner();
         return 0;
     }
 
@@ -21,18 +22,28 @@ namespace ogl
         return m_jobRunnerOption->id();
     }
 
+    int JobRunner::RegisterJobRunner()
+    {
+        ACE_Message_Block* msg;
+        Command* cmd;
+
+        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand), -1);
+        ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
+
+        this->putq(msg);
+        return 0;
+    }
+
     int JobRunner::BindJobRunner(ogl::JobOption& jobOption)
     {
         ACE_Message_Block* msg ;
         ogl::Command* cmd ;
 
-        ACE_NEW_RETURN(msg, ACE_Message_Block(sizeof(Command*)), -1);
         ACE_NEW_RETURN(cmd, Command(BindJobRunnerCommand), -1);
         ACE_NEW_RETURN(cmd->m_option, ogl::JobOption(jobOption), -1);
+        ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
-        ACE_OS::memcpy(msg->wr_ptr(), &cmd, sizeof(Command*));
         this->putq(msg);
-
         return 0;
     }
 
@@ -52,13 +63,11 @@ namespace ogl
         ACE_Message_Block* msg ;
         Command* cmd ;
 
-        ACE_NEW_RETURN(msg, ACE_Message_Block(sizeof(Command*)), -1);
         ACE_NEW_RETURN(cmd, Command(ExecuteTaskCommand), -1);
         ACE_NEW_RETURN(cmd->m_option, ogl::TaskOption(taskOption), -1);
+        ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
-        ACE_OS::memcpy(msg->wr_ptr(), &cmd, sizeof(Command*));
         this->putq(msg);
-
         return 0;
     }
 
@@ -110,6 +119,7 @@ namespace ogl
             default:
                 break;
             };
+
             releaseObject<Command>(cmd);
             msg->release();
         }

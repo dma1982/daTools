@@ -7,6 +7,9 @@
 #include <ace/ACE.h>
 #include <ace/UUID.h>
 
+#include <list>
+#include <map>
+
 namespace ogl
 {
 
@@ -49,6 +52,8 @@ namespace ogl
 
             int RegisterJobRunner(const ogl::JobRunnerOption& );
 
+            int getAllRunners(std::list<JobRunnerObject*>& runnerList);
+
             virtual int executeRequest(CommandType cmd, ACE_Message_Block& data );
 
             const char* id();
@@ -67,6 +72,8 @@ namespace ogl
         public:
             void RegisterJobRunnerManager(JobRunnerManagerObject* );
             void UnregisterJobRunnerManager(JobRunnerManagerObject* );
+
+            int getAllRunners(std::list<JobRunnerObject*>& runnerList);
 
         private:
             std::map<std::string, JobRunnerManagerObject*> m_jrmObjectMap;

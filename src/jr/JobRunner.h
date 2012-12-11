@@ -21,6 +21,8 @@ namespace ogl
 
             const char* id();
 
+            int RegisterJobRunner();
+
             int ExecuteTask(ogl::TaskOption& taskOption);
 
             int BindJobRunner(ogl::JobOption& jobOption);

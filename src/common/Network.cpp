@@ -44,6 +44,8 @@ namespace ogl
     {
         ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
 
+        OGL_LOG_DEBUG("Send command <%s>.", toString(cmd));
+
         int hr = 0;
 
         CommandHeader header(cmd);
@@ -140,6 +142,8 @@ namespace ogl
         {
             return -1;
         }
+
+        OGL_LOG_DEBUG("Receive command <%s>", toString(header.commandType()));
 
         this->executeRequest(header.commandType(), data);
 

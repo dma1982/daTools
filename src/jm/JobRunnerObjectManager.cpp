@@ -1,3 +1,4 @@
+#include "Commands.h"
 #include "Object.h"
 #include "JobRunnerObjectManager.h"
 #include "Job.h"
@@ -93,6 +94,20 @@ namespace ogl
         return HandlerObject::sendResponse(RegisterJobRunnerComplete, jobRunner->runnerOption());;
     }
 
+    int JobRunnerManagerObject::getAllRunners(std::list<JobRunnerObject*>& runnerList)
+    {
+        int i = 0;
+        runnerList.clear();
+
+        for (std::map<std::string, JobRunnerObject*>::iterator it = m_jobRunnerMap.begin();
+             it != m_jobRunnerMap.end(); ++it, ++i)
+        {
+            runnerList.push_back(it->second);
+        }
+
+        return i;
+    }
+
     int JobRunnerManagerObject::executeRequest(CommandType cmd, ACE_Message_Block& data)
     {
         switch (cmd)
@@ -110,6 +125,9 @@ namespace ogl
         return 0;
     }
 
+    /*
+     * JobRunnerManagerPool
+     */
     void JobRunnerManagerPool::RegisterJobRunnerManager(ogl::JobRunnerManagerObject* jrmObject)
     {
         this->m_jrmObjectMap[jrmObject->id()] = jrmObject;
@@ -118,6 +136,23 @@ namespace ogl
     void JobRunnerManagerPool::UnregisterJobRunnerManager(ogl::JobRunnerManagerObject* jrmObject)
     {
         this->m_jrmObjectMap.erase(jrmObject->id());
+    }
+
+    int JobRunnerManagerPool::getAllRunners(std::list<JobRunnerObject*>& runnerList)
+    {
+        int i = 0;
+
+        runnerList.clear();
+
+        for (std::map<std::string, JobRunnerManagerObject*>::iterator it = m_jrmObjectMap.begin();
+             it != m_jrmObjectMap.end(); ++it)
+        {
+            std::list<JobRunnerObject*> rl;
+            i += it->second->getAllRunners(rl);
+            runnerList.insert(runnerList.end(), rl.begin(), rl.end());
+        }
+
+        return i;
     }
 
 }

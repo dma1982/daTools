@@ -2,6 +2,7 @@
 #include "JobScheduler.h"
 
 #include "JobManager.h"
+#include "JobRunnerObjectManager.h"
 
 namespace ogl
 {
@@ -9,6 +10,7 @@ namespace ogl
             : m_jobList(jobList), m_runnerList(runnerList)
     {
         JOBMANAGER::instance()->getAllJobs(m_jobList);
+        JRMPool::instance()->getAllRunners(m_runnerList);
     }
 
     InitializeExecutor& InitializeExecutor::operator()(ogl::Policy* policy)
