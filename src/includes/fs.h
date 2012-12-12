@@ -24,6 +24,7 @@ namespace ogl
             static const mask_t default_dir_mask = 0755;
 
             File();
+            File(handle_t handle);
             File(const std::string& path, mode_t mode,  mask_t mask = default_file_mask);
             ~File();
 

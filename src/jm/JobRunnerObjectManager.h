@@ -29,6 +29,8 @@ namespace ogl
 
             int ExecuteTask(ogl::Task* task);
 
+            int sendNextTask();
+
             JobRunnerOption* runnerOption();
 
             const char* id();
@@ -51,6 +53,10 @@ namespace ogl
             ~JobRunnerManagerObject();
 
             int RegisterJobRunner(const ogl::JobRunnerOption& );
+
+            int BindJobRunnerResult(ogl::JobOption& );
+
+            int ExecuteTaskResult(ogl::TaskOption& );
 
             int getAllRunners(std::list<JobRunnerObject*>& runnerList);
 

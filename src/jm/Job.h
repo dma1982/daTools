@@ -38,12 +38,17 @@ namespace ogl
 
             int closeJob();
 
+            Task* getNextTask();
+
         private:
 
             ogl::Job::JobState m_state;
 
             ogl::JobOption* m_jobOption;
+
+            std::list<ogl::Task*> m_pendingTasks;
             std::map<ogl::TaskId, ogl::Task*> m_tasks;
+
             ogl::TaskId m_nextTaskId;
             JobId m_jobId;
     };

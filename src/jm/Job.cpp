@@ -29,6 +29,18 @@ namespace ogl
         return 0;
     }
 
+    Task* Job::getNextTask()
+    {
+        if (m_pendingTasks.empty())
+        {
+            return 0;
+        }
+        Task* nextTask = m_pendingTasks.front();
+        m_pendingTasks.pop_front();
+
+        return nextTask;
+    }
+
     int Job::addTask(ogl::TaskOption& option)
     {
         ogl::TaskId taskId = m_nextTaskId++;
@@ -40,6 +52,8 @@ namespace ogl
         option.taskId(taskId);
 
         m_tasks[taskId] = task;
+        m_pendingTasks.push_back(task);
+
         return 0;
     }
 

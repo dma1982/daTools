@@ -74,8 +74,44 @@ namespace ogl
     int JobRunner::executeTask(ogl::TaskOption* taskOption)
     {
         ACE_Process task;
+
+        ACE_HANDLE taskOutput[2];
+        ACE_HANDLE taskInput[2];
+
+        ACE_OS::pipe(taskOutput);
+        ACE_OS::pipe(taskInput);
+
+        this->m_taskProcessOption->release_handles();
+
+        this->m_taskProcessOption->set_handles(taskInput[OGL_PIPE_READ],
+                                               taskOutput[OGL_PIPE_WRITE]);
+
+        ogl::File inputStream(taskInput[OGL_PIPE_WRITE]);
+        ogl::File outputStream(taskOutput[OGL_PIPE_READ]);
+
         task.spawn(*(this->m_taskProcessOption));
+
+        ACE_OS::close(taskInput[OGL_PIPE_READ]);
+        ACE_OS::close(taskOutput[OGL_PIPE_WRITE]);
+
+        // TODO: why ???
+        task.close_dup_handles();
+        task.close_passed_handles();
+
+        // release the duplicated handles
+        m_taskProcessOption->release_handles();
+
+        ogl::Buffer& input = taskOption->taskInput();
+        if (input.size() > 0)
+        {
+            inputStream.write(input);
+        }
+
+        ogl::Buffer& output = taskOption->taskOutput();
+        outputStream.read(output);
+
         task.wait();
+
         return sendResponse(ExecuteTaskComplete, taskOption);
     }
 

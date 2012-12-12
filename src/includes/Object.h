@@ -107,10 +107,10 @@ namespace ogl
             void runnerId(const char* runnerId);
 
             void taskInput(const Buffer&);
-            const Buffer& taskInput();
+            Buffer& taskInput();
 
             void taskOutput(const Buffer&);
-            const Buffer& taskOutput();
+            Buffer& taskOutput();
 
         private:
             // The input data of a task

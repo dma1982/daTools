@@ -57,7 +57,6 @@ namespace ogl
             ~Data();
     };
 
-
     class Buffer
     {
         private:

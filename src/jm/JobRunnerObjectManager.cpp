@@ -18,6 +18,7 @@ namespace ogl
 
     int JobRunnerObject::UnbindJobRunner()
     {
+        m_job = NULL;
         return 0;
     }
 
@@ -39,6 +40,20 @@ namespace ogl
         taskOption.runnerId(this->id());
 
         return this->m_jrmObject->sendResponse(ExecuteTaskCommand, &taskOption);
+    }
+
+    int JobRunnerObject::sendNextTask()
+    {
+        ogl::Task* task = m_job->getNextTask();
+        if (task != 0)
+        {
+            this->ExecuteTask(task);
+        }
+        else
+        {
+            this->UnbindJobRunner();
+        }
+        return 0;
     }
 
     bool JobRunnerObject::isIdle()
@@ -84,6 +99,23 @@ namespace ogl
         return m_id;
     }
 
+    int JobRunnerManagerObject::BindJobRunnerResult(ogl::JobOption& jobOption)
+    {
+        JobRunnerObject* jobRunner = m_jobRunnerMap[jobOption.runnerId()];
+        jobRunner->sendNextTask();
+        return 0;
+    }
+
+    int JobRunnerManagerObject::ExecuteTaskResult(ogl::TaskOption& taskOption)
+    {
+        JobRunnerObject* jobRunner = m_jobRunnerMap[taskOption.runnerId()];
+
+        OGL_LOG_DEBUG("job <%d>, task <%d>, output <%s>", taskOption.jobId(), taskOption.taskId(), taskOption.taskOutput().data());
+
+        jobRunner->sendNextTask();
+        return 0;
+    }
+
     int JobRunnerManagerObject::RegisterJobRunner(const ogl::JobRunnerOption& jobRunnerOption)
     {
         JobRunnerObject* jobRunner;
@@ -119,6 +151,22 @@ namespace ogl
             RegisterJobRunner(jobRunnerOption);
             break;
         }
+        case ogl::BindJobRunnerComplete:
+        {
+            JobOption jobOption;
+            jobOption.deserialize(&data);
+            BindJobRunnerResult(jobOption);
+            break;
+        }
+
+        case ExecuteTaskComplete:
+        {
+            TaskOption taskOption;
+            taskOption.deserialize(&data);
+            ExecuteTaskResult(taskOption);
+            break;
+        }
+
         default:
             break;
         }
@@ -154,5 +202,4 @@ namespace ogl
 
         return i;
     }
-
 }

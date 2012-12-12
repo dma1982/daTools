@@ -264,7 +264,7 @@ namespace ogl
         m_taskInput = taskInput;
     }
 
-    const Buffer& TaskOption::taskInput()
+    Buffer& TaskOption::taskInput()
     {
         return m_taskInput;
     }
@@ -274,7 +274,7 @@ namespace ogl
         m_taskOutput = taskOutput;
     }
 
-    const Buffer& TaskOption::taskOutput()
+    Buffer& TaskOption::taskOutput()
     {
         return m_taskOutput;
     }

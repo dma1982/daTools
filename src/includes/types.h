@@ -11,6 +11,9 @@
 #define BUFSIZ 1024
 #endif
 
+#define OGL_PIPE_READ 0
+#define OGL_PIPE_WRITE 1
+
 namespace ogl
 {
 
