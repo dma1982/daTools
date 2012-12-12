@@ -94,12 +94,15 @@ int main(int argc, char** argv)
 
             TaskProxy* task = job->addTask(&taskOption);
 
-            printf("        Create task <%d>.\n", (int)(task->taskId()));
+            printf("INFO: Create task <%d>.\n", (int)(task->taskId()));
 
             taskList.push_back(task);
         }
 
         for_each(taskList.begin(), taskList.end(), printTaskInfo);
+
+        job->closeJob();
+
     }
     catch (Exception& e)
     {

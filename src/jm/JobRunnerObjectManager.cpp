@@ -42,6 +42,12 @@ namespace ogl
         return this->m_jrmObject->sendResponse(ExecuteTaskCommand, &taskOption);
     }
 
+    int JobRunnerObject::ExecuteTaskResult(ogl::TaskOption& taskOption)
+    {
+        m_task->completeTask(taskOption);
+        return this->sendNextTask();
+    }
+
     int JobRunnerObject::sendNextTask()
     {
         ogl::Task* task = m_job->getNextTask();
@@ -110,9 +116,12 @@ namespace ogl
     {
         JobRunnerObject* jobRunner = m_jobRunnerMap[taskOption.runnerId()];
 
-        OGL_LOG_DEBUG("job <%d>, task <%d>, output <%s>", taskOption.jobId(), taskOption.taskId(), taskOption.taskOutput().data());
+        OGL_LOG_DEBUG("job <%d>, task <%d>, output <%s>", taskOption.jobId(), taskOption.taskId(), taskOption.taskOutput(
+                      ).data());
 
-        jobRunner->sendNextTask();
+        jobRunner->ExecuteTaskResult(taskOption);
+
+
         return 0;
     }
 

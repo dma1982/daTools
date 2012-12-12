@@ -94,7 +94,6 @@ namespace ogl
         ACE_OS::close(taskInput[OGL_PIPE_READ]);
         ACE_OS::close(taskOutput[OGL_PIPE_WRITE]);
 
-        // TODO: why ???
         task.close_dup_handles();
         task.close_passed_handles();
 

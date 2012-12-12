@@ -31,14 +31,38 @@ namespace ogl
             return HandlerObject::sendResponse(CreateTaskFailed);
         }
 
-        int hr = job->addTask(taskOption);
+        Task* task = job->addTask(taskOption);
 
-        if (hr < 0)
+        if (task == 0)
         {
             return HandlerObject::sendResponse(CreateTaskFailed);
         }
 
-        return HandlerObject::sendResponse(CreateTaskComplete, &taskOption);
+        return HandlerObject::sendResponse(CreateTaskComplete, task->taskOption());
+    }
+
+    int ClientHandlerObject::FetchTaskOutput(ogl::TaskOption& taskOption)
+    {
+        Job* job = m_jobManager->getJob(taskOption.jobId());
+
+        if (job == 0)
+        {
+            return HandlerObject::sendResponse(FetchTaskOutputFailed);
+        }
+
+        Task* task = job->getTask(taskOption.taskId());
+        if (task == 0)
+        {
+            return HandlerObject::sendResponse(FetchTaskOutputFailed);
+        }
+
+        if (task->isCompleted())
+        {
+            return HandlerObject::sendResponse(FetchTaskOutputComplete, task->taskOption());
+        }
+
+        task->addObserver(this);
+        return 0;
     }
 
     int ClientHandlerObject::CloseJob(ogl::JobOption& jobOption)
@@ -86,6 +110,12 @@ namespace ogl
             ogl::JobOption jobOption;
             jobOption.deserialize(&data);
             CloseJob(jobOption);
+        }
+        case FetchTaskOutputCommand:
+        {
+            ogl::TaskOption taskOption;
+            taskOption.deserialize(&data);
+            FetchTaskOutput(taskOption);
         }
         case Unknown:
         default:

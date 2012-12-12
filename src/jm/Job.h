@@ -34,11 +34,13 @@ namespace ogl
 
             bool isClosed();
 
-            int addTask(ogl::TaskOption& taskOption);
+            Task* addTask(ogl::TaskOption& taskOption);
 
             int closeJob();
 
             Task* getNextTask();
+
+            Task* getTask(const ogl::TaskId& );
 
         private:
 

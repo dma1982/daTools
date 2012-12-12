@@ -14,6 +14,8 @@ namespace ogl
             JobProxy (ACE_Message_Block* msg, ACE_SOCK_Stream*);
             TaskProxy* addTask(TaskOption* taskOption);
 
+            int closeJob();
+
             JobOption& option();
 
         private:

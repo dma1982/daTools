@@ -6,6 +6,10 @@
 
 #include <string>
 
+#include <list>
+
+#include "Network.h"
+
 namespace ogl
 {
     class Task
@@ -14,7 +18,7 @@ namespace ogl
         public:
 
             Task(const TaskId& taskId, TaskOption* option)
-                    : m_taskOption(option)
+                    : m_taskOption(option), m_completed(false)
             {
                 m_taskOption->taskId(taskId);
             };
@@ -29,6 +33,12 @@ namespace ogl
                 return m_taskOption;
             }
 
+            int addObserver(ogl::HandlerObject*);
+
+            bool isCompleted();
+
+            int completeTask(ogl::TaskOption& taskOption);
+
             TaskId taskId() const
             {
                 return m_taskOption->taskId();
@@ -36,6 +46,8 @@ namespace ogl
 
         private:
             TaskOption* m_taskOption;
+            std::list<HandlerObject*> m_observerList;
+            bool m_completed;
     };
 }
 

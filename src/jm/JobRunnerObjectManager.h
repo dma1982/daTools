@@ -29,6 +29,8 @@ namespace ogl
 
             int ExecuteTask(ogl::Task* task);
 
+            int ExecuteTaskResult(ogl::TaskOption& taskOption);
+
             int sendNextTask();
 
             JobRunnerOption* runnerOption();

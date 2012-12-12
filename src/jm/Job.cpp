@@ -29,6 +29,11 @@ namespace ogl
         return 0;
     }
 
+    Task* Job::getTask(const TaskId& taskId)
+    {
+        return m_tasks[taskId];
+    }
+
     Task* Job::getNextTask()
     {
         if (m_pendingTasks.empty())
@@ -41,20 +46,19 @@ namespace ogl
         return nextTask;
     }
 
-    int Job::addTask(ogl::TaskOption& option)
+    Task* Job::addTask(ogl::TaskOption& option)
     {
         ogl::TaskId taskId = m_nextTaskId++;
         TaskOption* taskOption;
         Task* task;
+
         ACE_NEW_NORETURN(taskOption, TaskOption(option));
         ACE_NEW_NORETURN(task, Task(taskId, taskOption));
-
-        option.taskId(taskId);
 
         m_tasks[taskId] = task;
         m_pendingTasks.push_back(task);
 
-        return 0;
+        return task;
     }
 
 }

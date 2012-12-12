@@ -4,6 +4,7 @@ CC=g++
 
 LIBOBJS=JobManager.o \
     Job.o \
+    Task.o \
     ClientObjectManager.o \
     JobRunnerObjectManager.o \
     JobScheduler.o \

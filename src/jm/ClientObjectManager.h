@@ -16,6 +16,7 @@ namespace ogl
             virtual int CreateJob(ogl::JobOption& );
             virtual int CloseJob(ogl::JobOption& );
             virtual int CreateTask(ogl::TaskOption& );
+            virtual int FetchTaskOutput(ogl::TaskOption& taskOption);
             virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
         private:
             JobManager* m_jobManager;

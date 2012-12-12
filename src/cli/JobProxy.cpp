@@ -18,6 +18,31 @@ namespace ogl
         m_jobOption.deserialize(msg);
     }
 
+    int JobProxy::closeJob()
+    {
+        ogl::CommandHeader cmdHeader(ogl::CloseJobCommand);
+
+        if (ogl::send(*m_jmServer, cmdHeader, &m_jobOption) < 0)
+        {
+            OGL_THROW_EXCEPTION("Failed to send close job request to Job Manager Server.");
+        }
+
+        ACE_Message_Block msg;
+        ogl::CommandHeader respHeader;
+
+        if (ogl::recv(*m_jmServer, respHeader, msg) < 0)
+        {
+            OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
+        }
+
+        if (respHeader.commandType() == ogl::CloseJobFailed)
+        {
+            OGL_THROW_EXCEPTION("Failed to close job.");
+        }
+
+        return 0;
+    }
+
     TaskProxy* JobProxy::addTask(TaskOption* taskOption)
     {
         ogl::CommandHeader cmdHeader(ogl::CreateTaskCommand);
