@@ -23,9 +23,9 @@ void print_help()
         "    -c        Job command\n"
         "    -n        The number of tasks\n"
         "\n"
-        "Home & Bugs: <https://github.com/dma1982/ogl>\n"
-        "\n";
-    cout << help ;
+        "Home & Bugs: <https://github.com/dma1982/ogl>\n";
+
+        cout << help << endl;
 }
 
 void printTaskInfo(TaskProxy* task)
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 
     ACE_Get_Opt getOpt(argc, argv, "hj:c:n:");
     int arg;
-    int taskCount = 0;
+    int taskCount = 1;
 
     JobOption jobOption;
     while ((arg = getOpt()) != EOF)
@@ -70,7 +70,8 @@ int main(int argc, char** argv)
     }
 
     if (jobOption.name() == 0 ||
-        jobOption.command() == 0)
+        jobOption.command() == 0 ||
+        taskCount <= 0)
     {
         print_help();
         return -1;
