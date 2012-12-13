@@ -55,7 +55,6 @@ namespace ogl
 
     TaskId TaskProxy::taskId()
     {
-        OGL_LOG_DEBUG("job id is <%d>", m_taskOption.jobId());
         return m_taskOption.taskId();
     }
 }

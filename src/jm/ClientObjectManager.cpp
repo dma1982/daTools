@@ -110,12 +110,14 @@ namespace ogl
             ogl::JobOption jobOption;
             jobOption.deserialize(&data);
             CloseJob(jobOption);
+            break;
         }
         case FetchTaskOutputCommand:
         {
             ogl::TaskOption taskOption;
             taskOption.deserialize(&data);
             FetchTaskOutput(taskOption);
+            break;
         }
         case Unknown:
         default:

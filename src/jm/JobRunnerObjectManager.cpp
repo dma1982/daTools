@@ -116,13 +116,7 @@ namespace ogl
     {
         JobRunnerObject* jobRunner = m_jobRunnerMap[taskOption.runnerId()];
 
-        OGL_LOG_DEBUG("job <%d>, task <%d>, output <%s>", taskOption.jobId(), taskOption.taskId(), taskOption.taskOutput(
-                      ).data());
-
-        jobRunner->ExecuteTaskResult(taskOption);
-
-
-        return 0;
+        return jobRunner->ExecuteTaskResult(taskOption);
     }
 
     int JobRunnerManagerObject::RegisterJobRunner(const ogl::JobRunnerOption& jobRunnerOption)

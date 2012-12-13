@@ -48,6 +48,7 @@ namespace ogl
 
             ogl::JobOption* m_jobOption;
 
+            ACE_Thread_Mutex m_taskListMutex;
             std::list<ogl::Task*> m_pendingTasks;
             std::map<ogl::TaskId, ogl::Task*> m_tasks;
 

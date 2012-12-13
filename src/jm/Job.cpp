@@ -31,11 +31,13 @@ namespace ogl
 
     Task* Job::getTask(const TaskId& taskId)
     {
+        ACE_GUARD_RETURN(ACE_Thread_Mutex, taskGuard, m_taskListMutex, 0);
         return m_tasks[taskId];
     }
 
     Task* Job::getNextTask()
     {
+        ACE_GUARD_RETURN(ACE_Thread_Mutex, taskGuard, m_taskListMutex, 0);
         if (m_pendingTasks.empty())
         {
             return 0;
@@ -48,6 +50,7 @@ namespace ogl
 
     Task* Job::addTask(ogl::TaskOption& option)
     {
+        ACE_GUARD_RETURN(ACE_Thread_Mutex, taskGuard, m_taskListMutex, 0);
         ogl::TaskId taskId = m_nextTaskId++;
         TaskOption* taskOption;
         Task* task;

@@ -53,7 +53,6 @@ namespace ogl
         CloseJobCommand,
         CloseJobFailed,
         CloseJobComplete,
-
     };
 
     const char* toString(CommandType cmd);

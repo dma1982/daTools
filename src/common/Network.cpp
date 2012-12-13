@@ -42,8 +42,6 @@ namespace ogl
 
     int HandlerObject::sendResponse(CommandType cmd, Serializable* option)
     {
-        int hr = 0;
-
         CommandHeader header(cmd);
 
         ACE_Message_Block* data = 0;
