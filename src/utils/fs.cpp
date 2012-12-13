@@ -38,20 +38,30 @@ size_t ogl::File::write(const Buffer& buff)
     const ogl::Buffer* bufPtr = &buff;
     int hr = 0;
     int n = -1;
-    while ( bufPtr != NULL)
+
+    int offset = 0;
+
+    while (bufPtr != NULL)
     {
-        n = ::write(m_handle, bufPtr->data(), bufPtr->size());
+        n = ::write(m_handle, bufPtr->data() + offset, bufPtr->size() - offset);
         if (n < 0)
         {
             break;
         }
 
-        if ((unsigned int)n != bufPtr->size())
-        {
-            // move ptr
-        }
+        hr += n;
 
-        bufPtr = bufPtr->next();
+        if ((unsigned int)(n + offset) < bufPtr->size())
+        {
+            // continue to write current buffer
+            offset += n;
+        }
+        else
+        {
+            // move to next buffer;
+            offset = 0;
+            bufPtr = bufPtr->next();
+        }
     }
 
     return hr;
@@ -79,32 +89,18 @@ size_t ogl::File::read(Buffer& buff)
     size_t hr = 0;
     int n = -1;
 
-    ogl::Buffer* prePtr = 0;
-    ogl::Buffer* curPtr = &buff;
+    char tmpBuf[BUFSIZ];
 
     while (true)
     {
-        n = ::read(m_handle, curPtr->data(), curPtr->capacity());
+        n = ::read(m_handle, tmpBuf, BUFSIZ);
         if (n <= 0)
         {
             break;
         }
 
         hr += n;
-        curPtr->size(n);
-
-        if (prePtr != 0)
-        {
-            prePtr->append(curPtr);
-        }
-
-        prePtr = curPtr;
-        curPtr = new ogl::Buffer(buff.capacity());
-    }
-
-    if (prePtr != NULL)
-    {
-        delete curPtr;
+        buff.append(tmpBuf, n);
     }
 
     return hr;

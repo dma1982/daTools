@@ -30,7 +30,7 @@ namespace ogl
     {
         m_conf = new Config ();
 
-        m_logLevel = DEBUG;
+        m_logLevel = INFO;
 
         m_memPoolType = NGINX;
         m_masterCliPort = 9080;

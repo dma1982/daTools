@@ -42,10 +42,6 @@ namespace ogl
 
     int HandlerObject::sendResponse(CommandType cmd, Serializable* option)
     {
-        ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
-
-        OGL_LOG_DEBUG("Send command <%s>.", toString(cmd));
-
         int hr = 0;
 
         CommandHeader header(cmd);
@@ -63,28 +59,19 @@ namespace ogl
             header.dataSize(data->length());
         }
 
-        if ( this->msg_queue()->is_empty())
-        {
-            // send command header
-            ACE_Message_Block* headMsg = header.serialize();
-            hr = this->peer().send_n (headMsg->rd_ptr(), headMsg->length());
-            headMsg->release();
+        ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
+        bool wakeupWriter = this->msg_queue()->is_empty();
 
-            // push data to output queue
-            if (data != 0)
-            {
-                this->msg_queue()->enqueue_tail(data);
-                this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
-            }
-        }
-        else
+        // push data to output queue
+        this->msg_queue()->enqueue_tail(header.serialize());
+        if (data != 0)
         {
-            // push data to output queue
-            this->msg_queue()->enqueue_tail(header.serialize());
-            if (data != 0)
-            {
-                this->msg_queue()->enqueue_tail(data);
-            }
+            this->msg_queue()->enqueue_tail(data);
+        }
+
+        if (wakeupWriter)
+        {
+            this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
         }
 
         return 0;
@@ -92,41 +79,40 @@ namespace ogl
 
     int HandlerObject::handle_output (ACE_HANDLE)
     {
-        ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
-
         int hr = 0;
-
-        if (this->msg_queue()->is_empty())
         {
-            this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
+            ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
+            if (this->msg_queue()->is_empty())
+            {
+                this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
+                return 0;
+            }
+        }
+
+        ACE_Message_Block* msg;
+        this->msg_queue()->dequeue_head(msg);
+
+        size_t n;
+        hr = this->peer().send_n (msg, 0, &n);
+
+        if (hr < 0)
+        {
+            // failed to send the message to the client
+            this->msg_queue()->enqueue_head(msg);
+            return 1;
+        }
+        else if (n != msg->length())
+        {
+            // did not send all message, move the read pointer and push it back
+            msg->rd_ptr(n);
+            this->msg_queue()->enqueue_head(msg);
+            return 1;
         }
         else
         {
-            ACE_Message_Block* msg;
-            this->msg_queue()->dequeue_head(msg);
-
-            size_t n;
-            hr = this->peer().send_n (msg, 0, &n);
-
-            if (hr < 0)
-            {
-                // failed to send the message to the client
-                this->msg_queue()->enqueue_head(msg);
-                return 1;
-            }
-            else if (n != msg->length())
-            {
-                // did not send all message, move the read pointer and push it back
-                msg->rd_ptr(n);
-                this->msg_queue()->enqueue_head(msg);
-                return 1;
-            }
-            else
-            {
-                // all message has been sent; release the mesage
-                msg->release();
-                return 0;
-            }
+            // all message has been sent; release the mesage
+            msg->release();
+            return 0;
         }
 
         return 0;
@@ -142,8 +128,6 @@ namespace ogl
         {
             return -1;
         }
-
-        OGL_LOG_DEBUG("Receive command <%s>", toString(header.commandType()));
 
         this->executeRequest(header.commandType(), data);
 
