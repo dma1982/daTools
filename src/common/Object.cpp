@@ -290,12 +290,6 @@ namespace ogl
         m_runnerId = ogl::dumpString(runnerId);
     }
 
-    size_t Header::size()
-    {
-        return sizeof(ACE_CDR::ULong);
-    }
-
-
     JobRunnerOption::JobRunnerOption()
     {
         m_id = ogl::dumpString(ogl::Configuration::instance()->getRunnerId().c_str());
@@ -365,6 +359,23 @@ namespace ogl
     {
         ACE_Message_Block*  headMsg;
 
+        {
+            // send header size first
+            ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+            SERIALIZE_ULONG(os, head.headerSize());
+            ACE_Message_Block* headerSize = os.begin()->duplicate();
+
+            if (handle.send_n(headerSize->rd_ptr(), headerSize->length()) == -1)
+            {
+                headerSize->release();
+                return -1;
+            }
+
+            headerSize->release();
+        }
+
+        // send header datas
+
         head.dataSize(data.length());
 
         headMsg = head.serialize();
@@ -416,16 +427,39 @@ namespace ogl
 
     int recv(ACE_SOCK_Stream& handle, Header& head, ACE_Message_Block& data)
     {
+
+        ACE_CDR::ULong headerSize;
+        ACE_Message_Block* headerSizeMsg;
+        int n = -1;
+
+        {
+            ACE_NEW_RETURN(headerSizeMsg,
+                           ACE_Message_Block(sizeof(headerSize)),
+                           -1);
+
+            n = handle.recv_n(headerSizeMsg->wr_ptr(), sizeof(headerSize));
+
+            if (n < 0)
+            {
+                headerSizeMsg->release();
+                return -1;
+            }
+
+            headerSizeMsg->release();
+
+            ACE_InputCDR is(headerSizeMsg);
+            DESERIALIZE_ULONG(is, headerSize);
+        }
+
         ACE_Message_Block* headMsg;
         ACE_NEW_RETURN(headMsg,
-                       ACE_Message_Block(head.headerSize()),
+                       ACE_Message_Block(headerSize),
                        -1);
 
-        int n = -1;
-        n = handle.recv_n(headMsg->wr_ptr(), head.headerSize());
+        n = handle.recv_n(headMsg->wr_ptr(), headerSize);
 
         // get the data of command header
-        if ( n < 0 || (size_t) n != head.headerSize())
+        if ( n < 0 || (size_t) n != headerSize)
         {
             headMsg->release();
             return -1;

@@ -1,12 +1,12 @@
 #include "Task.h"
-
+#include "Commands.h"
 
 namespace ogl
 {
 
-    int Task::addObserver(ogl::HandlerObject* observer)
+    int Task::addObserver(UUID contextId, ogl::HandlerObject* observer)
     {
-        this->m_observerList.push_back(observer);
+        this->m_observerMap[contextId] = observer;
         return 0;
     }
 
@@ -19,10 +19,12 @@ namespace ogl
     {
         *m_taskOption = taskOption;
 
-        for (std::list<HandlerObject*>::iterator it = m_observerList.begin();
-             it != m_observerList.end(); ++it)
+        for (OGL_TASK_OBSERVER_MAP_ITER it = m_observerMap.begin();
+             it != m_observerMap.end(); ++it)
         {
-            (*it)->sendResponse(FetchTaskOutputComplete, m_taskOption);
+            const char* contextId = (it->first).c_str();
+            ogl::CommandHeader header(FetchTaskOutputComplete, contextId);
+            it->second->sendResponse(header, m_taskOption);
         }
 
         m_completed = true;

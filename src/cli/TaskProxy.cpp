@@ -3,13 +3,15 @@
 #include "Exception.h"
 #include "TaskProxy.h"
 
+#include "JobManagerProxy.h"
+
 namespace ogl
 {
-    TaskProxy::TaskProxy() : m_jmServer(0)
+    TaskProxy::TaskProxy() : m_jobManagerProxy(0)
     {
     }
 
-    TaskProxy::TaskProxy(ACE_Message_Block* msg, ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
+    TaskProxy::TaskProxy(ACE_Message_Block* msg, JobManagerProxy* jobManager) : m_jobManagerProxy(jobManager)
     {
         m_taskOption.deserialize(msg);
     }
@@ -20,6 +22,27 @@ namespace ogl
 
     int TaskProxy::output(char* data, size_t& size)
     {
+
+        ClientAction action(this->m_jobManagerProxy);
+
+        action.submit(ogl::FetchTaskOutputCommand, &m_taskOption);
+
+        action.wait();
+
+        if (action.returnCode() == ogl::FetchTaskOutputFailed)
+        {
+            OGL_THROW_EXCEPTION("Failed to fetch task output.");
+        }
+
+        m_taskOption.deserialize(action.getResponse());
+
+        size = m_taskOption.taskOutput().size();
+        ACE_OS::memcpy(data, m_taskOption.taskOutput().data(), size);
+
+        return 0;
+
+
+        /*
         ogl::CommandHeader cmdHeader(ogl::FetchTaskOutputCommand);
 
         if (ogl::send(*m_jmServer, cmdHeader, &m_taskOption) < 0)
@@ -46,6 +69,7 @@ namespace ogl
         ACE_OS::memcpy(data, m_taskOption.taskOutput().data(), size);
 
         return 0;
+        */
     }
 
     int TaskProxy::exitCode()

@@ -3,7 +3,7 @@
 
 #include "Object.h"
 #include "Commands.h"
-#include "Connection.h"
+#include "JobManagerProxy.h"
 #include "JobProxy.h"
 #include "TaskProxy.h"
 #include "Exception.h"
@@ -25,7 +25,7 @@ void print_help()
         "\n"
         "Home & Bugs: <https://github.com/dma1982/ogl>\n";
 
-        cout << help << endl;
+    cout << help << endl;
 }
 
 void printTaskInfo(TaskProxy* task)
@@ -81,9 +81,9 @@ int main(int argc, char** argv)
 
     try
     {
-        Connection connection;
+        JobManagerProxy jobManager;
 
-        JobProxy* job = connection.addJob(&jobOption);
+        JobProxy* job = jobManager.addJob(&jobOption);
 
         printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().id()));
 

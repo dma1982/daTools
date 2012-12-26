@@ -1,17 +1,20 @@
 #ifndef __OGL_JOB_PROXY_H__
 #define __OGL_JOB_PROXY_H__
 
-#include <ace/SOCK_Connector.h>
+#include "Object.h"
+#include "Network.h"
 
 namespace ogl
 {
     class TaskOption;
     class TaskProxy;
 
+    class JobManagerProxy;
+
     class JobProxy
     {
         public:
-            JobProxy (ACE_Message_Block* msg, ACE_SOCK_Stream*);
+            JobProxy (ACE_Message_Block* msg, JobManagerProxy*);
             TaskProxy* addTask(TaskOption* taskOption);
 
             int closeJob();
@@ -20,7 +23,7 @@ namespace ogl
 
         private:
             JobOption m_jobOption;
-            ACE_SOCK_Stream* m_jmServer;
+            JobManagerProxy* m_jobManagerProxy;
     };
 }
 

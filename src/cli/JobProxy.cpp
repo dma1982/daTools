@@ -5,6 +5,8 @@
 #include "JobProxy.h"
 #include "TaskProxy.h"
 
+#include "JobManagerProxy.h"
+
 namespace ogl
 {
 
@@ -13,13 +15,28 @@ namespace ogl
         return m_jobOption;
     }
 
-    JobProxy::JobProxy(ACE_Message_Block* msg, ACE_SOCK_Stream* jmServer) : m_jmServer(jmServer)
+    JobProxy::JobProxy(ACE_Message_Block* msg, JobManagerProxy* jobManager) : m_jobManagerProxy(jobManager)
     {
         m_jobOption.deserialize(msg);
     }
 
     int JobProxy::closeJob()
     {
+
+        ClientAction action(this->m_jobManagerProxy);
+
+        action.submit(ogl::CloseJobCommand, &m_jobOption);
+
+        action.wait();
+
+        if (action.returnCode() == ogl::CloseJobFailed)
+        {
+            OGL_THROW_EXCEPTION("Failed to close job.");
+        }
+
+        return 0;
+
+        /*
         ogl::CommandHeader cmdHeader(ogl::CloseJobCommand);
 
         if (ogl::send(*m_jmServer, cmdHeader, &m_jobOption) < 0)
@@ -39,8 +56,9 @@ namespace ogl
         {
             OGL_THROW_EXCEPTION("Failed to close job.");
         }
+        */
 
-        return 0;
+        // return 0;
     }
 
     TaskProxy* JobProxy::addTask(TaskOption* taskOption)
@@ -48,6 +66,22 @@ namespace ogl
         ogl::CommandHeader cmdHeader(ogl::CreateTaskCommand);
 
         taskOption->jobId(m_jobOption.id());
+
+
+        ClientAction action(this->m_jobManagerProxy);
+
+        action.submit(ogl::CreateTaskCommand, taskOption);
+
+        action.wait();
+
+        if (action.returnCode() == ogl::CreateTaskFailed)
+        {
+            OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", action.returnCode());
+        }
+
+        return new TaskProxy(action.getResponse(), m_jobManagerProxy);
+
+        /*
 
         if (ogl::send(*m_jmServer, cmdHeader, taskOption) < 0)
         {
@@ -68,5 +102,6 @@ namespace ogl
         }
 
         return new TaskProxy(&msg, m_jmServer);
+        */
     }
 }

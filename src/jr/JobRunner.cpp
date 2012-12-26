@@ -34,12 +34,12 @@ namespace ogl
         return 0;
     }
 
-    int JobRunner::BindJobRunner(ogl::JobOption& jobOption)
+    int JobRunner::BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption)
     {
         ACE_Message_Block* msg ;
         ogl::Command* cmd ;
 
-        ACE_NEW_RETURN(cmd, Command(BindJobRunnerCommand), -1);
+        ACE_NEW_RETURN(cmd, Command(header), -1);
         ACE_NEW_RETURN(cmd->m_option, ogl::JobOption(jobOption), -1);
         ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
@@ -47,7 +47,7 @@ namespace ogl
         return 0;
     }
 
-    int JobRunner::bindJobRunner(ogl::JobOption* jobOption)
+    int JobRunner::bindJobRunner(ogl::CommandHeader& header, ogl::JobOption* jobOption)
     {
         releaseObject<ACE_Process_Options>(m_taskProcessOption);
 
@@ -55,15 +55,17 @@ namespace ogl
 
         m_taskProcessOption->command_line(jobOption->command());
 
-        return sendResponse(BindJobRunnerComplete, jobOption);
+        CommandHeader respHeader(BindJobRunnerComplete, header.contextId());
+
+        return sendResponse(respHeader, jobOption);
     }
 
-    int JobRunner::ExecuteTask(ogl::TaskOption& taskOption)
+    int JobRunner::ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
     {
         ACE_Message_Block* msg ;
         Command* cmd ;
 
-        ACE_NEW_RETURN(cmd, Command(ExecuteTaskCommand), -1);
+        ACE_NEW_RETURN(cmd, Command(header), -1);
         ACE_NEW_RETURN(cmd->m_option, ogl::TaskOption(taskOption), -1);
         ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
@@ -71,7 +73,7 @@ namespace ogl
         return 0;
     }
 
-    int JobRunner::executeTask(ogl::TaskOption* taskOption)
+    int JobRunner::executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption)
     {
         ACE_Process task;
 
@@ -111,12 +113,14 @@ namespace ogl
 
         task.wait();
 
-        return sendResponse(ExecuteTaskComplete, taskOption);
+        CommandHeader respHeader(ExecuteTaskComplete, header.contextId());
+
+        return sendResponse(respHeader, taskOption);
     }
 
-    int JobRunner::sendResponse(CommandType cmd, Serializable* data)
+    int JobRunner::sendResponse(CommandHeader& header, Serializable* data)
     {
-        return this->m_jobRunnerManager->sendResponse(cmd, data);
+        return this->m_jobRunnerManager->sendResponse(header, data);
     }
 
     int JobRunner::svc()
@@ -132,23 +136,24 @@ namespace ogl
 
             Command* cmd = reinterpret_cast<Command*>(msg->rd_ptr());
 
-            switch (cmd->m_command)
+            switch (cmd->m_header->commandType())
             {
             case RegisterJobRunnerCommand:
             {
-                sendResponse(RegisterJobRunnerCommand, m_jobRunnerOption);
+                CommandHeader header(RegisterJobRunnerCommand, m_jobRunnerOption->id());
+                sendResponse(header, m_jobRunnerOption);
                 break;
             }
 
             case BindJobRunnerCommand:
             {
-                this->bindJobRunner(dynamic_cast<ogl::JobOption*>(cmd->m_option));
+                this->bindJobRunner(*(cmd->m_header), dynamic_cast<ogl::JobOption*>(cmd->m_option));
                 break;
             }
 
             case ExecuteTaskCommand:
             {
-                this->executeTask(dynamic_cast<ogl::TaskOption*>(cmd->m_option));
+                this->executeTask(*(cmd->m_header), dynamic_cast<ogl::TaskOption*>(cmd->m_option));
                 break;
             }
             default:

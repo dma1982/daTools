@@ -64,39 +64,43 @@ namespace ogl
 
             CommandHeader () { };
 
-            CommandHeader (CommandType ct) : m_type(ct) { };
+            CommandHeader (CommandType ct, const char* contextId = 0);
+
+            CommandHeader (const CommandHeader& header);
+
+            CommandHeader& operator= (const CommandHeader& header);
+
+            void updateCommandType(CommandType ct)
+            {
+                m_type = ct;
+            }
 
             CommandType commandType()
             {
                 return (CommandType) m_type;
             };
 
-            static size_t size()
-            {
-                return sizeof(ACE_CDR::ULong) + Header::size();
-            };
+            virtual UUID contextId();
 
-            virtual size_t headerSize()
-            {
-                return CommandHeader::size();
-            };
-
-            static CommandHeader* build(ACE_Message_Block* data);
+            virtual size_t headerSize();
 
             virtual ACE_Message_Block* serialize();
             virtual void deserialize(ACE_Message_Block* );
 
         private:
             ACE_CDR::ULong m_type;
+            UUID m_contextId;
+            ACE_CDR::ULong m_contextIdLength;
     };
 
     class Command
     {
         public:
-            Command(CommandType cmd = Unknown, Serializable* opt = 0, ACE_Message_Block* rawData = 0 ):
-                    m_command(cmd), m_option(opt), m_rawData(rawData) {};
+            Command(const CommandHeader& header , Serializable* opt = 0, ACE_Message_Block* rawData = 0 );
 
-            CommandType m_command;
+            ~Command();
+
+            CommandHeader* m_header;
             Serializable* m_option;
             ACE_Message_Block* m_rawData;
     };

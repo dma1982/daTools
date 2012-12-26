@@ -2,15 +2,19 @@
 #define __OGL_TASK_PROXY_H__
 
 #include "Object.h"
+#include "Network.h"
 #include <ace/SOCK_Connector.h>
 
 namespace ogl
 {
+
+    class JobManagerProxy;
+
     class TaskProxy
     {
         public:
             TaskProxy();
-            TaskProxy(ACE_Message_Block*, ACE_SOCK_Stream*);
+            TaskProxy(ACE_Message_Block*, JobManagerProxy*);
             ~TaskProxy();
 
             int output(char* data, size_t& size);
@@ -19,7 +23,7 @@ namespace ogl
 
         private:
             TaskOption m_taskOption;
-            ACE_SOCK_Stream* m_jmServer;
+            JobManagerProxy* m_jobManagerProxy;
     };
 }
 

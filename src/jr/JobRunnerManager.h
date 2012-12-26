@@ -13,15 +13,15 @@ namespace ogl
     {
         public:
             // bind the job runner to a job
-            int BindJobRunner(ogl::JobOption& jobOption);
+            int BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption);
 
             // execute a task of the job
-            int ExecuteTask(ogl::TaskOption& taskOption);
+            int ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption);
 
             // start all JobRunner
             int StartJobRunnerManager();
 
-            virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
+            virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
 
         private:
             std::map<std::string, JobRunner*> m_jobRunners;

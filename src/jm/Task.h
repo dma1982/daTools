@@ -7,6 +7,7 @@
 #include <string>
 
 #include <list>
+#include <map>
 
 #include "Network.h"
 
@@ -33,7 +34,7 @@ namespace ogl
                 return m_taskOption;
             }
 
-            int addObserver(ogl::HandlerObject*);
+            int addObserver(UUID id, ogl::HandlerObject*);
 
             bool isCompleted();
 
@@ -44,9 +45,12 @@ namespace ogl
                 return m_taskOption->taskId();
             };
 
+            typedef std::map<std::string, HandlerObject*> OGL_TASK_OBSERVER_MAP;
+            typedef std::map<std::string, HandlerObject*>::iterator OGL_TASK_OBSERVER_MAP_ITER;
+
         private:
             TaskOption* m_taskOption;
-            std::list<HandlerObject*> m_observerList;
+            OGL_TASK_OBSERVER_MAP m_observerMap;
             bool m_completed;
     };
 }

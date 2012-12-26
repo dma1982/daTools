@@ -40,10 +40,8 @@ namespace ogl
         return 0;
     }
 
-    int HandlerObject::sendResponse(CommandType cmd, Serializable* option)
+    int HandlerObject::sendResponse(ogl::CommandHeader& header, Serializable* option)
     {
-        CommandHeader header(cmd);
-
         ACE_Message_Block* data = 0;
 
         if (option != 0)
@@ -59,6 +57,13 @@ namespace ogl
 
         ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
         bool wakeupWriter = this->msg_queue()->is_empty();
+
+        // send header size first
+        {
+            ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+            SERIALIZE_ULONG(os, header.headerSize());
+            this->msg_queue()->enqueue_tail(os.begin()->duplicate());
+        }
 
         // push data to output queue
         this->msg_queue()->enqueue_tail(header.serialize());
@@ -122,12 +127,14 @@ namespace ogl
         CommandHeader header;
         ACE_Message_Block data;
 
+        // receive header size
         if (ogl::recv(this->peer(), header, data) < 0)
         {
             return -1;
         }
 
-        this->executeRequest(header.commandType(), data);
+        // receive data
+        this->executeRequest(header, data);
 
         return 0;
     }
@@ -149,4 +156,101 @@ namespace ogl
         return 0;
     }
 
+    int ClientActionManager::registerAction(UUID uuid, ClientAction* action)
+    {
+        m_clientActionMap[uuid] = action;
+        return 1;
+    }
+
+    int ClientActionManager::signalAction(ogl::CommandHeader& header, ACE_Message_Block* data)
+    {
+
+        if (header.contextId() == 0)
+        {
+            return OGL_FAILED;
+        }
+
+        ClientAction* action = m_clientActionMap[header.contextId()];
+
+        if (action != 0)
+        {
+
+            action->returnCode(header.commandType());
+            action->setResponse(data);
+
+            return action->signal();
+        }
+
+        return OGL_FAILED;
+    }
+
+    ClientActionManager::~ClientActionManager()
+    {
+    }
+
+    ACE_Utils::UUID_Generator ClientAction::m_guidGenerator;
+
+    ClientAction::~ClientAction()
+    {
+        ogl::releaseString(m_contextId);
+    }
+
+    ClientAction::ClientAction(ClientActionManager* manager)
+    {
+        this->m_clientActionManager = manager;
+
+        ACE_Utils::UUID guid;
+        m_guidGenerator.generate_UUID(guid);
+        m_contextId = ogl::dumpString(guid.to_string()->c_str());
+
+        this->m_clientActionManager->registerAction(m_contextId, this);
+
+        m_event.reset();
+    }
+
+    int ClientAction::wait()
+    {
+        return m_event.wait();
+    }
+
+    int ClientAction::signal()
+    {
+        return m_event.signal();
+    }
+
+    void ClientAction::contextId(UUID id)
+    {
+        m_contextId = ogl::dumpString(id);
+    }
+
+    char* ClientAction::contextId()
+    {
+        return m_contextId;
+    }
+
+    int ClientAction::submit(ogl::CommandType cmd, Serializable* data)
+    {
+        ogl::CommandHeader header(cmd, m_contextId);
+        return this->m_clientActionManager->sendResponse(header, data);
+    }
+
+    void ClientAction::setResponse(ACE_Message_Block* msg)
+    {
+        m_response = msg;
+    }
+
+    ACE_Message_Block* ClientAction::getResponse()
+    {
+        return m_response;
+    }
+
+    void ClientAction::returnCode(int rc)
+    {
+        m_returnCode = rc;
+    }
+
+    int ClientAction::returnCode()
+    {
+        return m_returnCode;
+    }
 };

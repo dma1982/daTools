@@ -132,7 +132,6 @@ namespace ogl
     class Header : public Serializable
     {
         public:
-            static size_t size();
 
             virtual size_t headerSize() = 0;
 

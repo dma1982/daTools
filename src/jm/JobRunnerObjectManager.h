@@ -62,7 +62,7 @@ namespace ogl
 
             int getAllRunners(std::list<JobRunnerObject*>& runnerList);
 
-            virtual int executeRequest(CommandType cmd, ACE_Message_Block& data );
+            virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data );
 
             const char* id();
 

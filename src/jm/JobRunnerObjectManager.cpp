@@ -29,7 +29,9 @@ namespace ogl
         ogl::JobOption jobOption(*(job->jobOption()));
         jobOption.runnerId(this->id());
 
-        return this->m_jrmObject->sendResponse(BindJobRunnerCommand, &jobOption);
+        ogl::CommandHeader header(BindJobRunnerCommand, this->id());
+
+        return this->m_jrmObject->sendResponse(header, &jobOption);
     }
 
     int JobRunnerObject::ExecuteTask(ogl::Task* task)
@@ -39,7 +41,9 @@ namespace ogl
         ogl::TaskOption taskOption(*(task->taskOption()));
         taskOption.runnerId(this->id());
 
-        return this->m_jrmObject->sendResponse(ExecuteTaskCommand, &taskOption);
+        ogl::CommandHeader header(ExecuteTaskCommand, this->id());
+
+        return this->m_jrmObject->sendResponse(header, &taskOption);
     }
 
     int JobRunnerObject::ExecuteTaskResult(ogl::TaskOption& taskOption)
@@ -126,7 +130,9 @@ namespace ogl
 
         m_jobRunnerMap[jobRunner->id()] = jobRunner;
 
-        return HandlerObject::sendResponse(RegisterJobRunnerComplete, jobRunner->runnerOption());;
+        ogl::CommandHeader header(RegisterJobRunnerComplete, jobRunner->id());
+
+        return HandlerObject::sendResponse(header, jobRunner->runnerOption());;
     }
 
     int JobRunnerManagerObject::getAllRunners(std::list<JobRunnerObject*>& runnerList)
@@ -143,9 +149,9 @@ namespace ogl
         return i;
     }
 
-    int JobRunnerManagerObject::executeRequest(CommandType cmd, ACE_Message_Block& data)
+    int JobRunnerManagerObject::executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data)
     {
-        switch (cmd)
+        switch (cmd.commandType())
         {
         case RegisterJobRunnerCommand:
         {

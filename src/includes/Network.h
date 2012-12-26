@@ -3,9 +3,13 @@
 
 #include "ogl.h"
 
+#include <ace/ACE.h>
+#include <ace/UUID.h>
+
 #include <ace/INET_Addr.h>
 
 #include <ace/Acceptor.h>
+#include <ace/Event.h>
 #include <ace/SOCK_Acceptor.h>
 #include <ace/Connector.h>
 #include <ace/SOCK_Connector.h>
@@ -29,9 +33,9 @@ namespace ogl
             virtual int close (u_long flags = 0);
 
             virtual int recvRequest();
-            virtual int executeRequest(CommandType cmd, ACE_Message_Block& data) = 0;
+            virtual int executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data) = 0;
 
-            virtual int sendResponse(CommandType cmd, Serializable* data = 0);
+            virtual int sendResponse(ogl::CommandHeader& header, Serializable* data = 0);
 
             virtual int handle_output (ACE_HANDLE);
             virtual int handle_input (ACE_HANDLE);
@@ -42,6 +46,59 @@ namespace ogl
             ACE_Thread_Mutex m_send_mutex;
             ACE_Thread_Mutex m_recv_mutex;
     };
+
+
+    class ClientAction;
+
+    class ClientActionManager : public HandlerObject
+    {
+        public:
+
+            virtual ~ClientActionManager();
+
+            virtual int registerAction(UUID uuid, ClientAction* action);
+            virtual int signalAction(ogl::CommandHeader& header, ACE_Message_Block* data);
+
+        protected:
+            std::map<std::string, ClientAction*> m_clientActionMap;
+    };
+
+    class ClientAction
+    {
+        public:
+
+            ClientAction(ClientActionManager* manager);
+
+            ~ClientAction();
+
+            virtual int wait();
+            virtual int signal();
+
+            virtual int submit(ogl::CommandType cmd, Serializable* data);
+
+            virtual void setResponse(ACE_Message_Block* msg);
+            virtual ACE_Message_Block* getResponse();
+
+            virtual void returnCode(int rc);
+            virtual int returnCode();
+
+            virtual void contextId(UUID id);
+            virtual char* contextId();
+
+        private:
+            ACE_Event m_event;
+            ACE_Message_Block* m_response;
+
+            int m_returnCode;
+
+            ClientActionManager* m_clientActionManager;
+
+            UUID m_contextId;
+
+            static ACE_Utils::UUID_Generator m_guidGenerator;
+
+    };
+
 
     template <class SA>
     class Server : public ACE_Task<ACE_MT_SYNCH>

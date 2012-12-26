@@ -1,5 +1,8 @@
+#include "ogl.h"
+
 #include "JobRunnerManager.h"
 #include "JobRunner.h"
+
 
 namespace ogl
 {
@@ -18,35 +21,34 @@ namespace ogl
         return n;
     }
 
-    int JobRunnerManager::BindJobRunner(ogl::JobOption& jobOption)
+    int JobRunnerManager::BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption)
     {
-        JobRunner* jobRunner = m_jobRunners[jobOption.runnerId()];
-        return jobRunner->BindJobRunner(jobOption);
+        JobRunner* jobRunner = m_jobRunners[header.contextId()];
+        return jobRunner->BindJobRunner(header, jobOption);
     }
 
-    int JobRunnerManager::ExecuteTask(ogl::TaskOption& taskOption)
+    int JobRunnerManager::ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
     {
-        JobRunner* jobRunner = m_jobRunners[taskOption.runnerId()];
-        return jobRunner->ExecuteTask(taskOption);
+        JobRunner* jobRunner = m_jobRunners[header.contextId()];
+        return jobRunner->ExecuteTask(header, taskOption);
     }
 
-
-    int JobRunnerManager::executeRequest(CommandType cmd, ACE_Message_Block& data)
+    int JobRunnerManager::executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)
     {
-        switch (cmd)
+        switch (header.commandType())
         {
         case ExecuteTaskCommand:
         {
             ogl::TaskOption taskOption;
             taskOption.deserialize(&data);
-            ExecuteTask(taskOption);
+            ExecuteTask(header, taskOption);
             break;
         }
         case BindJobRunnerCommand:
         {
             ogl::JobOption jobOption;
             jobOption.deserialize(&data);
-            BindJobRunner(jobOption);
+            BindJobRunner(header, jobOption);
             break;
         }
         default:

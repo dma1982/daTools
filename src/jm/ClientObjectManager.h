@@ -13,11 +13,12 @@ namespace ogl
     {
         public:
             ClientHandlerObject();
-            virtual int CreateJob(ogl::JobOption& );
-            virtual int CloseJob(ogl::JobOption& );
-            virtual int CreateTask(ogl::TaskOption& );
-            virtual int FetchTaskOutput(ogl::TaskOption& taskOption);
-            virtual int executeRequest(CommandType cmd, ACE_Message_Block& data);
+            virtual int CreateJob(ogl::CommandHeader& , ogl::JobOption& );
+            virtual int CloseJob(ogl::CommandHeader&, ogl::JobOption& );
+            virtual int CreateTask(ogl::CommandHeader&, ogl::TaskOption& );
+            virtual int FetchTaskOutput(ogl::CommandHeader&, ogl::TaskOption& taskOption);
+
+            virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
         private:
             JobManager* m_jobManager;
     };

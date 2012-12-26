@@ -23,16 +23,16 @@ namespace ogl
 
             int RegisterJobRunner();
 
-            int ExecuteTask(ogl::TaskOption& taskOption);
+            int ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption);
 
-            int BindJobRunner(ogl::JobOption& jobOption);
+            int BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption);
 
         private:
-            int executeTask(ogl::TaskOption* taskOption);
+            int executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption);
 
-            int sendResponse(CommandType cmd, Serializable* data);
+            int sendResponse(ogl::CommandHeader& header, Serializable* data);
 
-            int bindJobRunner(ogl::JobOption* jobOption);
+            int bindJobRunner(ogl::CommandHeader& header, ogl::JobOption* jobOption);
 
             ogl::JobRunnerOption* m_jobRunnerOption;
 
