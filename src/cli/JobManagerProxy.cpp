@@ -49,28 +49,11 @@ namespace ogl
 
         action.wait();
 
-        if (action.returnCode() != 0)
+        if (action.returnCode() == ogl::CreateJobFailed)
         {
             OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
         }
 
         return new JobProxy(action.getResponse(), this);
-
-        /*
-        ACE_Message_Block msg;
-        ogl::CommandHeader respHeader;
-
-        if (ogl::recv(*m_jmServer, respHeader, msg) < 0)
-        {
-            OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
-        }
-
-        if (respHeader.commandType() == ogl::CreateJobFailed)
-        {
-            OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.commandType());
-        }
-
-        return new JobProxy(&msg, m_jmServer);
-        */
     }
 };

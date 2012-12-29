@@ -22,8 +22,8 @@ namespace ogl
 
             virtual int executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data);
 
-            JobManagerProxy* createInstance();
-            void destroyInstance(JobManagerProxy* proxy);
+            static JobManagerProxy* createInstance();
+            static void destroyInstance(JobManagerProxy* proxy);
 
         private:
             std::list<JobProxy*> m_jobProxyList;

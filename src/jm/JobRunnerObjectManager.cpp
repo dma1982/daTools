@@ -10,9 +10,9 @@ namespace ogl
      * JobRunnerObject
      */
 
-    JobRunnerObject::JobRunnerObject(JobRunnerManagerObject* jrmObject, const JobRunnerOption& jobRunnerOption)
+    JobRunnerObject::JobRunnerObject(JobRunnerManagerObject* jrmObject, const JobRunnerOption& jobRunnerOption):
+            m_jrmObject(jrmObject), m_job(NULL)
     {
-        m_jrmObject = jrmObject;
         ACE_NEW_NORETURN(m_jobRunnerOption, JobRunnerOption(jobRunnerOption));
     }
 
@@ -26,6 +26,8 @@ namespace ogl
     {
         m_job = job;
 
+        OGL_LOG_DEBUG("BindJobRunner in JobRunnerObject");
+
         ogl::JobOption jobOption(*(job->jobOption()));
         jobOption.runnerId(this->id());
 
@@ -37,6 +39,8 @@ namespace ogl
     int JobRunnerObject::ExecuteTask(ogl::Task* task)
     {
         m_task = task;
+
+        OGL_LOG_DEBUG("ExecuteTask in JobRunnerObject");
 
         ogl::TaskOption taskOption(*(task->taskOption()));
         taskOption.runnerId(this->id());

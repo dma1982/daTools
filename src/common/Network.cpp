@@ -56,12 +56,16 @@ namespace ogl
         }
 
         ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
+
+        OGL_LOG_DEBUG("Send command <%s>", toString(header.commandType()));
+
         bool wakeupWriter = this->msg_queue()->is_empty();
 
         // send header size first
         {
             ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
             SERIALIZE_ULONG(os, header.headerSize());
+            // the message block will be released in handle_output
             this->msg_queue()->enqueue_tail(os.begin()->duplicate());
         }
 
@@ -132,6 +136,8 @@ namespace ogl
         {
             return -1;
         }
+
+        OGL_LOG_DEBUG("Receive command <%s>", toString(header.commandType()));
 
         // receive data
         this->executeRequest(header, data);

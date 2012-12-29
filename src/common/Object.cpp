@@ -444,11 +444,15 @@ namespace ogl
                 headerSizeMsg->release();
                 return -1;
             }
-
-            headerSizeMsg->release();
+            else
+            {
+                headerSizeMsg->wr_ptr(n);
+            }
 
             ACE_InputCDR is(headerSizeMsg);
             DESERIALIZE_ULONG(is, headerSize);
+
+            headerSizeMsg->release();
         }
 
         ACE_Message_Block* headMsg;

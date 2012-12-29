@@ -81,9 +81,9 @@ int main(int argc, char** argv)
 
     try
     {
-        JobManagerProxy jobManager;
+        JobManagerProxy* jobManager = JobManagerProxy::createInstance();
 
-        JobProxy* job = jobManager.addJob(&jobOption);
+        JobProxy* job = jobManager->addJob(&jobOption);
 
         printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().id()));
 

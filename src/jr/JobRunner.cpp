@@ -49,6 +49,12 @@ namespace ogl
 
     int JobRunner::bindJobRunner(ogl::CommandHeader& header, ogl::JobOption* jobOption)
     {
+
+        OGL_LOG_DEBUG("bind job runner for job id: <%d>, runner id: <%s>",
+                      (int)jobOption->id(),
+                      jobOption->runnerId());
+
+
         releaseObject<ACE_Process_Options>(m_taskProcessOption);
 
         ACE_NEW_RETURN(m_taskProcessOption, ACE_Process_Options(), -1);
@@ -75,6 +81,12 @@ namespace ogl
 
     int JobRunner::executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption)
     {
+
+        OGL_LOG_DEBUG("Execute task for job id: <%d>, task id: <%d>, runner id: <%s>",
+                      (int)taskOption->jobId(),
+                      (int)taskOption->taskId(),
+                      taskOption->runnerId());
+
         ACE_Process task;
 
         ACE_HANDLE taskOutput[2];
