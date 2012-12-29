@@ -6,6 +6,8 @@
 
 #include <libconfig.h++>
 
+#include <ace/OS.h>
+
 using namespace std;
 using namespace libconfig;
 
@@ -38,7 +40,9 @@ namespace ogl
         m_masterHost = "localhost";
         m_runnerId = "test";
 
-        this->read("ogl.conf");
+        char* oglConf = ACE_OS::getenv("OGL_CONF");
+
+        this->read(oglConf);
     }
 
     Configuration::~Configuration()

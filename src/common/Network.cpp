@@ -3,8 +3,14 @@
 
 #include <stdio.h>
 
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+
 namespace ogl
 {
+
+	LoggerPtr HandlerObject::m_logger = log4cxx::Logger::getLogger("ogl.HandlerObject");
+
     int HandlerObject::open(void *)
     {
         ACE_INET_Addr addr;

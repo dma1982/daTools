@@ -7,6 +7,8 @@
 #include <map>
 #include <list>
 
+#include <log4cxx/logger.h>
+
 #include "Commands.h"
 #include "Job.h"
 #include "ogl.h"
@@ -29,6 +31,8 @@ namespace ogl
             int getAllJobs(std::list<Job*>& jobList);
 
         private:
+
+			static log4cxx::LoggerPtr m_logger;
 
             std::map<JobId, Job*> m_jobs;
             JobId m_nextJobId;

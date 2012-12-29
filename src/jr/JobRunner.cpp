@@ -5,6 +5,8 @@
 namespace ogl
 {
 
+	log4cxx::LoggerPtr JobRunner::m_logger(log4cxx::Logger::getLogger("ogl.JobRunner"));
+
     JobRunner::JobRunner(ogl::JobRunnerManager* jobRunnerManager) : m_jobRunnerManager(jobRunnerManager)
     {
         ACE_NEW_NORETURN(m_jobRunnerOption, ogl::JobRunnerOption());

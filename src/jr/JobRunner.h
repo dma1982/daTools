@@ -28,6 +28,9 @@ namespace ogl
             int BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption);
 
         private:
+
+			static log4cxx::LoggerPtr m_logger;
+
             int executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption);
 
             int sendResponse(ogl::CommandHeader& header, Serializable* data);

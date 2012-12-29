@@ -41,6 +41,8 @@ namespace ogl
 
         private:
 
+			static log4cxx::LoggerPtr m_logger;
+
             JobRunnerManagerObject* m_jrmObject;
             JobRunnerOption* m_jobRunnerOption;
 

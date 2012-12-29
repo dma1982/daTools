@@ -10,6 +10,8 @@ int main(int argc, char** argv)
 {
     ACE::init();
 
+	log4cxx::LoggerPtr m_logger(log4cxx::Logger::getLogger("ogl.JobManagerDaemon"));
+
     // start job manager
     try
     {

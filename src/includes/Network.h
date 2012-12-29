@@ -19,6 +19,8 @@
 
 #include <ace/Task.h>
 
+#include <log4cxx/logger.h>
+
 #include "Commands.h"
 
 #include "Exception.h"
@@ -43,6 +45,9 @@ namespace ogl
                                       ACE_Reactor_Mask);
 
         private:
+
+			static log4cxx::LoggerPtr m_logger;
+
             ACE_Thread_Mutex m_send_mutex;
             ACE_Thread_Mutex m_recv_mutex;
     };

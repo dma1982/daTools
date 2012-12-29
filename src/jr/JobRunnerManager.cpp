@@ -6,6 +6,9 @@
 
 namespace ogl
 {
+
+	log4cxx::LoggerPtr JobRunnerManager::m_logger(log4cxx::Logger::getLogger("ogl.JobRunnerManager"));
+
     int JobRunnerManager::StartJobRunnerManager()
     {
         int n = 1;

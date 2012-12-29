@@ -10,6 +10,8 @@ int main(int argc, char** argv)
 
     ACE::init();
 
+	log4cxx::LoggerPtr m_logger(log4cxx::Logger::getLogger("ogl.JobRunnerDaemon"));
+
     try
     {
         ogl::JMCLI::instance()->start(ogl::Configuration::instance()->getMasterHost(),

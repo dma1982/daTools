@@ -5,6 +5,9 @@
 #include "conf.h"
 #include <string>
 #include <cstdio>
+#include <cassert>
+
+#include <log4cxx/logger.h>
 
 namespace ogl
 {
@@ -51,34 +54,33 @@ namespace ogl
 
 }
 
-#define __OGL_LOG_MSG(fmt, ...) \
-    int __n = sprintf(__buf, "{%s:%d} ", __FILE__, __LINE__); \
-    ogl::logger->Assert(__n >= 0); \
-    sprintf(__buf + __n, fmt, ##__VA_ARGS__); \
-    ogl::logger->Assert(__buf[BUFSIZ - 1] == 0); \
+#define __OGL_LOG_MSG(fmt, ...)					  \
+    int __n = sprintf(__buf, fmt, ##__VA_ARGS__); \
+	__buf[__n] = 0;								  \
+    assert(__buf[BUFSIZ - 1] == 0);				  \
  
-#define OGL_LOG_DEBUG(fmt, ...) do { \
-    char __buf[BUFSIZ] = {0}; \
-    __OGL_LOG_MSG(fmt, ##__VA_ARGS__); \
-    ogl::logger->Debug(__buf); \
-} while(0)
+#define OGL_LOG_DEBUG(fmt, ...) do {			\
+		char __buf[BUFSIZ] = {0};				\
+		__OGL_LOG_MSG(fmt, ##__VA_ARGS__);		\
+		LOG4CXX_DEBUG(m_logger, __buf);			\
+	} while(0)
 
-#define OGL_LOG_WARN(fmt, ...) do { \
-    char __buf[BUFSIZ] = {0}; \
-    __OGL_LOG_MSG(fmt, ##__VA_ARGS__); \
-    ogl::logger->Warn(__buf); \
-} while(0)
+#define OGL_LOG_WARN(fmt, ...) do {				\
+		char __buf[BUFSIZ] = {0};				\
+		__OGL_LOG_MSG(fmt, ##__VA_ARGS__);		\
+		LOG4CXX_WARN(m_logger, __buf);			\
+	} while(0)
 
-#define OGL_LOG_INFO(fmt, ...) do { \
-    char __buf[BUFSIZ] = {0}; \
-    __OGL_LOG_MSG(fmt, ##__VA_ARGS__); \
-    ogl::logger->Info(__buf); \
-} while(0)
+#define OGL_LOG_INFO(fmt, ...) do {				\
+		char __buf[BUFSIZ] = {0};				\
+		__OGL_LOG_MSG(fmt, ##__VA_ARGS__);		\
+		LOG4CXX_INFO(m_logger, __buf);			\
+	} while(0)
 
-#define OGL_LOG_ERROR(fmt, ...) do { \
-    char __buf[BUFSIZ] = {0}; \
-    __OGL_LOG_MSG(fmt, ##__VA_ARGS__); \
-    ogl::logger->Error(__buf); \
-} while(0)
+#define OGL_LOG_ERROR(fmt, ...) do {			\
+		char __buf[BUFSIZ] = {0};				\
+		__OGL_LOG_MSG(fmt, ##__VA_ARGS__);		\
+		LOG4CXX_ERROR(m_logger, __buf);			\
+	} while(0)
 
 #endif

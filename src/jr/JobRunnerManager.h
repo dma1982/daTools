@@ -24,6 +24,9 @@ namespace ogl
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
 
         private:
+			
+			static log4cxx::LoggerPtr m_logger;
+			
             std::map<std::string, JobRunner*> m_jobRunners;
 
     };
