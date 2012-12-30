@@ -9,6 +9,8 @@
 
 #include <libconfig.h++>
 
+#include <log4cxx/logger.h>
+
 #define OGL_MASTER_HOST "ogl.master"
 #define OGL_MASTER_JR_PORT "ogl.port.jr"
 #define OGL_MASTER_CLI_PORT "ogl.port.cli"
@@ -66,8 +68,13 @@ namespace ogl
 
             LOG_LEVEL getLogLevel();
 
+			log4cxx::Logger* getLogger(const char* name);
+
             MEM_POOL_TYPE getMemPoolType();
     };
+
 }
+
+#define OGLCONF (ogl::Configuration::instance())
 
 #endif

@@ -3,13 +3,15 @@
 
 #include <stdio.h>
 
+#include "ogl.h"
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 namespace ogl
 {
 
-	LoggerPtr HandlerObject::m_logger = log4cxx::Logger::getLogger("ogl.HandlerObject");
+	LoggerPtr HandlerObject::m_logger = OGLCONF->getLogger("ogl.HandlerObject");
 
     int HandlerObject::open(void *)
     {

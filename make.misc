@@ -1,3 +1,4 @@
 OGL_TYPE=lin
-OGL_CFLAGS=-DLIN -O2 -Wall -llog4cxx
+OGL_CFLAGS=-DLIN -O2 -Wall
+OGL_EXT_LIBS=-lACE -lpthread -lconfig++ -llog4cxx
 

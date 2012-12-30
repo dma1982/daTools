@@ -6,7 +6,7 @@
 namespace ogl
 {
 
-	log4cxx::LoggerPtr JobManager::m_logger(log4cxx::Logger::getLogger("ogl.JobManager"));
+	log4cxx::LoggerPtr JobManager::m_logger = OGLCONF->getLogger("ogl.JobManager");
 
     JobManager::JobManager() : m_nextJobId(1)
     {

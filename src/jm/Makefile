@@ -16,7 +16,7 @@ OBJS=JobManagerDaemon.o ${LIBOBJS}
 all: jmd libjm.a 
 
 jmd: ${OBJS}
-	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lACE -lpthread -lcommon -lconfig++ -lutils
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lcommon -lutils ${OGL_EXT_LIBS}
 
 libjm.a: ${LIBOBJS}
 	ar cr libjm.a ${LIBOBJS}

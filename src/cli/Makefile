@@ -7,7 +7,7 @@ OBJS=OglSubmit.o JobManagerProxy.o JobProxy.o TaskProxy.o
 all: oglsub
 
 oglsub: ${OBJS}
-	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common  -lACE -lpthread -lcommon  -lutils -lconfig++
+	${CC} ${CFLAGS} ${OBJS} -o $@ -L../utils/ -L../common -lcommon -lutils ${OGL_EXT_LIBS}
 
 ${OBJS}: %.o:%.cpp
 	${CC} -c ${CFLAGS} $< -o $@ -I../includes/

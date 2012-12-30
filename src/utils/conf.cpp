@@ -8,8 +8,16 @@
 
 #include <ace/OS.h>
 
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+
 using namespace std;
 using namespace libconfig;
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 namespace ogl
 {
@@ -41,6 +49,11 @@ namespace ogl
         m_runnerId = "test";
 
         char* oglConf = ACE_OS::getenv("OGL_CONF");
+
+		if (oglConf == 0)
+		{
+			oglConf = (char*)"ogl.conf";
+		}
 
         this->read(oglConf);
     }
@@ -77,11 +90,14 @@ namespace ogl
         string logFilePath;
         if (m_conf->lookupValue(OGL_LOG_FILE, logFilePath))
         {
-            m_logFile = fopen(logFilePath.c_str(), "a+");
+			char tmpBuf[128] = {0};
+			sprintf(tmpBuf, "log4cxx_pid=%d", ACE_OS::getpid());
+			ACE_OS::putenv(tmpBuf);
+			PropertyConfigurator::configure(logFilePath.c_str());
         }
         else
         {
-            m_logFile = fopen(OGL_DEFAULT_LOG_FILE, "a+");
+			BasicConfigurator::configure();
         }
 
         return 0;
@@ -116,6 +132,23 @@ namespace ogl
     {
         return DEBUG;
     }
+
+	log4cxx::Logger* Configuration::getLogger(const char* name)
+	{
+		log4cxx::Logger* logger = log4cxx::Logger::getLogger(name);
+
+		switch (m_logLevel)
+		{
+		case ogl::DEBUG:
+			logger->setLevel(log4cxx::Level::getDebug());
+			break;
+		default:
+			logger->setLevel(log4cxx::Level::getInfo());
+            break;
+		}
+
+		return logger;
+	}
 
     MEM_POOL_TYPE Configuration::getMemPoolType()
     {
