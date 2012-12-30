@@ -11,9 +11,9 @@ namespace ogl
 
     int JobRunnerManager::StartJobRunnerManager()
     {
-        int n = 1;
+        size_t n = OGLCONF->getRunnerCores();
 
-        for (int i = 0; i < n; i++)
+        for (size_t i = 0; i < n; i++)
         {
             JobRunner* jobRunner;
             ACE_NEW_RETURN(jobRunner, JobRunner(this), -1);

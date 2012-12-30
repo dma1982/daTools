@@ -16,10 +16,12 @@
 #define OGL_MASTER_CLI_PORT "ogl.port.cli"
 
 #define OGL_JR_ID "jr.id"
+#define OGL_JR_CORES "jr.cores"
 
 #define OGL_LOG_FILE "log.file"
 #define OGL_LOG_LEVEL "log.level"
 #define OGL_MEM_POOL "mem.pool"
+
 
 #define OGL_DEFAULT_LOG_FILE "ogl.log"
 
@@ -48,6 +50,8 @@ namespace ogl
 
             std::string m_runnerId;
 
+            size_t m_runnerCores;
+
         public:
 
             static Configuration* instance();
@@ -63,6 +67,8 @@ namespace ogl
             int getMasterJrPort();
 
             const std::string& getRunnerId();
+
+            size_t getRunnerCores();
 
             const std::string& getMasterHost();
 

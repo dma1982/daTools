@@ -73,6 +73,7 @@ namespace ogl
         m_conf->lookupValue(OGL_MASTER_JR_PORT, m_masterJrPort);
         m_conf->lookupValue(OGL_MASTER_CLI_PORT, m_masterCliPort);
         m_conf->lookupValue(OGL_MASTER_HOST, m_masterHost);
+        m_conf->lookupValue(OGL_JR_CORES, m_runnerCores);
         m_conf->lookupValue(OGL_JR_ID, m_runnerId);
 
         int poolType = -1;
@@ -123,6 +124,11 @@ namespace ogl
         return m_runnerId;
     }
 
+    size_t Configuration::getRunnerCores()
+    {
+        return m_runnerCores;
+    }
+
     FILE* Configuration::getLogFile()
     {
         return m_logFile;
@@ -135,19 +141,7 @@ namespace ogl
 
     log4cxx::Logger* Configuration::getLogger(const char* name)
     {
-        log4cxx::Logger* logger = log4cxx::Logger::getLogger(name);
-
-        switch (m_logLevel)
-        {
-        case ogl::DEBUG:
-            logger->setLevel(log4cxx::Level::getDebug());
-            break;
-        default:
-            logger->setLevel(log4cxx::Level::getInfo());
-            break;
-        }
-
-        return logger;
+        return log4cxx::Logger::getLogger(name);
     }
 
     MEM_POOL_TYPE Configuration::getMemPoolType()
