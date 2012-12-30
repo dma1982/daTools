@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 
     ACE::init();
 
-	log4cxx::LoggerPtr m_logger = OGLCONF->getLogger("ogl.JobRunnerDaemon");
+    log4cxx::LoggerPtr m_logger = OGLCONF->getLogger("ogl.JobRunnerDaemon");
 
     try
     {

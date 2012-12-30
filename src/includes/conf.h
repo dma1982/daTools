@@ -68,7 +68,7 @@ namespace ogl
 
             LOG_LEVEL getLogLevel();
 
-			log4cxx::Logger* getLogger(const char* name);
+            log4cxx::Logger* getLogger(const char* name);
 
             MEM_POOL_TYPE getMemPoolType();
     };

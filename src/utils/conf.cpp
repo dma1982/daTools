@@ -50,10 +50,10 @@ namespace ogl
 
         char* oglConf = ACE_OS::getenv("OGL_CONF");
 
-		if (oglConf == 0)
-		{
-			oglConf = (char*)"ogl.conf";
-		}
+        if (oglConf == 0)
+        {
+            oglConf = (char*)"ogl.conf";
+        }
 
         this->read(oglConf);
     }
@@ -90,14 +90,14 @@ namespace ogl
         string logFilePath;
         if (m_conf->lookupValue(OGL_LOG_FILE, logFilePath))
         {
-			char tmpBuf[128] = {0};
-			sprintf(tmpBuf, "log4cxx_pid=%d", ACE_OS::getpid());
-			ACE_OS::putenv(tmpBuf);
-			PropertyConfigurator::configure(logFilePath.c_str());
+            char tmpBuf[128] = {0};
+            sprintf(tmpBuf, "log4cxx_pid=%d", ACE_OS::getpid());
+            ACE_OS::putenv(tmpBuf);
+            PropertyConfigurator::configure(logFilePath.c_str());
         }
         else
         {
-			BasicConfigurator::configure();
+            BasicConfigurator::configure();
         }
 
         return 0;
@@ -133,22 +133,22 @@ namespace ogl
         return DEBUG;
     }
 
-	log4cxx::Logger* Configuration::getLogger(const char* name)
-	{
-		log4cxx::Logger* logger = log4cxx::Logger::getLogger(name);
+    log4cxx::Logger* Configuration::getLogger(const char* name)
+    {
+        log4cxx::Logger* logger = log4cxx::Logger::getLogger(name);
 
-		switch (m_logLevel)
-		{
-		case ogl::DEBUG:
-			logger->setLevel(log4cxx::Level::getDebug());
-			break;
-		default:
-			logger->setLevel(log4cxx::Level::getInfo());
+        switch (m_logLevel)
+        {
+        case ogl::DEBUG:
+            logger->setLevel(log4cxx::Level::getDebug());
             break;
-		}
+        default:
+            logger->setLevel(log4cxx::Level::getInfo());
+            break;
+        }
 
-		return logger;
-	}
+        return logger;
+    }
 
     MEM_POOL_TYPE Configuration::getMemPoolType()
     {

@@ -11,7 +11,7 @@ using namespace log4cxx::helpers;
 namespace ogl
 {
 
-	LoggerPtr HandlerObject::m_logger = OGLCONF->getLogger("ogl.HandlerObject");
+    LoggerPtr HandlerObject::m_logger = OGLCONF->getLogger("ogl.HandlerObject");
 
     int HandlerObject::open(void *)
     {

@@ -29,7 +29,7 @@ namespace ogl
 
         private:
 
-			static log4cxx::LoggerPtr m_logger;
+            static log4cxx::LoggerPtr m_logger;
 
             int executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption);
 

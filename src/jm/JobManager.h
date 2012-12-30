@@ -32,7 +32,7 @@ namespace ogl
 
         private:
 
-			static log4cxx::LoggerPtr m_logger;
+            static log4cxx::LoggerPtr m_logger;
 
             std::map<JobId, Job*> m_jobs;
             JobId m_nextJobId;
