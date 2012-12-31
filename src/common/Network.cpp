@@ -66,14 +66,10 @@ namespace ogl
             header.dataSize(data->length());
         }
 
-        OGL_LOG_DEBUG("Send command <%s>", toString(header.commandType()));
-
         bool wakeupWriter = false;
 
         {
             ACE_Guard<ACE_Thread_Mutex> sendGuard(m_send_mutex);
-
-            OGL_LOG_DEBUG("in the guard.");
 
             wakeupWriter = this->msg_queue()->is_empty();
 
@@ -83,26 +79,20 @@ namespace ogl
                 SERIALIZE_ULONG(os, header.headerSize());
                 // the message block will be released in handle_output
                 this->msg_queue()->enqueue_tail(os.begin()->duplicate());
-                OGL_LOG_DEBUG("enqueue message.");
             }
 
             // push data to output queue
             this->msg_queue()->enqueue_tail(header.serialize());
-            OGL_LOG_DEBUG("enqueue message.");
 
             if (data != 0)
             {
                 this->msg_queue()->enqueue_tail(data);
-                OGL_LOG_DEBUG("enqueue message.");
             }
-        }
 
-        if (wakeupWriter)
-        {
-            OGL_LOG_DEBUG("wake up writer event.");
-            this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
-        }
-
+		}
+		
+		this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
+       
         return 0;
     }
 
@@ -111,26 +101,18 @@ namespace ogl
         int hr = 0;
         ACE_Message_Block* msg;
 
-        bool closeWriter = false;
-
         {
             ACE_Guard<ACE_Thread_Mutex> sendGuard(m_send_mutex);
 
-            closeWriter = this->msg_queue()->is_empty();
-
-            if (!closeWriter)
+            if (!this->msg_queue()->is_empty())
             {
-                OGL_LOG_DEBUG("dequeue message");
                 this->msg_queue()->dequeue_head(msg);
             }
-        }
-
-        if (closeWriter)
-        {
-            OGL_LOG_DEBUG("close writer event.");
-            this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
-            return 0;
-
+			else
+            {
+                this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
+                return 0;
+            }
         }
 
         size_t n;
@@ -170,8 +152,6 @@ namespace ogl
         {
             return -1;
         }
-
-        OGL_LOG_DEBUG("Receive command <%s>", toString(header.commandType()));
 
         // receive data
         this->executeRequest(header, data);
