@@ -55,6 +55,8 @@ namespace ogl
             ogl::TaskId m_nextTaskId;
             JobId m_jobId;
     };
+
+    typedef std::tr1::shared_ptr<Job> JobPtr;
 }
 
 #endif

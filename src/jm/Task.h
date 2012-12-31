@@ -53,6 +53,8 @@ namespace ogl
             OGL_TASK_OBSERVER_MAP m_observerMap;
             bool m_completed;
     };
+
+    typedef std::tr1::shared_ptr<Task> TaskPtr;
 }
 
 #endif
