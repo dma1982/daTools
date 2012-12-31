@@ -29,7 +29,7 @@ namespace ogl
         ACE_Message_Block* msg;
         Command* cmd;
 
-        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand), -1);
+        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand, m_jobRunnerOption), -1);
         ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
         this->putq(msg);
@@ -56,14 +56,13 @@ namespace ogl
                       (int)jobOption->id(),
                       jobOption->runnerId());
 
-
         releaseObject<ACE_Process_Options>(m_taskProcessOption);
 
         ACE_NEW_RETURN(m_taskProcessOption, ACE_Process_Options(), -1);
 
         m_taskProcessOption->command_line(jobOption->command());
 
-        CommandHeader respHeader(BindJobRunnerComplete, header.contextId());
+        CommandHeader respHeader(BindJobRunnerComplete, jobOption->runnerId());
 
         return sendResponse(respHeader, jobOption);
     }

@@ -69,10 +69,16 @@ namespace ogl
             const char* id();
 
         private:
+
+            JobRunnerObject* operator[](const char* runnerId);
+
+            ACE_Thread_Mutex m_jobRunnerMapMutex;
+
             std::map<std::string, JobRunnerObject*> m_jobRunnerMap;
             char* m_id;
 
             static ACE_Utils::UUID_Generator m_guidGenerator;
+            static log4cxx::LoggerPtr m_logger;
     };
 
     typedef ACE_Acceptor <JobRunnerManagerObject, ACE_SOCK_ACCEPTOR > JobRunnerManagerAcceptor;

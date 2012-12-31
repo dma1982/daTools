@@ -7,9 +7,10 @@ namespace ogl
 {
 
     Job::Job(const JobId& jobId, const JobOption& option)
-            : m_nextTaskId(0), m_jobId(jobId)
+            : m_nextTaskId(1), m_jobId(jobId)
     {
         ACE_NEW_NORETURN(m_jobOption, JobOption(option));
+        m_jobOption->id(jobId);
         m_state = OPEN;
     }
 

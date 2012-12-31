@@ -1,6 +1,9 @@
 #ifndef __OGL_OBJECT_H__
 #define __OGL_OBJECT_H__
 
+#include <ace/ACE.h>
+#include <ace/UUID.h>
+
 #include <ace/SOCK_Connector.h>
 #include <ace/Message_Block.h>
 #include <ace/CDR_Stream.h>
@@ -165,11 +168,19 @@ namespace ogl
             long pid();
             void pid(long _pid);
 
+            ogl::UUID mgrId();
+            void mgrId(const ogl::UUID _id);
+
             virtual ACE_Message_Block* serialize();
             virtual void deserialize(ACE_Message_Block* msg);
 
         private:
+
+            static ACE_Utils::UUID_Generator m_guidGenerator;
+
             ogl::UUID m_id;
+            ogl::UUID m_mgrId;
+
             long m_pid;
     };
 

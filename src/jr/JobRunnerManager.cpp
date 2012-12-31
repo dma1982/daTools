@@ -27,14 +27,14 @@ namespace ogl
     int JobRunnerManager::BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption)
     {
         OGL_LOG_DEBUG("Bind job for job id: <%d>, runner id: <%s>",
-                      (int)jobOption.id(),
+                      (int)(jobOption.id()),
                       jobOption.runnerId());
 
-        JobRunner* jobRunner = m_jobRunners[header.contextId()];
+        JobRunner* jobRunner = m_jobRunners[jobOption.runnerId()];
 
         if (jobRunner == 0)
         {
-            OGL_LOG_DEBUG("Failed to get job runner by <%s> when BindJobRunner", header.contextId());
+            OGL_LOG_DEBUG("Failed to get job runner by <%s> when BindJobRunner", jobOption.runnerId());
         }
 
         return jobRunner->BindJobRunner(header, jobOption);
@@ -47,11 +47,11 @@ namespace ogl
                       (int)taskOption.taskId(),
                       taskOption.runnerId());
 
-        JobRunner* jobRunner = m_jobRunners[header.contextId()];
+        JobRunner* jobRunner = m_jobRunners[taskOption.runnerId()];
 
         if (jobRunner == 0)
         {
-            OGL_LOG_DEBUG("Failed to get job runner by <%s> when ExecuteTask", header.contextId());
+            OGL_LOG_DEBUG("Failed to get job runner by <%s> when ExecuteTask", taskOption.runnerId());
         }
 
         return jobRunner->ExecuteTask(header, taskOption);
@@ -63,6 +63,7 @@ namespace ogl
         {
         case ExecuteTaskCommand:
         {
+            OGL_LOG_DEBUG("execute task command.");
             ogl::TaskOption taskOption;
             taskOption.deserialize(&data);
             ExecuteTask(header, taskOption);

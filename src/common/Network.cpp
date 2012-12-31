@@ -1,6 +1,9 @@
 #include "Commands.h"
 #include "Network.h"
 
+#include <ace/ACE.h>
+#include <ace/Guard_T.h>
+
 #include <stdio.h>
 
 #include "ogl.h"
@@ -63,29 +66,40 @@ namespace ogl
             header.dataSize(data->length());
         }
 
-        ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
-
         OGL_LOG_DEBUG("Send command <%s>", toString(header.commandType()));
 
-        bool wakeupWriter = this->msg_queue()->is_empty();
+        bool wakeupWriter = false;
 
-        // send header size first
         {
-            ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
-            SERIALIZE_ULONG(os, header.headerSize());
-            // the message block will be released in handle_output
-            this->msg_queue()->enqueue_tail(os.begin()->duplicate());
-        }
+            ACE_Guard<ACE_Thread_Mutex> sendGuard(m_send_mutex);
 
-        // push data to output queue
-        this->msg_queue()->enqueue_tail(header.serialize());
-        if (data != 0)
-        {
-            this->msg_queue()->enqueue_tail(data);
+            OGL_LOG_DEBUG("in the guard.");
+
+            wakeupWriter = this->msg_queue()->is_empty();
+
+            // send header size first
+            {
+                ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+                SERIALIZE_ULONG(os, header.headerSize());
+                // the message block will be released in handle_output
+                this->msg_queue()->enqueue_tail(os.begin()->duplicate());
+                OGL_LOG_DEBUG("enqueue message.");
+            }
+
+            // push data to output queue
+            this->msg_queue()->enqueue_tail(header.serialize());
+            OGL_LOG_DEBUG("enqueue message.");
+
+            if (data != 0)
+            {
+                this->msg_queue()->enqueue_tail(data);
+                OGL_LOG_DEBUG("enqueue message.");
+            }
         }
 
         if (wakeupWriter)
         {
+            OGL_LOG_DEBUG("wake up writer event.");
             this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
         }
 
@@ -95,17 +109,29 @@ namespace ogl
     int HandlerObject::handle_output (ACE_HANDLE)
     {
         int hr = 0;
+        ACE_Message_Block* msg;
+
+        bool closeWriter = false;
+
         {
-            ACE_GUARD_RETURN(ACE_Thread_Mutex, sendGuard, m_send_mutex, -1);
-            if (this->msg_queue()->is_empty())
+            ACE_Guard<ACE_Thread_Mutex> sendGuard(m_send_mutex);
+
+            closeWriter = this->msg_queue()->is_empty();
+
+            if (!closeWriter)
             {
-                this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
-                return 0;
+                OGL_LOG_DEBUG("dequeue message");
+                this->msg_queue()->dequeue_head(msg);
             }
         }
 
-        ACE_Message_Block* msg;
-        this->msg_queue()->dequeue_head(msg);
+        if (closeWriter)
+        {
+            OGL_LOG_DEBUG("close writer event.");
+            this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
+            return 0;
+
+        }
 
         size_t n;
         hr = this->peer().send_n (msg, 0, &n);

@@ -290,15 +290,23 @@ namespace ogl
         m_runnerId = ogl::dumpString(runnerId);
     }
 
+    ACE_Utils::UUID_Generator JobRunnerOption::m_guidGenerator;
+
     JobRunnerOption::JobRunnerOption()
     {
-        m_id = ogl::dumpString(ogl::Configuration::instance()->getRunnerId().c_str());
+        m_mgrId = ogl::dumpString(ogl::Configuration::instance()->getRunnerId().c_str());
+
+        ACE_Utils::UUID guid;
+        m_guidGenerator.generate_UUID(guid);
+        m_id = ogl::dumpString(guid.to_string()->c_str());
+
         m_pid = ACE_OS::getpid();
     }
 
     JobRunnerOption::JobRunnerOption(const JobRunnerOption& option)
     {
         m_id = ogl::dumpString(option.m_id);
+        m_mgrId = ogl::dumpString(option.m_mgrId);
         m_pid = option.m_pid;
     }
 
@@ -306,6 +314,10 @@ namespace ogl
     {
         ogl::releaseString(m_id);
         m_id = ogl::dumpString(option.m_id);
+
+        ogl::releaseString(m_mgrId);
+        m_mgrId = ogl::dumpString(option.m_mgrId);
+
         m_pid = option.m_pid;
         return *this;
     }
@@ -313,6 +325,7 @@ namespace ogl
     JobRunnerOption::~JobRunnerOption()
     {
         ogl::releaseString(m_id);
+        ogl::releaseString(m_mgrId);
         m_pid = ACE_INVALID_PID;
     }
 
@@ -325,6 +338,17 @@ namespace ogl
     {
         ogl::releaseString(m_id);
         m_id = ogl::dumpString(_id);
+    }
+
+    ogl::UUID JobRunnerOption::mgrId()
+    {
+        return m_mgrId;
+    }
+
+    void JobRunnerOption::mgrId(const ogl::UUID _id)
+    {
+        ogl::releaseString(m_mgrId);
+        m_mgrId = ogl::dumpString(_id);
     }
 
     long JobRunnerOption::pid()
@@ -343,6 +367,7 @@ namespace ogl
 
         SERIALIZE_ULONG(os, m_pid);
         SERIALIZE_CSTRING(os, m_id);
+        SERIALIZE_CSTRING(os, m_mgrId);
 
         return os.begin()->duplicate();
     }
@@ -352,6 +377,7 @@ namespace ogl
         ACE_InputCDR is(msg);
         DESERIALIZE_ULONG(is, m_pid);
         DESERIALIZE_CSTRING(is, m_id);
+        DESERIALIZE_CSTRING(is, m_mgrId);
     }
 
 
