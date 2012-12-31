@@ -334,7 +334,7 @@ namespace ogl
         return m_id;
     }
 
-    void JobRunnerOption::id(const ogl::UUID _id)
+    void JobRunnerOption::id(const char* _id)
     {
         ogl::releaseString(m_id);
         m_id = ogl::dumpString(_id);
@@ -345,7 +345,7 @@ namespace ogl
         return m_mgrId;
     }
 
-    void JobRunnerOption::mgrId(const ogl::UUID _id)
+    void JobRunnerOption::mgrId(const char* _id)
     {
         ogl::releaseString(m_mgrId);
         m_mgrId = ogl::dumpString(_id);

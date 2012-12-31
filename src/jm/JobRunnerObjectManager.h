@@ -58,6 +58,8 @@ namespace ogl
 
             int RegisterJobRunner(const ogl::JobRunnerOption& );
 
+            int RegisterJobRunnerManager(ogl::JobRunnerOption& runnerOption);
+
             int BindJobRunnerResult(ogl::JobOption& );
 
             int ExecuteTaskResult(ogl::TaskOption& );
@@ -92,6 +94,7 @@ namespace ogl
             int getAllRunners(std::list<JobRunnerObject*>& runnerList);
 
         private:
+            ACE_Thread_Mutex m_jrmObjectMapMutex;
             std::map<std::string, JobRunnerManagerObject*> m_jrmObjectMap;
     };
 

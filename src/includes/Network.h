@@ -62,9 +62,12 @@ namespace ogl
             virtual ~ClientActionManager();
 
             virtual int registerAction(UUID uuid, ClientAction* action);
+            virtual int unregisterAction(UUID uuid);
             virtual int signalAction(ogl::CommandHeader& header, ACE_Message_Block* data);
 
         protected:
+            static log4cxx::LoggerPtr m_logger;
+            ACE_Thread_Mutex m_clientActionMapMutex;
             std::map<std::string, ClientAction*> m_clientActionMap;
     };
 

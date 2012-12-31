@@ -19,7 +19,7 @@ namespace ogl
             int ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption);
 
             // start all JobRunner
-            int StartJobRunnerManager();
+            int StartJobRunner();
 
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
 
@@ -34,7 +34,13 @@ namespace ogl
     class JobManagerClient : public Client <JobRunnerManager>
     {
         public:
+            JobManagerClient();
+            ~JobManagerClient();
+
             int StartJobRunnerManager();
+
+        private:
+            JobRunnerOption m_jobRunnerOption;
     };
 
     typedef ACE_Singleton<JobManagerClient, ACE_Null_Mutex> JMCLI;

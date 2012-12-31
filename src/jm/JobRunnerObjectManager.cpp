@@ -103,17 +103,23 @@ namespace ogl
 
     JobRunnerManagerObject::JobRunnerManagerObject()
     {
-        ACE_Utils::UUID guid;
-        m_guidGenerator.generate_UUID(guid);
-        m_id = ogl::dumpString(guid.to_string()->c_str());
-
-        JRMPool::instance()->RegisterJobRunnerManager(this);
     }
 
     JobRunnerManagerObject::~JobRunnerManagerObject()
     {
         JRMPool::instance()->UnregisterJobRunnerManager(this);
         ogl::releaseString(m_id);
+    }
+
+    int JobRunnerManagerObject::RegisterJobRunnerManager(ogl::JobRunnerOption& runnerOption)
+    {
+        m_id = ogl::dumpString(runnerOption.mgrId());
+        JRMPool::instance()->RegisterJobRunnerManager(this);
+
+        OGL_LOG_DEBUG("job runner manager <%s> registered.", this->id());
+
+        ogl::CommandHeader header(RegisterJobRunnerManagerComplete, this->id());
+        return HandlerObject::sendResponse(header);
     }
 
     const char* JobRunnerManagerObject::id()
@@ -137,7 +143,7 @@ namespace ogl
 
     JobRunnerObject* JobRunnerManagerObject::operator[](const char* runnerId)
     {
-        ACE_GUARD_RETURN(ACE_Thread_Mutex, mapGuard, m_jobRunnerMapMutex, 0);
+        ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jobRunnerMapMutex);
 
         if (NULL == runnerId)
         {
@@ -159,7 +165,7 @@ namespace ogl
         ACE_NEW_RETURN(jobRunner, JobRunnerObject(this, jobRunnerOption), -1);
 
         {
-            ACE_GUARD_RETURN(ACE_Thread_Mutex, mapGuard, m_jobRunnerMapMutex, -1);
+            ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jobRunnerMapMutex);
             m_jobRunnerMap[jobRunner->id()] = jobRunner;
         }
 
@@ -167,7 +173,7 @@ namespace ogl
 
         ogl::CommandHeader header(RegisterJobRunnerComplete, jobRunner->id());
 
-        return HandlerObject::sendResponse(header, jobRunner->runnerOption());;
+        return HandlerObject::sendResponse(header, jobRunner->runnerOption());
     }
 
     int JobRunnerManagerObject::getAllRunners(std::list<JobRunnerObject*>& runnerList)
@@ -175,7 +181,8 @@ namespace ogl
         int i = 0;
         runnerList.clear();
 
-        ACE_GUARD_RETURN(ACE_Thread_Mutex, mapGuard, m_jobRunnerMapMutex, -1);
+        ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jobRunnerMapMutex);
+
         for (std::map<std::string, JobRunnerObject*>::iterator it = m_jobRunnerMap.begin();
              it != m_jobRunnerMap.end(); ++it, ++i)
         {
@@ -191,6 +198,14 @@ namespace ogl
         {
             switch (cmd.commandType())
             {
+            case RegisterJobRunnerManagerCommand:
+            {
+                JobRunnerOption jobRunnerOption;
+                jobRunnerOption.deserialize(&data);
+
+                RegisterJobRunnerManager(jobRunnerOption);
+                break;
+            }
             case RegisterJobRunnerCommand:
             {
                 JobRunnerOption jobRunnerOption;
@@ -231,11 +246,13 @@ namespace ogl
      */
     void JobRunnerManagerPool::RegisterJobRunnerManager(ogl::JobRunnerManagerObject* jrmObject)
     {
+        ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
         this->m_jrmObjectMap[jrmObject->id()] = jrmObject;
     }
 
     void JobRunnerManagerPool::UnregisterJobRunnerManager(ogl::JobRunnerManagerObject* jrmObject)
     {
+        ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
         this->m_jrmObjectMap.erase(jrmObject->id());
     }
 
@@ -245,6 +262,7 @@ namespace ogl
 
         runnerList.clear();
 
+        ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
         for (std::map<std::string, JobRunnerManagerObject*>::iterator it = m_jrmObjectMap.begin();
              it != m_jrmObjectMap.end(); ++it)
         {

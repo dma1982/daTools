@@ -89,10 +89,10 @@ namespace ogl
                 this->msg_queue()->enqueue_tail(data);
             }
 
-		}
-		
-		this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
-       
+        }
+
+        this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
+
         return 0;
     }
 
@@ -108,7 +108,7 @@ namespace ogl
             {
                 this->msg_queue()->dequeue_head(msg);
             }
-			else
+            else
             {
                 this->reactor()->cancel_wakeup(this,  ACE_Event_Handler::WRITE_MASK);
                 return 0;
@@ -176,14 +176,40 @@ namespace ogl
         return 0;
     }
 
+    LoggerPtr ClientActionManager::m_logger = OGLCONF->getLogger("ogl.ClientActionManager");
+
     int ClientActionManager::registerAction(UUID uuid, ClientAction* action)
     {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_clientActionMapMutex);
+
+        if (m_clientActionMap.find(uuid) != m_clientActionMap.end())
+        {
+            OGL_LOG_ERROR("Duplication action <%s> in action manager.", uuid);
+            return 0;
+        }
+
         m_clientActionMap[uuid] = action;
+        return 1;
+    }
+
+    int ClientActionManager::unregisterAction(UUID uuid)
+    {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_clientActionMapMutex);
+
+        if (m_clientActionMap.find(uuid) == m_clientActionMap.end())
+        {
+            OGL_LOG_ERROR("Failed to find action <%s> in action manager when un-register action.", uuid);
+            return 0;
+        }
+
+        m_clientActionMap.erase(uuid);
+
         return 1;
     }
 
     int ClientActionManager::signalAction(ogl::CommandHeader& header, ACE_Message_Block* data)
     {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_clientActionMapMutex);
 
         if (header.contextId() == 0)
         {
@@ -194,7 +220,6 @@ namespace ogl
 
         if (action != 0)
         {
-
             action->returnCode(header.commandType());
             action->setResponse(data);
 
@@ -212,6 +237,7 @@ namespace ogl
 
     ClientAction::~ClientAction()
     {
+        this->m_clientActionManager->unregisterAction(m_contextId);
         ogl::releaseString(m_contextId);
     }
 

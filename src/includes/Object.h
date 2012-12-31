@@ -163,13 +163,13 @@ namespace ogl
             ~JobRunnerOption();
 
             ogl::UUID id();
-            void id(const ogl::UUID _id);
+            void id(const char* _id);
 
             long pid();
             void pid(long _pid);
 
             ogl::UUID mgrId();
-            void mgrId(const ogl::UUID _id);
+            void mgrId(const char* _id);
 
             virtual ACE_Message_Block* serialize();
             virtual void deserialize(ACE_Message_Block* msg);

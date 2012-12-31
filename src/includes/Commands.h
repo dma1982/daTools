@@ -24,10 +24,15 @@ namespace ogl
         CreateTaskFailed,
         CreateTaskComplete,
 
-        // jr send to JobManager to register a job runner manager
+        // jr send to JobManager to register a job runner
         RegisterJobRunnerCommand,
         RegisterJobRunnerFailed,
         RegisterJobRunnerComplete,
+
+        // jr send to JobManager to register a job runner manager
+        RegisterJobRunnerManagerCommand,
+        RegisterJobRunnerManagerFailed,
+        RegisterJobRunnerManagerComplete,
 
         // JobManager send to jr to create a JobRunner
         BindJobRunnerCommand,

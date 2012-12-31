@@ -1,5 +1,7 @@
 #include "ogl.h"
 
+#include "Object.h"
+
 #include "JobRunnerManager.h"
 #include "JobRunner.h"
 
@@ -9,7 +11,7 @@ namespace ogl
 
     log4cxx::LoggerPtr JobRunnerManager::m_logger = OGLCONF->getLogger("ogl.JobRunnerManager");
 
-    int JobRunnerManager::StartJobRunnerManager()
+    int JobRunnerManager::StartJobRunner()
     {
         size_t n = OGLCONF->getRunnerCores();
 
@@ -61,9 +63,13 @@ namespace ogl
     {
         switch (header.commandType())
         {
+        case RegisterJobRunnerManagerComplete:
+        {
+            StartJobRunner();
+            break;
+        }
         case ExecuteTaskCommand:
         {
-            OGL_LOG_DEBUG("execute task command.");
             ogl::TaskOption taskOption;
             taskOption.deserialize(&data);
             ExecuteTask(header, taskOption);
@@ -83,9 +89,19 @@ namespace ogl
         return 0;
     }
 
+    JobManagerClient::JobManagerClient()
+    {
+        m_jobRunnerOption.mgrId(OGLCONF->getRunnerId().c_str());
+    }
+
+    JobManagerClient::~JobManagerClient()
+    {
+    }
+
     int JobManagerClient::StartJobRunnerManager()
     {
-        return this->get_handler()->StartJobRunnerManager();
+        CommandHeader respHeader(RegisterJobRunnerManagerCommand, m_jobRunnerOption.mgrId());
+        return this->get_handler()->sendResponse(respHeader, &m_jobRunnerOption);
     }
 
 }
