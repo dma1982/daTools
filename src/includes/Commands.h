@@ -67,13 +67,15 @@ namespace ogl
     {
         public:
 
-            CommandHeader () { };
+            CommandHeader (): m_type(Unknown), m_contextId(0) { };
 
             CommandHeader (CommandType ct, const char* contextId = 0);
 
             CommandHeader (const CommandHeader& header);
 
             CommandHeader& operator= (const CommandHeader& header);
+
+            ~CommandHeader();
 
             void updateCommandType(CommandType ct)
             {

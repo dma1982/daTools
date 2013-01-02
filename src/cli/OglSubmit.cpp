@@ -41,6 +41,7 @@ void printTaskInfo(TaskProxyPtr task)
 
 int main(int argc, char** argv)
 {
+    JobManagerProxyFactory::initialize();
 
     ACE_Get_Opt getOpt(argc, argv, "hj:c:n:");
     int arg;
@@ -81,7 +82,7 @@ int main(int argc, char** argv)
 
     try
     {
-        JobManagerProxy* jobManager = JobManagerProxy::createInstance();
+        JobManagerProxy* jobManager = JobManagerProxyFactory::createInstance();
 
         JobProxyPtr job = jobManager->addJob(jobOption);
 
@@ -109,6 +110,8 @@ int main(int argc, char** argv)
     {
         cout << "*ERROR*: " << e.what() << endl;
     }
+
+    JobManagerProxyFactory::uninitialize();
 }
 
 

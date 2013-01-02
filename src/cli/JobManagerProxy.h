@@ -22,14 +22,34 @@ namespace ogl
 
             virtual int executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data);
 
-            static JobManagerProxy* createInstance();
-            static void destroyInstance(JobManagerProxy* proxy);
-
         private:
             std::list<JobProxyPtr> m_jobProxyList;
     };
 
     typedef std::tr1::shared_ptr<JobManagerProxy> JobManagerProxyPtr;
+
+    class JobManagerClient : public Client <JobManagerProxy>
+    {
+    };
+
+    typedef std::tr1::shared_ptr<JobManagerClient> JobManagerClientPtr;
+
+    class JobManagerProxyFactory
+    {
+        public:
+            static void initialize();
+            static void uninitialize();
+
+            static JobManagerProxy* createInstance();
+
+            typedef std::list<JobManagerClientPtr> JM_CLI_LIST;
+            typedef std::list<JobManagerClientPtr>::iterator JM_CLI_LIST_IT;
+
+        private:
+            JobManagerProxyFactory() {} ;
+            static JM_CLI_LIST m_clientList;
+    };
+
 };
 
 #endif

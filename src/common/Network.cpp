@@ -238,10 +238,16 @@ namespace ogl
     ClientAction::~ClientAction()
     {
         this->m_clientActionManager->unregisterAction(m_contextId);
+
+        if (m_response)
+        {
+            m_response->release();
+        }
+
         ogl::releaseString(m_contextId);
     }
 
-    ClientAction::ClientAction(ClientActionManager* manager)
+    ClientAction::ClientAction(ClientActionManager* manager) : m_response(0)
     {
         this->m_clientActionManager = manager;
 

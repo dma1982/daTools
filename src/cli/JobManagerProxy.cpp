@@ -11,27 +11,12 @@
 namespace ogl
 {
 
-    class JobManagerClient : public Client <JobManagerProxy>
-    {
-    };
-
     JobManagerProxy::~JobManagerProxy()
     {
     }
 
     JobManagerProxy::JobManagerProxy()
     {
-    }
-
-    JobManagerProxy* JobManagerProxy::createInstance()
-    {
-        JobManagerClient* client;
-        ACE_NEW_RETURN(client, JobManagerClient(), 0);
-
-        client->start(ogl::Configuration::instance()->getMasterHost(),
-                      ogl::Configuration::instance()->getMasterCliPort());
-
-        return client->get_handler();
     }
 
     int JobManagerProxy::executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)
@@ -54,4 +39,40 @@ namespace ogl
 
         return JobProxyPtr(new JobProxy(action.getResponse(), this));
     }
+
+    JobManagerProxyFactory::JM_CLI_LIST JobManagerProxyFactory::m_clientList;
+
+    void JobManagerProxyFactory::initialize()
+    {
+        ACE::init();
+    }
+
+    void JobManagerProxyFactory::uninitialize()
+    {
+        //Wait();
+        for (JM_CLI_LIST_IT it = m_clientList.begin(); it != m_clientList.end(); ++it)
+        {
+            (*it)->shutdown();
+        }
+
+        if (ACE_Thread_Manager::instance()->wait() < 0)
+        {
+            OGL_THROW_EXCEPTION("Failed to wait all thread.");
+        }
+
+        ACE::fini();
+    }
+
+    JobManagerProxy* JobManagerProxyFactory::createInstance()
+    {
+        JobManagerClientPtr client(new JobManagerClient());
+
+        client->start(ogl::Configuration::instance()->getMasterHost(),
+                      ogl::Configuration::instance()->getMasterCliPort());
+
+        m_clientList.push_back(client);
+
+        return client->get_handler();
+    }
+
 };

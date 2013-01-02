@@ -125,9 +125,9 @@ namespace ogl
             {
                 m_reactor.owner( ACE_Thread::self());
 
-                while (!m_shutdown)
+                while (!m_reactor.reactor_event_loop_done())
                 {
-                    m_reactor.handle_events ();
+                    m_reactor.run_reactor_event_loop();
                 }
 
                 return 0;
@@ -154,7 +154,8 @@ namespace ogl
 
             virtual void shutdown()
             {
-                m_shutdown = true;
+                m_reactor.end_reactor_event_loop();
+                m_reactor.wakeup_all_threads();
             }
 
         private:
@@ -186,9 +187,9 @@ namespace ogl
             {
                 m_reactor.owner( ACE_Thread::self());
 
-                while (!m_shutdown)
+                while (!m_reactor.reactor_event_loop_done())
                 {
-                    m_reactor.handle_events ();
+                    m_reactor.run_reactor_event_loop();
                 }
 
                 return 0;
@@ -218,7 +219,8 @@ namespace ogl
 
             virtual void shutdown()
             {
-                m_shutdown = true;
+                m_reactor.end_reactor_event_loop();
+                m_reactor.wakeup_all_threads();
             }
 
             SCH* get_handler()

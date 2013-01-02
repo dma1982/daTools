@@ -23,6 +23,11 @@ namespace ogl
         "RegisterJobRunnerFailed",
         "RegisterJobRunnerComplete",
 
+        // jr send to JobManager to register a job runner manager
+        "RegisterJobRunnerManagerCommand",
+        "RegisterJobRunnerManagerFailed",
+        "RegisterJobRunnerManagerComplete",
+
         // JobManager send to jr to create a JobRunner
         "BindJobRunnerCommand",
         "BindJobRunnerFailed",
@@ -89,7 +94,29 @@ namespace ogl
 
     CommandHeader& CommandHeader::operator= (const CommandHeader& header)
     {
+        ogl::releaseString(m_contextId);
+
+        m_contextId = ogl::dumpString(header.m_contextId);
+
+        if (m_contextId != 0)
+        {
+            m_contextIdLength = ::strlen(m_contextId);
+        }
+        else
+        {
+            m_contextIdLength = 0;
+        }
+
+        m_type = header.m_type;
+
+        Header::m_dataSize = header.Header::m_dataSize;
+
         return *this;
+    }
+
+    CommandHeader::~CommandHeader()
+    {
+        ogl::releaseString(m_contextId);
     }
 
     size_t CommandHeader::headerSize()
