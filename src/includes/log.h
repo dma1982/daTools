@@ -7,6 +7,8 @@
 #include <cstdio>
 #include <cassert>
 
+#include <tr1/memory>
+
 #include <log4cxx/logger.h>
 
 namespace ogl
@@ -39,7 +41,9 @@ namespace ogl
             void Backtrace(void);
     };
 
-    extern Logger* logger;
+    typedef std::tr1::shared_ptr<ogl::Logger> SimpleLoggerPtr;
+
+    extern SimpleLoggerPtr logger;
 
     class AutoTimer
     {

@@ -17,7 +17,7 @@ namespace ogl
             size_t m_capacity;
             long m_refcnt;
 
-            static Logger* m_logger;
+            static SimpleLoggerPtr m_logger;
 
             Data(const Data& m_d);
             Data& operator=(const Data& m_d);
@@ -65,7 +65,7 @@ namespace ogl
 
             long m_refcnt;
 
-            static Logger* m_logger;
+            static SimpleLoggerPtr m_logger;
 
         protected:
             void _inc_ref_cnt();

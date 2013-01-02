@@ -2,6 +2,8 @@
 #include "conf.h"
 #include "event.h"
 
+#include "utils.h"
+
 #include <iostream>
 
 #include <libconfig.h++>
@@ -40,6 +42,8 @@ namespace ogl
     {
         m_conf = new Config ();
 
+        m_logFile = 0;
+
         m_logLevel = INFO;
 
         m_memPoolType = NGINX;
@@ -64,6 +68,8 @@ namespace ogl
         {
             fclose(m_logFile);
         }
+
+        ogl::releaseObject<Config>(m_conf);
     }
 
     int Configuration::read(const char* path)

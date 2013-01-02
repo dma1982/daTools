@@ -18,7 +18,7 @@ extern "C"
 
 namespace ogl
 {
-    Logger* logger = Logger::getLogger("ogl.global");
+    SimpleLoggerPtr logger(Logger::getLogger("ogl.global"));
 
     void Logger::Debug(const char* msg)
     {

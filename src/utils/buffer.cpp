@@ -1,7 +1,7 @@
 #include "buffer.h"
 
-ogl::Logger* ogl::Data::m_logger = ogl::Logger::getLogger("ogl.data");
-ogl::Logger* ogl::Buffer::m_logger = ogl::Logger::getLogger("ogl.buffer");
+ogl::SimpleLoggerPtr ogl::Data::m_logger(ogl::Logger::getLogger("ogl.data"));
+ogl::SimpleLoggerPtr ogl::Buffer::m_logger(ogl::Logger::getLogger("ogl.buffer"));
 
 
 ogl::Data::Data(const Data& m_d) {}

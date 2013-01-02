@@ -60,6 +60,8 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to wait all thread.");
         }
 
+        ogl::releaseObject<ogl::Configuration>(ogl::Configuration::instance());
+
         ACE::fini();
     }
 
