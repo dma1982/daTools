@@ -37,12 +37,14 @@ namespace ogl
 
             int bindJobRunner(ogl::CommandHeader& header, ogl::JobOption* jobOption);
 
-            ogl::JobRunnerOption* m_jobRunnerOption;
+            ogl::JobRunnerOptionPtr m_jobRunnerOption;
 
             ogl::JobRunnerManager* m_jobRunnerManager;
 
             ACE_Process_Options* m_taskProcessOption;
     };
+
+    typedef std::tr1::shared_ptr<JobRunner> JobRunnerPtr;
 }
 
 #endif

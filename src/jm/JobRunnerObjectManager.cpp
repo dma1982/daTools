@@ -14,21 +14,19 @@ namespace ogl
      */
 
     JobRunnerObject::JobRunnerObject(JobRunnerManagerObject* jrmObject, const JobRunnerOption& jobRunnerOption):
-            m_jrmObject(jrmObject), m_job(NULL)
+            m_jrmObject(jrmObject), m_jobRunnerOption(new JobRunnerOption(jobRunnerOption))
     {
-        ACE_NEW_NORETURN(m_jobRunnerOption, JobRunnerOption(jobRunnerOption));
     }
 
     int JobRunnerObject::UnbindJobRunner()
     {
-        m_job = NULL;
+        m_job.reset();
         return 0;
     }
 
-    int JobRunnerObject::BindJobRunner(ogl::Job* job)
+    int JobRunnerObject::BindJobRunner(ogl::JobPtr job)
     {
         m_job = job;
-
 
         ogl::JobOption jobOption(*(job->jobOption()));
         jobOption.runnerId(this->id());
@@ -40,12 +38,11 @@ namespace ogl
         return this->m_jrmObject->sendResponse(header, &jobOption);
     }
 
-    int JobRunnerObject::ExecuteTask(ogl::Task* task)
+    int JobRunnerObject::ExecuteTask(ogl::TaskPtr task)
     {
         m_task = task;
 
-        ogl::TaskOption taskOption(*(task->taskOption()));
-        taskOption.runnerId(this->id());
+        m_task->taskOption()->runnerId(this->id());
 
         OGL_LOG_DEBUG("ExecuteTask <%d>:<%d> in job runner <%s>",
                       (int)task->taskOption()->jobId(),
@@ -54,7 +51,7 @@ namespace ogl
 
         ogl::CommandHeader header(ExecuteTaskCommand, this->id());
 
-        return this->m_jrmObject->sendResponse(header, &taskOption);
+        return this->m_jrmObject->sendResponse(header, m_task->taskOption().get());
     }
 
     int JobRunnerObject::ExecuteTaskResult(ogl::TaskOption& taskOption)
@@ -65,7 +62,7 @@ namespace ogl
 
     int JobRunnerObject::sendNextTask()
     {
-        ogl::Task* task = m_job->getNextTask();
+        ogl::TaskPtr task = m_job->getNextTask();
         if (task != 0)
         {
             this->ExecuteTask(task);
@@ -83,7 +80,7 @@ namespace ogl
         return NULL == m_job;
     }
 
-    JobRunnerOption* JobRunnerObject::runnerOption()
+    JobRunnerOptionPtr JobRunnerObject::runnerOption()
     {
         return m_jobRunnerOption;
     };
@@ -107,14 +104,14 @@ namespace ogl
 
     JobRunnerManagerObject::~JobRunnerManagerObject()
     {
-        JRMPool::instance()->UnregisterJobRunnerManager(this);
+        JRMPool::instance()->UnregisterJobRunnerManager(JobRunnerManagerObjectPtr(this));
         ogl::releaseString(m_id);
     }
 
     int JobRunnerManagerObject::RegisterJobRunnerManager(ogl::JobRunnerOption& runnerOption)
     {
         m_id = ogl::dumpString(runnerOption.mgrId());
-        JRMPool::instance()->RegisterJobRunnerManager(this);
+        JRMPool::instance()->RegisterJobRunnerManager(JobRunnerManagerObjectPtr(this));
 
         OGL_LOG_DEBUG("job runner manager <%s> registered.", this->id());
 
@@ -141,7 +138,7 @@ namespace ogl
         return (*this)[taskOption.runnerId()]->ExecuteTaskResult(taskOption);
     }
 
-    JobRunnerObject* JobRunnerManagerObject::operator[](const char* runnerId)
+    JobRunnerObjectPtr JobRunnerManagerObject::operator[](const char* runnerId)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jobRunnerMapMutex);
 
@@ -150,7 +147,7 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to get the job runner object by a null runner id.");
         }
 
-        JobRunnerObject* jobRunner = m_jobRunnerMap[runnerId];
+        JobRunnerObjectPtr jobRunner = m_jobRunnerMap[runnerId];
         if (NULL == jobRunner)
         {
             OGL_THROW_EXCEPTION("Failed to get job runner object by <%s>", runnerId);
@@ -161,8 +158,7 @@ namespace ogl
 
     int JobRunnerManagerObject::RegisterJobRunner(const ogl::JobRunnerOption& jobRunnerOption)
     {
-        JobRunnerObject* jobRunner;
-        ACE_NEW_RETURN(jobRunner, JobRunnerObject(this, jobRunnerOption), -1);
+        JobRunnerObjectPtr jobRunner(new JobRunnerObject(this, jobRunnerOption));
 
         {
             ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jobRunnerMapMutex);
@@ -173,17 +169,17 @@ namespace ogl
 
         ogl::CommandHeader header(RegisterJobRunnerComplete, jobRunner->id());
 
-        return HandlerObject::sendResponse(header, jobRunner->runnerOption());
+        return HandlerObject::sendResponse(header, jobRunner->runnerOption().get());
     }
 
-    int JobRunnerManagerObject::getAllRunners(std::list<JobRunnerObject*>& runnerList)
+    int JobRunnerManagerObject::getAllRunners(std::list<JobRunnerObjectPtr>& runnerList)
     {
         int i = 0;
         runnerList.clear();
 
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jobRunnerMapMutex);
 
-        for (std::map<std::string, JobRunnerObject*>::iterator it = m_jobRunnerMap.begin();
+        for (std::map<std::string, JobRunnerObjectPtr>::iterator it = m_jobRunnerMap.begin();
              it != m_jobRunnerMap.end(); ++it, ++i)
         {
             runnerList.push_back(it->second);
@@ -244,29 +240,29 @@ namespace ogl
     /*
      * JobRunnerManagerPool
      */
-    void JobRunnerManagerPool::RegisterJobRunnerManager(ogl::JobRunnerManagerObject* jrmObject)
+    void JobRunnerManagerPool::RegisterJobRunnerManager(ogl::JobRunnerManagerObjectPtr jrmObject)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
         this->m_jrmObjectMap[jrmObject->id()] = jrmObject;
     }
 
-    void JobRunnerManagerPool::UnregisterJobRunnerManager(ogl::JobRunnerManagerObject* jrmObject)
+    void JobRunnerManagerPool::UnregisterJobRunnerManager(ogl::JobRunnerManagerObjectPtr jrmObject)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
         this->m_jrmObjectMap.erase(jrmObject->id());
     }
 
-    int JobRunnerManagerPool::getAllRunners(std::list<JobRunnerObject*>& runnerList)
+    int JobRunnerManagerPool::getAllRunners(std::list<JobRunnerObjectPtr>& runnerList)
     {
         int i = 0;
 
         runnerList.clear();
 
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
-        for (std::map<std::string, JobRunnerManagerObject*>::iterator it = m_jrmObjectMap.begin();
+        for (std::map<std::string, JobRunnerManagerObjectPtr>::iterator it = m_jrmObjectMap.begin();
              it != m_jrmObjectMap.end(); ++it)
         {
-            std::list<JobRunnerObject*> rl;
+            std::list<JobRunnerObjectPtr> rl;
             i += it->second->getAllRunners(rl);
             runnerList.insert(runnerList.end(), rl.begin(), rl.end());
         }

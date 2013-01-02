@@ -4,20 +4,27 @@
 #include <ace/Task.h>
 #include <list>
 
+#include "Job.h"
+#include "JobRunnerObjectManager.h"
+
 namespace ogl
 {
-
-    class Job;
-    class JobRunnerObject;
 
     class Policy
     {
         public:
             virtual int initialize() = 0;
-            virtual int prepare(std::list<ogl::Job*>&, std::list<ogl::JobRunnerObject*>& ) = 0;
-            virtual int dispatch(std::list<ogl::Job*>&, std::list<ogl::JobRunnerObject*>& ) = 0;
+
+            virtual int prepare(std::list<ogl::JobPtr>&,
+                                std::list<ogl::JobRunnerObjectPtr>& ) = 0;
+
+            virtual int dispatch(std::list<ogl::JobPtr>&,
+                                 std::list<ogl::JobRunnerObjectPtr>& ) = 0;
+
             virtual int uninitialize() = 0;
     };
+
+    typedef std::tr1::shared_ptr<Policy> PolicyPtr;
 
     class JobScheduler : public ACE_Task<ACE_MT_SYNCH>
     {
@@ -27,9 +34,9 @@ namespace ogl
             virtual int svc();
 
         private:
-            std::list<ogl::Policy*> m_policyList;
-            std::list<ogl::Job*> m_jobList;
-            std::list<ogl::JobRunnerObject*> m_runnerList;
+            std::list<ogl::PolicyPtr> m_policyList;
+            std::list<ogl::JobPtr> m_jobList;
+            std::list<ogl::JobRunnerObjectPtr> m_runnerList;
     };
 
     typedef ACE_Singleton<JobScheduler, ACE_Null_Mutex> JOBSCH;

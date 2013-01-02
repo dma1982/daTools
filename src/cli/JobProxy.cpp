@@ -22,7 +22,6 @@ namespace ogl
 
     int JobProxy::closeJob()
     {
-
         ClientAction action(this->m_jobManagerProxy);
 
         action.submit(ogl::CloseJobCommand, &m_jobOption);
@@ -35,33 +34,9 @@ namespace ogl
         }
 
         return 0;
-
-        /*
-        ogl::CommandHeader cmdHeader(ogl::CloseJobCommand);
-
-        if (ogl::send(*m_jmServer, cmdHeader, &m_jobOption) < 0)
-        {
-            OGL_THROW_EXCEPTION("Failed to send close job request to Job Manager Server.");
-        }
-
-        ACE_Message_Block msg;
-        ogl::CommandHeader respHeader;
-
-        if (ogl::recv(*m_jmServer, respHeader, msg) < 0)
-        {
-            OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
-        }
-
-        if (respHeader.commandType() == ogl::CloseJobFailed)
-        {
-            OGL_THROW_EXCEPTION("Failed to close job.");
-        }
-        */
-
-        // return 0;
     }
 
-    TaskProxy* JobProxy::addTask(TaskOption* taskOption)
+    TaskProxyPtr JobProxy::addTask(TaskOptionPtr taskOption)
     {
         ogl::CommandHeader cmdHeader(ogl::CreateTaskCommand);
 
@@ -70,7 +45,7 @@ namespace ogl
 
         ClientAction action(this->m_jobManagerProxy);
 
-        action.submit(ogl::CreateTaskCommand, taskOption);
+        action.submit(ogl::CreateTaskCommand, taskOption.get());
 
         action.wait();
 
@@ -79,29 +54,7 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", action.returnCode());
         }
 
-        return new TaskProxy(action.getResponse(), m_jobManagerProxy);
-
-        /*
-
-        if (ogl::send(*m_jmServer, cmdHeader, taskOption) < 0)
-        {
-            OGL_THROW_EXCEPTION("Failed to send create job request to Job Manager Server.");
-        }
-
-        ACE_Message_Block msg;
-        ogl::CommandHeader respHeader;
-
-        if (ogl::recv(*m_jmServer, respHeader, msg) < 0)
-        {
-            OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
-        }
-
-        if (respHeader.commandType() == ogl::CreateTaskFailed)
-        {
-            OGL_THROW_EXCEPTION("Failed to add job to Job Manager Server, errno: <%d>.", respHeader.commandType());
-        }
-
-        return new TaskProxy(&msg, m_jmServer);
-        */
+        TaskProxyPtr taskProxy(new TaskProxy(action.getResponse(), m_jobManagerProxy));
+        return taskProxy;
     }
 }

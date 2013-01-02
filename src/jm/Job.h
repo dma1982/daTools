@@ -27,30 +27,30 @@ namespace ogl
                 return m_jobId;
             };
 
-            ogl::JobOption* jobOption()
+            ogl::JobOptionPtr jobOption()
             {
                 return m_jobOption;
             };
 
             bool isClosed();
 
-            Task* addTask(ogl::TaskOption& taskOption);
+            TaskPtr addTask(ogl::TaskOption& taskOption);
 
             int closeJob();
 
-            Task* getNextTask();
+            TaskPtr getNextTask();
 
-            Task* getTask(const ogl::TaskId& );
+            TaskPtr getTask(const ogl::TaskId& );
 
         private:
 
             ogl::Job::JobState m_state;
 
-            ogl::JobOption* m_jobOption;
+            ogl::JobOptionPtr m_jobOption;
 
             ACE_Thread_Mutex m_taskListMutex;
-            std::list<ogl::Task*> m_pendingTasks;
-            std::map<ogl::TaskId, ogl::Task*> m_tasks;
+            std::list<ogl::TaskPtr> m_pendingTasks;
+            std::map<ogl::TaskId, ogl::TaskPtr> m_tasks;
 
             ogl::TaskId m_nextTaskId;
             JobId m_jobId;

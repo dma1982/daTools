@@ -26,15 +26,15 @@ namespace ogl
 
             int addJob(JobOption& option);
 
-            Job* getJob(JobId id);
+            JobPtr getJob(JobId id);
 
-            int getAllJobs(std::list<Job*>& jobList);
+            int getAllJobs(std::list<JobPtr>& jobList);
 
         private:
 
             static log4cxx::LoggerPtr m_logger;
 
-            std::map<JobId, Job*> m_jobs;
+            std::map<JobId, JobPtr> m_jobs;
             JobId m_nextJobId;
             ACE_Thread_Mutex m_jobMapMutex;
     };

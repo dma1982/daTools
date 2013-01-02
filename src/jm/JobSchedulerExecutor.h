@@ -3,63 +3,65 @@
 
 #include <list>
 
+#include "JobScheduler.h"
+
 namespace ogl
 {
 
-    class Job;
-    class JobRunnerObject;
     class Policy;
 
     class InitializeExecutor
     {
         public:
-            InitializeExecutor(std::list<ogl::Job*>& jobList, std::list<ogl::JobRunnerObject*>& runnerList);
+            InitializeExecutor(std::list<ogl::JobPtr>& jobList,
+                               std::list<ogl::JobRunnerObjectPtr>& runnerList);
 
-            InitializeExecutor& operator()(ogl::Policy* policy);
+            InitializeExecutor& operator()(ogl::PolicyPtr policy);
 
         private:
-            std::list<Job*>& m_jobList;
-            std::list<JobRunnerObject*>& m_runnerList;
-
+            std::list<JobPtr>& m_jobList;
+            std::list<JobRunnerObjectPtr>& m_runnerList;
     };
 
     class PrepareExecutor
     {
         public:
-            PrepareExecutor(std::list<ogl::Job*>& jobList, std::list<ogl::JobRunnerObject*>& runnerList);
+            PrepareExecutor(std::list<ogl::JobPtr>& jobList,
+                            std::list<ogl::JobRunnerObjectPtr>& runnerList);
 
-            PrepareExecutor& operator()(ogl::Policy* policy);
+            PrepareExecutor& operator()(ogl::PolicyPtr policy);
 
         private:
-            std::list<Job*>& m_jobList;
-            std::list<JobRunnerObject*>& m_runnerList;
+            std::list<JobPtr>& m_jobList;
+            std::list<JobRunnerObjectPtr>& m_runnerList;
 
     };
 
     class DispatchExecutor
     {
         public:
-            DispatchExecutor(std::list<ogl::Job*>& jobList, std::list<ogl::JobRunnerObject*>& runnerList);
+            DispatchExecutor(std::list<ogl::JobPtr>& jobList,
+                             std::list<ogl::JobRunnerObjectPtr>& runnerList);
 
-            DispatchExecutor& operator()(ogl::Policy* policy);
+            DispatchExecutor& operator()(ogl::PolicyPtr policy);
 
         private:
-            std::list<Job*>& m_jobList;
-            std::list<JobRunnerObject*>& m_runnerList;
+            std::list<JobPtr>& m_jobList;
+            std::list<JobRunnerObjectPtr>& m_runnerList;
     };
 
     class UninitializeExecutor
     {
         public:
 
-            UninitializeExecutor(std::list<ogl::Job*>& jobList, std::list<ogl::JobRunnerObject*>& runnerList);
+            UninitializeExecutor(std::list<ogl::JobPtr>& jobList,
+                                 std::list<ogl::JobRunnerObjectPtr>& runnerList);
 
-            UninitializeExecutor& operator()(ogl::Policy* policy);
+            UninitializeExecutor& operator()(ogl::PolicyPtr policy);
 
         private:
-            std::list<Job*>& m_jobList;
-            std::list<JobRunnerObject*>& m_runnerList;
-
+            std::list<JobPtr>& m_jobList;
+            std::list<JobRunnerObjectPtr>& m_runnerList;
     };
 
 }

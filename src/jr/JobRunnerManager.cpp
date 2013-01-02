@@ -17,8 +17,7 @@ namespace ogl
 
         for (size_t i = 0; i < n; i++)
         {
-            JobRunner* jobRunner;
-            ACE_NEW_RETURN(jobRunner, JobRunner(this), -1);
+            JobRunnerPtr jobRunner(new JobRunner(this));
             jobRunner->start();
             m_jobRunners[jobRunner->id()] = jobRunner;
         }
@@ -32,7 +31,7 @@ namespace ogl
                       (int)(jobOption.id()),
                       jobOption.runnerId());
 
-        JobRunner* jobRunner = m_jobRunners[jobOption.runnerId()];
+        JobRunnerPtr jobRunner = m_jobRunners[jobOption.runnerId()];
 
         if (jobRunner == 0)
         {
@@ -49,7 +48,7 @@ namespace ogl
                       (int)taskOption.taskId(),
                       taskOption.runnerId());
 
-        JobRunner* jobRunner = m_jobRunners[taskOption.runnerId()];
+        JobRunnerPtr jobRunner = m_jobRunners[taskOption.runnerId()];
 
         if (jobRunner == 0)
         {

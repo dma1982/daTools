@@ -32,21 +32,21 @@ namespace ogl
         ogl::CommandHeader completeHeader(CreateTaskComplete, header.contextId());
         ogl::CommandHeader failedHeader(CreateTaskFailed, header.contextId());
 
-        Job* job = m_jobManager->getJob(taskOption.jobId());
+        JobPtr job = m_jobManager->getJob(taskOption.jobId());
 
         if (job == 0)
         {
             return HandlerObject::sendResponse(failedHeader);
         }
 
-        Task* task = job->addTask(taskOption);
+        TaskPtr task = job->addTask(taskOption);
 
         if (task == 0)
         {
             return HandlerObject::sendResponse(failedHeader);
         }
 
-        return HandlerObject::sendResponse(completeHeader, task->taskOption());
+        return HandlerObject::sendResponse(completeHeader, task->taskOption().get());
     }
 
     int ClientHandlerObject::FetchTaskOutput(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
@@ -54,14 +54,14 @@ namespace ogl
         ogl::CommandHeader completeHeader(FetchTaskOutputComplete, header.contextId());
         ogl::CommandHeader failedHeader(FetchTaskOutputFailed, header.contextId());
 
-        Job* job = m_jobManager->getJob(taskOption.jobId());
+        JobPtr job = m_jobManager->getJob(taskOption.jobId());
 
         if (job == 0)
         {
             return HandlerObject::sendResponse(failedHeader);
         }
 
-        Task* task = job->getTask(taskOption.taskId());
+        TaskPtr task = job->getTask(taskOption.taskId());
         if (task == 0)
         {
             return HandlerObject::sendResponse(failedHeader);
@@ -69,7 +69,7 @@ namespace ogl
 
         if (task->isCompleted())
         {
-            return HandlerObject::sendResponse(completeHeader, task->taskOption());
+            return HandlerObject::sendResponse(completeHeader, task->taskOption().get());
         }
 
         task->addObserver(header.contextId(), this);
@@ -81,7 +81,7 @@ namespace ogl
         ogl::CommandHeader completeHeader(CloseJobComplete, header.contextId());
         ogl::CommandHeader failedHeader(CloseJobFailed, header.contextId());
 
-        Job* job = m_jobManager->getJob(jobOption.id());
+        JobPtr job = m_jobManager->getJob(jobOption.id());
 
         if (job == 0)
         {

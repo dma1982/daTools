@@ -8,9 +8,10 @@ namespace ogl
     log4cxx::LoggerPtr JobRunner::m_logger = OGLCONF->getLogger("ogl.JobRunner");
 
     JobRunner::JobRunner(ogl::JobRunnerManager* jobRunnerManager) :
-            m_jobRunnerManager(jobRunnerManager), m_taskProcessOption(0)
+            m_jobRunnerManager(jobRunnerManager), m_taskProcessOption(0),
+            m_jobRunnerOption(new ogl::JobRunnerOption())
     {
-        ACE_NEW_NORETURN(m_jobRunnerOption, ogl::JobRunnerOption());
+
     }
 
     int JobRunner::start()
@@ -30,7 +31,7 @@ namespace ogl
         ACE_Message_Block* msg;
         Command* cmd;
 
-        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand, m_jobRunnerOption), -1);
+        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand, m_jobRunnerOption.get()), -1);
         ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
         this->putq(msg);
@@ -155,7 +156,7 @@ namespace ogl
             case RegisterJobRunnerCommand:
             {
                 CommandHeader header(RegisterJobRunnerCommand, m_jobRunnerOption->id());
-                sendResponse(header, m_jobRunnerOption);
+                sendResponse(header, m_jobRunnerOption.get());
                 break;
             }
 
@@ -177,6 +178,7 @@ namespace ogl
             releaseObject<Command>(cmd);
             msg->release();
         }
+
         return 0;
     }
 }

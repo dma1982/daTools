@@ -19,15 +19,14 @@ namespace ogl
          */
 
         // release jobs
-        for_each(m_jobs.begin(), m_jobs.end(), releasePairSecond<const JobId, Job*>);
+        //        for_each(m_jobs.begin(), m_jobs.end(), releasePairSecond<const JobId, Job*>);
     }
 
     int JobManager::addJob(JobOption& option)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
 
-        Job* job;
-        ACE_NEW_RETURN(job, Job(m_nextJobId++, option), -1);
+        JobPtr job(new Job(m_nextJobId++, option));
 
         m_jobs[job->getJobId()] = job;
 
@@ -36,26 +35,26 @@ namespace ogl
         return 1;
     }
 
-    Job* JobManager::getJob(JobId id)
+    JobPtr JobManager::getJob(JobId id)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
         if (m_jobs.find(id) == m_jobs.end())
         {
             OGL_LOG_ERROR("Failed to get job by id <%d>.", (int) id);
-            return 0;
+            return JobPtr();
         }
 
         return m_jobs[id];
     }
 
-    int JobManager::getAllJobs(std::list<Job*>& jobList)
+    int JobManager::getAllJobs(std::list<JobPtr>& jobList)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
 
         jobList.clear();
 
-        std::map<ogl::JobId, Job*>::iterator itB = m_jobs.begin();
-        std::map<ogl::JobId, Job*>::iterator itE = m_jobs.end();
+        std::map<ogl::JobId, JobPtr>::iterator itB = m_jobs.begin();
+        std::map<ogl::JobId, JobPtr>::iterator itE = m_jobs.end();
 
         for (; itB != itE; ++itB)
         {

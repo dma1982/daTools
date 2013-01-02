@@ -28,7 +28,7 @@ void print_help()
     cout << help << endl;
 }
 
-void printTaskInfo(TaskProxy* task)
+void printTaskInfo(TaskProxyPtr task)
 {
     char buf[BUFSIZ] = {0};
 
@@ -46,16 +46,16 @@ int main(int argc, char** argv)
     int arg;
     int taskCount = 1;
 
-    JobOption jobOption;
+    JobOptionPtr jobOption(new JobOption());
     while ((arg = getOpt()) != EOF)
     {
         switch (arg)
         {
         case 'j':
-            jobOption.name(getOpt.optarg);
+            jobOption->name(getOpt.optarg);
             break;
         case 'c':
-            jobOption.command(getOpt.optarg);
+            jobOption->command(getOpt.optarg);
             break;
 
         case 'n':
@@ -69,31 +69,31 @@ int main(int argc, char** argv)
         }
     }
 
-    if (jobOption.name() == 0 ||
-        jobOption.command() == 0 ||
+    if (jobOption->name() == 0 ||
+        jobOption->command() == 0 ||
         taskCount <= 0)
     {
         print_help();
         return -1;
     }
 
-    printf("INFO: Creating job <%s> with command <%s>.\n", jobOption.name(), jobOption.command());
+    printf("INFO: Creating job <%s> with command <%s>.\n", jobOption->name(), jobOption->command());
 
     try
     {
         JobManagerProxy* jobManager = JobManagerProxy::createInstance();
 
-        JobProxy* job = jobManager->addJob(&jobOption);
+        JobProxyPtr job = jobManager->addJob(jobOption);
 
         printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().id()));
 
-        list<TaskProxy*> taskList;
+        list<TaskProxyPtr> taskList;
 
         for ( int i = 0; i < taskCount; i++)
         {
-            TaskOption taskOption;
+            TaskOptionPtr taskOption(new TaskOption());
 
-            TaskProxy* task = job->addTask(&taskOption);
+            TaskProxyPtr task = job->addTask(taskOption);
 
             printf("INFO: Create task <%d>.\n", (int)(task->taskId()));
 

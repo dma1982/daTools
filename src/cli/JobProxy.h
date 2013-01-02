@@ -4,18 +4,17 @@
 #include "Object.h"
 #include "Network.h"
 
+#include "TaskProxy.h"
+
 namespace ogl
 {
-    class TaskOption;
-    class TaskProxy;
-
     class JobManagerProxy;
 
     class JobProxy
     {
         public:
             JobProxy (ACE_Message_Block* msg, JobManagerProxy*);
-            TaskProxy* addTask(TaskOption* taskOption);
+            TaskProxyPtr addTask(TaskOptionPtr taskOption);
 
             int closeJob();
 
@@ -25,6 +24,8 @@ namespace ogl
             JobOption m_jobOption;
             JobManagerProxy* m_jobManagerProxy;
     };
+
+    typedef std::tr1::shared_ptr<JobProxy> JobProxyPtr;
 }
 
 #endif

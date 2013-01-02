@@ -10,11 +10,11 @@
 #include <list>
 #include <map>
 
+#include "Job.h"
+#include "Task.h"
+
 namespace ogl
 {
-
-    class Job;
-    class Task;
 
     class JobRunnerManagerObject;
 
@@ -23,17 +23,17 @@ namespace ogl
         public:
             JobRunnerObject(JobRunnerManagerObject* jrmObject, const JobRunnerOption& jobRunnerOption);
 
-            int BindJobRunner(ogl::Job* job);
+            int BindJobRunner(ogl::JobPtr job);
 
             int UnbindJobRunner();
 
-            int ExecuteTask(ogl::Task* task);
+            int ExecuteTask(ogl::TaskPtr task);
 
             int ExecuteTaskResult(ogl::TaskOption& taskOption);
 
             int sendNextTask();
 
-            JobRunnerOption* runnerOption();
+            JobRunnerOptionPtr runnerOption();
 
             const char* id();
 
@@ -44,11 +44,13 @@ namespace ogl
             static log4cxx::LoggerPtr m_logger;
 
             JobRunnerManagerObject* m_jrmObject;
-            JobRunnerOption* m_jobRunnerOption;
 
-            ogl::Job* m_job;
-            ogl::Task* m_task;
+            JobRunnerOptionPtr m_jobRunnerOption;
+            ogl::JobPtr m_job;
+            ogl::TaskPtr m_task;
     };
+
+    typedef std::tr1::shared_ptr<JobRunnerObject> JobRunnerObjectPtr;
 
     class JobRunnerManagerObject : public HandlerObject
     {
@@ -64,7 +66,7 @@ namespace ogl
 
             int ExecuteTaskResult(ogl::TaskOption& );
 
-            int getAllRunners(std::list<JobRunnerObject*>& runnerList);
+            int getAllRunners(std::list<JobRunnerObjectPtr>& runnerList);
 
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data );
 
@@ -72,30 +74,32 @@ namespace ogl
 
         private:
 
-            JobRunnerObject* operator[](const char* runnerId);
+            JobRunnerObjectPtr operator[](const char* runnerId);
 
             ACE_Thread_Mutex m_jobRunnerMapMutex;
 
-            std::map<std::string, JobRunnerObject*> m_jobRunnerMap;
+            std::map<std::string, JobRunnerObjectPtr> m_jobRunnerMap;
             char* m_id;
 
             static ACE_Utils::UUID_Generator m_guidGenerator;
             static log4cxx::LoggerPtr m_logger;
     };
 
+    typedef std::tr1::shared_ptr<JobRunnerManagerObject> JobRunnerManagerObjectPtr;
+
     typedef ACE_Acceptor <JobRunnerManagerObject, ACE_SOCK_ACCEPTOR > JobRunnerManagerAcceptor;
 
     class JobRunnerManagerPool : public Server <JobRunnerManagerAcceptor>
     {
         public:
-            void RegisterJobRunnerManager(JobRunnerManagerObject* );
-            void UnregisterJobRunnerManager(JobRunnerManagerObject* );
+            void RegisterJobRunnerManager(JobRunnerManagerObjectPtr );
+            void UnregisterJobRunnerManager(JobRunnerManagerObjectPtr );
 
-            int getAllRunners(std::list<JobRunnerObject*>& runnerList);
+            int getAllRunners(std::list<JobRunnerObjectPtr>& runnerList);
 
         private:
             ACE_Thread_Mutex m_jrmObjectMapMutex;
-            std::map<std::string, JobRunnerManagerObject*> m_jrmObjectMap;
+            std::map<std::string, JobRunnerManagerObjectPtr> m_jrmObjectMap;
     };
 
     typedef ACE_Singleton<JobRunnerManagerPool, ACE_Null_Mutex> JRMPool;

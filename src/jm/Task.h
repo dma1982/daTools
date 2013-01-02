@@ -18,18 +18,13 @@ namespace ogl
 
         public:
 
-            Task(const TaskId& taskId, TaskOption* option)
+            Task(const TaskId& taskId, TaskOptionPtr option)
                     : m_taskOption(option), m_completed(false)
             {
                 m_taskOption->taskId(taskId);
             };
 
-            ~Task()
-            {
-                ogl::releaseObject<TaskOption>(m_taskOption);
-            }
-
-            TaskOption* taskOption()
+            TaskOptionPtr taskOption()
             {
                 return m_taskOption;
             }
@@ -49,7 +44,7 @@ namespace ogl
             typedef std::map<std::string, HandlerObject*>::iterator OGL_TASK_OBSERVER_MAP_ITER;
 
         private:
-            TaskOption* m_taskOption;
+            TaskOptionPtr m_taskOption;
             OGL_TASK_OBSERVER_MAP m_observerMap;
             bool m_completed;
     };

@@ -24,7 +24,7 @@ namespace ogl
         {
             const char* contextId = (it->first).c_str();
             ogl::CommandHeader header(FetchTaskOutputComplete, contextId);
-            it->second->sendResponse(header, m_taskOption);
+            it->second->sendResponse(header, m_taskOption.get());
         }
 
         m_completed = true;

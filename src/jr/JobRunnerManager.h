@@ -4,10 +4,10 @@
 #include "Network.h"
 #include "Commands.h"
 
+#include "JobRunner.h"
+
 namespace ogl
 {
-
-    class JobRunner;
 
     class JobRunnerManager : public HandlerObject
     {
@@ -27,7 +27,7 @@ namespace ogl
 
             static log4cxx::LoggerPtr m_logger;
 
-            std::map<std::string, JobRunner*> m_jobRunners;
+            std::map<std::string, JobRunnerPtr> m_jobRunners;
 
     };
 

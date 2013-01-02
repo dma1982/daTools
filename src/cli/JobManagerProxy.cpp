@@ -17,8 +17,6 @@ namespace ogl
 
     JobManagerProxy::~JobManagerProxy()
     {
-        // release JobProxys
-        std::for_each(m_jobProxyList.begin(), m_jobProxyList.end(), releaseObject<JobProxy>);
     }
 
     JobManagerProxy::JobManagerProxy()
@@ -41,11 +39,11 @@ namespace ogl
         return ClientActionManager::signalAction(header, data.duplicate());
     }
 
-    JobProxy* JobManagerProxy::addJob(JobOption* jobOption)
+    JobProxyPtr JobManagerProxy::addJob(JobOptionPtr jobOption)
     {
         ClientAction action(this);
 
-        action.submit(ogl::CreateJobCommand, jobOption);
+        action.submit(ogl::CreateJobCommand, jobOption.get());
 
         action.wait();
 
@@ -54,6 +52,6 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
         }
 
-        return new JobProxy(action.getResponse(), this);
+        return JobProxyPtr(new JobProxy(action.getResponse(), this));
     }
 };

@@ -25,6 +25,8 @@ namespace ogl
             TaskOption m_taskOption;
             JobManagerProxy* m_jobManagerProxy;
     };
+
+    typedef std::tr1::shared_ptr<TaskProxy> TaskProxyPtr;
 }
 
 #endif

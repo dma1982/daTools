@@ -16,7 +16,9 @@ namespace ogl
 
     int JobScheduler::loadPolicy()
     {
-        m_policyList.push_back(new P_FCFS());
+        PolicyPtr fcfs(new P_FCFS());
+        m_policyList.push_back(fcfs);
+
         return 1;
     }
 
