@@ -46,7 +46,7 @@ namespace ogl
 
             for_each(m_policyList.rbegin(), m_policyList.rend(), doUninitialize);
 
-            ACE_Time_Value intervalTime(0, 500);
+            ACE_Time_Value intervalTime(0, OGLCONF->getSchedulerInterval());
             ACE_Time_Value waitTime (intervalTime + ACE_OS::gettimeofday ());
             m_scheduleEvent.wait(&waitTime);
         }

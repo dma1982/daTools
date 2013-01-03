@@ -51,6 +51,7 @@ namespace ogl
         m_masterJrPort = 9081;
         m_masterHost = "localhost";
         m_runnerId = "test";
+        m_schedulerInterval = 500;
 
         char* oglConf = ACE_OS::getenv("OGL_CONF");
 
@@ -79,6 +80,7 @@ namespace ogl
         m_conf->lookupValue(OGL_MASTER_JR_PORT, m_masterJrPort);
         m_conf->lookupValue(OGL_MASTER_CLI_PORT, m_masterCliPort);
         m_conf->lookupValue(OGL_MASTER_HOST, m_masterHost);
+        m_conf->lookupValue(OGL_SCHEDULER_INTERVAL, m_schedulerInterval);
         m_conf->lookupValue(OGL_JR_CORES, m_runnerCores);
         m_conf->lookupValue(OGL_JR_ID, m_runnerId);
 
@@ -133,6 +135,11 @@ namespace ogl
     size_t Configuration::getRunnerCores()
     {
         return m_runnerCores;
+    }
+
+    unsigned int Configuration::getSchedulerInterval()
+    {
+        return m_schedulerInterval;
     }
 
     FILE* Configuration::getLogFile()

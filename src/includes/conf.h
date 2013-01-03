@@ -15,6 +15,9 @@
 #define OGL_MASTER_JR_PORT "ogl.port.jr"
 #define OGL_MASTER_CLI_PORT "ogl.port.cli"
 
+#define OGL_SCHEDULER_INTERVAL "ogl.scheduler.interval"
+#define OGL_SCHEDULER_POLICY "ogl.scheduler.policy"
+
 #define OGL_JR_ID "jr.id"
 #define OGL_JR_CORES "jr.cores"
 
@@ -52,6 +55,8 @@ namespace ogl
 
             size_t m_runnerCores;
 
+            unsigned int m_schedulerInterval;
+
         public:
 
             static Configuration* instance();
@@ -69,6 +74,8 @@ namespace ogl
             const std::string& getRunnerId();
 
             size_t getRunnerCores();
+
+            unsigned int getSchedulerInterval();
 
             const std::string& getMasterHost();
 
