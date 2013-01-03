@@ -37,6 +37,8 @@ namespace ogl
             std::list<ogl::PolicyPtr> m_policyList;
             std::list<ogl::JobPtr> m_jobList;
             std::list<ogl::JobRunnerObjectPtr> m_runnerList;
+
+            ACE_Event m_scheduleEvent;
     };
 
     typedef ACE_Singleton<JobScheduler, ACE_Null_Mutex> JOBSCH;

@@ -17,9 +17,6 @@ namespace ogl
         /*
          * Uncommnet the code to see who cleanup this object.
          */
-
-        // release jobs
-        //        for_each(m_jobs.begin(), m_jobs.end(), releasePairSecond<const JobId, Job*>);
     }
 
     int JobManager::addJob(JobOption& option)

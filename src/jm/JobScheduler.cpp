@@ -10,6 +10,7 @@ namespace ogl
 
     int JobScheduler::start()
     {
+        m_scheduleEvent.reset();
         this->activate(THR_NEW_LWP | THR_JOINABLE | THR_CANCEL_ENABLE | THR_CANCEL_ASYNCHRONOUS, 1);
         return 0;
     }
@@ -44,6 +45,10 @@ namespace ogl
             for_each(m_policyList.begin(), m_policyList.end(), doDispatch);
 
             for_each(m_policyList.rbegin(), m_policyList.rend(), doUninitialize);
+
+            ACE_Time_Value intervalTime(0, 500);
+            ACE_Time_Value waitTime (intervalTime + ACE_OS::gettimeofday ());
+            m_scheduleEvent.wait(&waitTime);
         }
 
         return 0;
