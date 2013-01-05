@@ -44,6 +44,23 @@ namespace ogl
         return m_jobs[id];
     }
 
+    int JobManager::closeJob(JobId id)
+    {
+        ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);
+        if (m_jobs.find(id) == m_jobs.end())
+        {
+            OGL_LOG_ERROR("Failed to get job by id <%d>.", (int) id);
+            return -1;
+        }
+
+        JobPtr job = m_jobs[id];
+
+        m_jobs.erase(id);
+
+        return job->closeJob();
+
+    }
+
     int JobManager::getAllJobs(std::list<JobPtr>& jobList)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_jobMapMutex);

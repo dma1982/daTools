@@ -28,6 +28,8 @@ namespace ogl
 
             JobPtr getJob(JobId id);
 
+            int closeJob(JobId id);
+
             int getAllJobs(std::list<JobPtr>& jobList);
 
         private:

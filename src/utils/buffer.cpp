@@ -59,10 +59,7 @@ ogl::Data::Data(int size)
 
 ogl::Data::~Data()
 {
-    if (m_data)
-    {
-        delete[] m_data;
-    }
+    delete[] m_data;
 }
 
 void ogl::Buffer::_inc_ref_cnt()

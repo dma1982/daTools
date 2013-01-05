@@ -81,14 +81,7 @@ namespace ogl
         ogl::CommandHeader completeHeader(CloseJobComplete, header.contextId());
         ogl::CommandHeader failedHeader(CloseJobFailed, header.contextId());
 
-        JobPtr job = m_jobManager->getJob(jobOption.id());
-
-        if (job == 0)
-        {
-            return HandlerObject::sendResponse(failedHeader);
-        }
-
-        int hr = job->closeJob();
+        int hr = m_jobManager->closeJob(jobOption.id());
 
         if (hr < 0)
         {

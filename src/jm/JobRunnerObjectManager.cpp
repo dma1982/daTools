@@ -98,7 +98,7 @@ namespace ogl
     ACE_Utils::UUID_Generator JobRunnerManagerObject::m_guidGenerator;
     log4cxx::LoggerPtr JobRunnerManagerObject::m_logger(OGLCONF->getLogger("ogl.JobRunnerManagerObject"));
 
-    JobRunnerManagerObject::JobRunnerManagerObject()
+    JobRunnerManagerObject::JobRunnerManagerObject() : m_id(NULL)
     {
     }
 

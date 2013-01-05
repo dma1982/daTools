@@ -27,7 +27,7 @@ TEST(CommandHeader, contextId)
     char* buf = new char[1024];
     sprintf(buf, "%s", "bbbb");
     ogl::CommandHeader header(ogl::CreateJobCommand, buf);
-    delete buf;
+    delete[] buf;
     ACE_Message_Block* msg = header.serialize();
     msg->release();
 }
