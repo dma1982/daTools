@@ -42,7 +42,7 @@ namespace ogl
     {
         m_conf = new Config ();
 
-        m_logFile = 0;
+        m_logFile = stderr;
 
         m_logLevel = INFO;
 

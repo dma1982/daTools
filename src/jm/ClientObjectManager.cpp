@@ -72,7 +72,7 @@ namespace ogl
             return HandlerObject::sendResponse(completeHeader, task->taskOption().get());
         }
 
-        task->addObserver(header.contextId(), this);
+        task->addObserver(header.contextId(), this->getReference());
         return 0;
     }
 

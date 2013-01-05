@@ -4,7 +4,7 @@ OGL_MODE=Debug
 #OGL_MODE=Release
 
 	ifeq (${OGL_MODE}, Debug)
-		OGL_CFLAGS=-DLIN -g -Wall
+		OGL_CFLAGS=-DLIN -g -Wall -rdynamic
 	else
 		OGL_CFLAGS=-DLIN -O2 -Wall
 	endif

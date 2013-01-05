@@ -82,7 +82,7 @@ int main(int argc, char** argv)
 
     try
     {
-        JobManagerProxy* jobManager = JobManagerProxyFactory::createInstance();
+        JobManagerProxyPtr jobManager = JobManagerProxyFactory::createInstance();
 
         JobProxyPtr job = jobManager->addJob(jobOption);
 

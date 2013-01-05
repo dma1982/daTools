@@ -29,7 +29,7 @@ namespace ogl
                 return m_taskOption;
             }
 
-            int addObserver(UUID id, ogl::HandlerObject*);
+            int addObserver(UUID id, ogl::HandlerObjectPtr);
 
             bool isCompleted();
 
@@ -40,13 +40,15 @@ namespace ogl
                 return m_taskOption->taskId();
             };
 
-            typedef std::map<std::string, HandlerObject*> OGL_TASK_OBSERVER_MAP;
-            typedef std::map<std::string, HandlerObject*>::iterator OGL_TASK_OBSERVER_MAP_ITER;
+            typedef std::map<std::string, HandlerObjectPtr> OGL_TASK_OBSERVER_MAP;
+            typedef std::map<std::string, HandlerObjectPtr>::iterator OGL_TASK_OBSERVER_MAP_ITER;
 
         private:
             TaskOptionPtr m_taskOption;
             OGL_TASK_OBSERVER_MAP m_observerMap;
             bool m_completed;
+
+            ACE_Thread_Mutex m_observerMapMutex;
     };
 
     typedef std::tr1::shared_ptr<Task> TaskPtr;

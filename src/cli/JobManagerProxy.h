@@ -40,7 +40,7 @@ namespace ogl
             static void initialize();
             static void uninitialize();
 
-            static JobManagerProxy* createInstance();
+            static JobManagerProxyPtr createInstance();
 
             typedef std::list<JobManagerClientPtr> JM_CLI_LIST;
             typedef std::list<JobManagerClientPtr>::iterator JM_CLI_LIST_IT;

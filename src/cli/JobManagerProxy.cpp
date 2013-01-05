@@ -60,12 +60,14 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to wait all thread.");
         }
 
+        m_clientList.clear();
+
         ogl::releaseObject<ogl::Configuration>(ogl::Configuration::instance());
 
         ACE::fini();
     }
 
-    JobManagerProxy* JobManagerProxyFactory::createInstance()
+    JobManagerProxyPtr JobManagerProxyFactory::createInstance()
     {
         JobManagerClientPtr client(new JobManagerClient());
 

@@ -16,6 +16,15 @@ namespace ogl
 
     LoggerPtr HandlerObject::m_logger = OGLCONF->getLogger("ogl.HandlerObject");
 
+    HandlerObject::HandlerObject() : m_reference(this)
+    {
+    }
+
+    HandlerObjectPtr HandlerObject::getReference()
+    {
+        return m_reference;
+    }
+
     int HandlerObject::open(void *)
     {
         ACE_INET_Addr addr;
@@ -41,8 +50,8 @@ namespace ogl
         /* Shut down the connection to the client.  */
         this->peer ().close ();
 
-        /* Free our memory.  */
-        delete this;
+        /* Free our memory. */
+        this->m_reference.reset();
     }
 
     int HandlerObject::recvRequest()

@@ -30,6 +30,11 @@ namespace ogl
     class HandlerObject : public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
     {
         public:
+
+            typedef std::tr1::shared_ptr<HandlerObject> HandlerObjectPtr;
+
+            HandlerObject();
+
             virtual int open (void *);
             virtual void destroy (void);
             virtual int close (u_long flags = 0);
@@ -44,7 +49,11 @@ namespace ogl
             virtual int handle_close (ACE_HANDLE,
                                       ACE_Reactor_Mask);
 
+            HandlerObjectPtr getReference();
+
         private:
+
+            HandlerObjectPtr m_reference;
 
             static log4cxx::LoggerPtr m_logger;
 
@@ -52,6 +61,7 @@ namespace ogl
             ACE_Thread_Mutex m_recv_mutex;
     };
 
+    typedef ogl::HandlerObject::HandlerObjectPtr HandlerObjectPtr;
 
     class ClientAction;
 
@@ -170,9 +180,14 @@ namespace ogl
     {
         public:
 
+            typedef std::tr1::shared_ptr<SCH> HandlerPtr;
+
             Client ()
             {
-                ACE_NEW_NORETURN(m_handler, SCH());
+                SCH* handler = 0;
+                ACE_NEW_NORETURN(handler, SCH());
+
+                m_handler = std::tr1::dynamic_pointer_cast<SCH>(handler->getReference());
 
                 //*** Reset connector's Reactor ***
                 m_connector.reactor(&m_reactor);
@@ -180,7 +195,6 @@ namespace ogl
 
             virtual ~Client()
             {
-                releaseObject<SCH>(m_handler);
             }
 
             virtual int svc()
@@ -208,7 +222,9 @@ namespace ogl
 
                 m_master.set(master);
 
-                if (m_connector.connect(m_handler, m_master) < 0)
+                SCH* handler = m_handler.get();
+
+                if (m_connector.connect(handler, m_master) < 0)
                 {
                     OGL_THROW_EXCEPTION("Failed to connect to server <%s:%d> because of <%d>.",
                                         m_master.get_host_name(), m_master.get_port_number(), ACE_OS::last_error());
@@ -223,7 +239,7 @@ namespace ogl
                 m_reactor.wakeup_all_threads();
             }
 
-            SCH* get_handler()
+            HandlerPtr get_handler()
             {
                 return m_handler;
             }
@@ -231,7 +247,7 @@ namespace ogl
         private:
             ACE_Reactor m_reactor;
             ACE_Connector <SCH, ACE_SOCK_Connector> m_connector;
-            SCH* m_handler;
+            HandlerPtr m_handler;
             bool m_shutdown;
             ACE_INET_Addr m_master;
     };

@@ -1,12 +1,13 @@
 #ifndef __OGL_CLIENT_OBJECT_MANAGER_H__
 #define __OGL_CLIENT_OBJECT_MANAGER_H__
 
+#include "Object.h"
+
 #include "Network.h"
 #include "Commands.h"
 
 namespace ogl
 {
-
     class JobManager;
 
     class ClientHandlerObject : public HandlerObject
@@ -19,9 +20,12 @@ namespace ogl
             virtual int FetchTaskOutput(ogl::CommandHeader&, ogl::TaskOption& taskOption);
 
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
+
         private:
             JobManager* m_jobManager;
     };
+
+    typedef std::tr1::shared_ptr<ClientHandlerObject> ClientHandlerObjectPtr;
 
     typedef ACE_Acceptor <ClientHandlerObject, ACE_SOCK_ACCEPTOR > ClientManagerAcceptor;
 

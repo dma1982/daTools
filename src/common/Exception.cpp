@@ -14,7 +14,6 @@ namespace ogl
 
     ACE_Message_Block* Exception::serialize()
     {
-
         ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
         SERIALIZE_CSTRING(os, m_message);
 
