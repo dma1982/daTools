@@ -104,14 +104,14 @@ namespace ogl
 
     JobRunnerManagerObject::~JobRunnerManagerObject()
     {
-        JRMPool::instance()->UnregisterJobRunnerManager(JobRunnerManagerObjectPtr(this));
+        JRMPool::instance()->UnregisterJobRunnerManager(OGL_DYNAMIC_CAST(JobRunnerManagerObject, this));
         ogl::releaseString(m_id);
     }
 
     int JobRunnerManagerObject::RegisterJobRunnerManager(ogl::JobRunnerOption& runnerOption)
     {
         m_id = ogl::dumpString(runnerOption.mgrId());
-        JRMPool::instance()->RegisterJobRunnerManager(JobRunnerManagerObjectPtr(this));
+        JRMPool::instance()->RegisterJobRunnerManager(OGL_DYNAMIC_CAST(JobRunnerManagerObject, this));
 
         OGL_LOG_DEBUG("job runner manager <%s> registered.", this->id());
 

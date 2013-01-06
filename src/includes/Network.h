@@ -27,13 +27,12 @@
 
 namespace ogl
 {
-    class HandlerObject : public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>
+    class HandlerObject : public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>, public Referable
     {
         public:
 
-            typedef std::tr1::shared_ptr<HandlerObject> HandlerObjectPtr;
-
             HandlerObject();
+            virtual ~HandlerObject() {};
 
             virtual int open (void *);
             virtual void destroy (void);
@@ -48,12 +47,7 @@ namespace ogl
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
                                       ACE_Reactor_Mask);
-
-            HandlerObjectPtr getReference();
-
         private:
-
-            HandlerObjectPtr m_reference;
 
             static log4cxx::LoggerPtr m_logger;
 
@@ -61,7 +55,7 @@ namespace ogl
             ACE_Thread_Mutex m_recv_mutex;
     };
 
-    typedef ogl::HandlerObject::HandlerObjectPtr HandlerObjectPtr;
+    typedef std::tr1::shared_ptr<HandlerObject> HandlerObjectPtr;
 
     class ClientAction;
 
@@ -187,7 +181,7 @@ namespace ogl
                 SCH* handler = 0;
                 ACE_NEW_NORETURN(handler, SCH());
 
-                m_handler = std::tr1::dynamic_pointer_cast<SCH>(handler->getReference());
+                m_handler = OGL_DYNAMIC_CAST(SCH, handler);
 
                 //*** Reset connector's Reactor ***
                 m_connector.reactor(&m_reactor);

@@ -4,7 +4,7 @@
 namespace ogl
 {
 
-    int Task::addObserver(UUID contextId, ogl::HandlerObject::HandlerObjectPtr observer)
+    int Task::addObserver(UUID contextId, ogl::HandlerObjectPtr observer)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_observerMapMutex);
         this->m_observerMap[contextId] = observer;

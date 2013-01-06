@@ -16,13 +16,8 @@ namespace ogl
 
     LoggerPtr HandlerObject::m_logger = OGLCONF->getLogger("ogl.HandlerObject");
 
-    HandlerObject::HandlerObject() : m_reference(this)
+    HandlerObject::HandlerObject()
     {
-    }
-
-    HandlerObjectPtr HandlerObject::getReference()
-    {
-        return m_reference;
     }
 
     int HandlerObject::open(void *)
@@ -51,7 +46,7 @@ namespace ogl
         this->peer ().close ();
 
         /* Free our memory. */
-        this->m_reference.reset();
+        this->release();
     }
 
     int HandlerObject::recvRequest()

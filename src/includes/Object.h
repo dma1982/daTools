@@ -22,6 +22,35 @@ namespace ogl
             virtual void deserialize(ACE_Message_Block* msg) = 0;
     };
 
+    class Referable
+    {
+        public:
+            typedef std::tr1::shared_ptr<Referable> ReferablePtr;
+
+            Referable() : m_reference(this)
+            {
+            }
+
+            virtual ~Referable()
+            {
+            }
+
+            virtual ReferablePtr reference()
+            {
+                return m_reference;
+            }
+
+            virtual void release()
+            {
+                m_reference.reset();
+            }
+
+        private:
+            ReferablePtr m_reference;
+    };
+
+
+
     class JobOption : public Serializable
     {
         public:
@@ -199,8 +228,10 @@ namespace ogl
 
 }
 
+#define OGL_DYNAMIC_CAST(clazz, ptr) (std::tr1::dynamic_pointer_cast<clazz>(ptr->reference()))
+
 //serialize
-#define SERIALIZE_ULONG(os, len) do {			  \
+#define SERIALIZE_ULONG(os, len) do {			   \
         os << ACE_CDR::ULong(len);				   \
         if (!os.good_bit())                        \
         {										   \
@@ -208,47 +239,51 @@ namespace ogl
         };										   \
     } while(0)
 
-#define SERIALIZE_CSTRING(os, str) do {			\
-        if (str)								 \
-        {                                        \
-            size_t len = strlen(str);            \
-            SERIALIZE_ULONG(os, len);			  \
-            if(!os.write_char_array(str, len))    \
-            {									  \
-                return 0;						  \
-            };                                    \
-        }										  \
-        else									  \
+#define SERIALIZE_CSTRING(os, str) do {			   \
+        if (str)								   \
+        {										   \
+            size_t len = strlen(str);			   \
+            SERIALIZE_ULONG(os, len);			   \
+            if(!os.write_char_array(str, len))	   \
+            {									   \
+                return 0;						   \
+            };									   \
+        }										   \
+        else									   \
         {										   \
             SERIALIZE_ULONG(os, 0);                \
         }										   \
     } while (0)
 
-#define SERIALIZE_CSTRING_ARRAY(os, strArr) do {	 \
-        if (0 == strArr)							   \
-        {											   \
-            SERIALIZE_ULONG(os, 0);                    \
-        }											   \
-        else														\
-        {															\
+#define SERIALIZE_CSTRING_ARRAY(os, strArr) do {						\
+        if (0 == strArr)												\
+        {																\
+            SERIALIZE_ULONG(os, 0);										\
+        }																\
+        else															\
+        {																\
             size_t arrLen = 0;											\
             for (char** cur = strArr; *cur != 0; cur++) { arrLen++; }	\
             SERIALIZE_ULONG(os, arrLen);                                \
-            for (char** cur = strArr; *cur != 0; cur++) { SERIALIZE_CSTRING(os, *cur); } \
+            for (char** cur = strArr; *cur != 0; cur++)					\
+			{ SERIALIZE_CSTRING(os, *cur); }							\
         }																\
     } while (0)
 
 #define SERIALIZE_BUFFER(os, buffer) do {								\
         ACE_CDR::ULong __size__ = 0;                                    \
-        for (ogl::Buffer*__cur__ = buffer; __cur__!=0; __cur__ = __cur__->next()) \
-            __size__ += __cur__->size();                                \
+        for (ogl::Buffer*__cur__ = buffer; __cur__!=0;					\
+			 __cur__ = __cur__->next())									\
+		{ __size__ += __cur__->size(); }								\
         SERIALIZE_ULONG(os, __size__);									\
-        for (ogl::Buffer*__cur__ = buffer; __cur__!=0; __cur__ = __cur__->next()) \
-            if(!os.write_char_array(__cur__->data(), __cur__->size())){return 0;} \
+        for (ogl::Buffer*__cur__ = buffer; __cur__!=0;					\
+			 __cur__ = __cur__->next())									\
+            if(!os.write_char_array(__cur__->data(), __cur__->size()))	\
+			{return 0;}													\
     } while(0)
 
 // deserialize
-#define DESERIALIZE_ULONG(is, len) do {			\
+#define DESERIALIZE_ULONG(is, len) do {			   \
         ACE_CDR::ULong _len;					   \
         is >> _len;                                \
         len = _len;                                \
@@ -280,7 +315,8 @@ namespace ogl
         {																\
             strArr = new char*[len + 1];                                \
             strArr[len] = 0;                                            \
-            for (size_t i = 0; i <= len; i++) { DESERIALIZE_CSTRING(is, strArr[i]); } \
+            for (size_t i = 0; i <= len; i++)							\
+			{ DESERIALIZE_CSTRING(is, strArr[i]); }						\
         }																\
     } while (0)
 
@@ -304,7 +340,8 @@ namespace ogl
         char buf[128] = {0};                                            \
         for (size_t i = 0; i < msg->length(); i++) {                    \
             memset(buf, 0, 128);                                        \
-            sprintf(buf, "{%s:%d} %d", __FILE__, __LINE__, msg->rd_ptr()[i]); \
+            sprintf(buf, "{%s:%d} %d", __FILE__, __LINE__,				\
+					msg->rd_ptr()[i]);									\
             ogl::logger->Debug(buf);                                    \
         }																\
     } while(0)
