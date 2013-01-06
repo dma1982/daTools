@@ -252,7 +252,7 @@ namespace ogl
         this->m_jrmObjectMap.erase(jrmObject->id());
     }
 
-    int JobRunnerManagerPool::getAllRunners(std::list<JobRunnerObjectPtr>& runnerList)
+    int JobRunnerManagerPool::getAllRunnerManagers(std::list<JobRunnerManagerObjectPtr>& runnerList)
     {
         int i = 0;
 
@@ -262,9 +262,8 @@ namespace ogl
         for (std::map<std::string, JobRunnerManagerObjectPtr>::iterator it = m_jrmObjectMap.begin();
              it != m_jrmObjectMap.end(); ++it)
         {
-            std::list<JobRunnerObjectPtr> rl;
-            i += it->second->getAllRunners(rl);
-            runnerList.insert(runnerList.end(), rl.begin(), rl.end());
+            runnerList.push_back(it->second);
+            i++;
         }
 
         return i;

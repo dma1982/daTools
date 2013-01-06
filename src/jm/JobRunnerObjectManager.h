@@ -95,7 +95,7 @@ namespace ogl
             void RegisterJobRunnerManager(JobRunnerManagerObjectPtr );
             void UnregisterJobRunnerManager(JobRunnerManagerObjectPtr );
 
-            int getAllRunners(std::list<JobRunnerObjectPtr>& runnerList);
+            int getAllRunnerManagers(std::list<JobRunnerManagerObjectPtr>& runnerList);
 
         private:
             ACE_Thread_Mutex m_jrmObjectMapMutex;

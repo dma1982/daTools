@@ -7,11 +7,20 @@
 namespace ogl
 {
     InitializeExecutor::InitializeExecutor(std::list<ogl::JobPtr>& jobList,
+                                           std::list<ogl::JobRunnerManagerObjectPtr>& mgrList,
                                            std::list<ogl::JobRunnerObjectPtr>& runnerList)
             : m_jobList(jobList), m_runnerList(runnerList)
     {
         JOBMANAGER::instance()->getAllJobs(m_jobList);
-        JRMPool::instance()->getAllRunners(m_runnerList);
+        JRMPool::instance()->getAllRunnerManagers(mgrList);
+
+        for (std::list<ogl::JobRunnerManagerObjectPtr>::iterator it = mgrList.begin();
+             it != mgrList.end(); ++it)
+        {
+            std::list<ogl::JobRunnerObjectPtr> rlist;
+            (*it)->getAllRunners(rlist);
+            m_runnerList.insert(m_runnerList.end(), rlist.begin(), rlist.end());
+        }
     }
 
     InitializeExecutor& InitializeExecutor::operator()(ogl::PolicyPtr policy)

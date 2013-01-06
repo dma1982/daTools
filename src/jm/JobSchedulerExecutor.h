@@ -4,6 +4,7 @@
 #include <list>
 
 #include "JobScheduler.h"
+#include "JobRunnerObjectManager.h"
 
 namespace ogl
 {
@@ -14,6 +15,7 @@ namespace ogl
     {
         public:
             InitializeExecutor(std::list<ogl::JobPtr>& jobList,
+                               std::list<ogl::JobRunnerManagerObjectPtr>& mgrList,
                                std::list<ogl::JobRunnerObjectPtr>& runnerList);
 
             InitializeExecutor& operator()(ogl::PolicyPtr policy);

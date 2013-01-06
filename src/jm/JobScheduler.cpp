@@ -33,7 +33,7 @@ namespace ogl
 
         while (1)
         {
-            InitializeExecutor doInitialize(m_jobList, m_runnerList);
+            InitializeExecutor doInitialize(m_jobList, m_runnerMgrList, m_runnerList);
             PrepareExecutor doPrepare(m_jobList, m_runnerList);
             DispatchExecutor doDispatch(m_jobList, m_runnerList);
             UninitializeExecutor doUninitialize(m_jobList, m_runnerList);
