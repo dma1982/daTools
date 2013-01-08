@@ -1,6 +1,8 @@
 #ifndef __OGL_JOB_RUNNER_MANAGER_H__
 #define __OGL_JOB_RUNNER_MANAGER_H__
 
+#include <ace/Thread_Manager.h>
+
 #include "Network.h"
 #include "Commands.h"
 
@@ -23,12 +25,15 @@ namespace ogl
 
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
 
+            virtual int handle_destroy();
+
         private:
 
             static log4cxx::LoggerPtr m_logger;
 
             std::map<std::string, JobRunnerPtr> m_jobRunners;
 
+            ACE_Thread_Manager m_runnerThreadMgr;
     };
 
     class JobManagerClient : public Client <JobRunnerManager>

@@ -18,6 +18,7 @@ namespace ogl
         for (size_t i = 0; i < n; i++)
         {
             JobRunnerPtr jobRunner(new JobRunner(this));
+            jobRunner->thr_mgr(&m_runnerThreadMgr);
             jobRunner->start();
             m_jobRunners[jobRunner->id()] = jobRunner;
         }
@@ -56,6 +57,20 @@ namespace ogl
         }
 
         return jobRunner->ExecuteTask(header, taskOption);
+    }
+
+    int JobRunnerManager::handle_destroy()
+    {
+
+        for (std::map<std::string, JobRunnerPtr> :: iterator it = m_jobRunners.begin();
+             it != m_jobRunners.end(); it++)
+        {
+            it->second->shutdown();
+        }
+
+        m_runnerThreadMgr.wait();
+        JMCLI::instance()->shutdown();
+        return 0;
     }
 
     int JobRunnerManager::executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)

@@ -82,6 +82,21 @@ namespace ogl
         return 0;
     }
 
+    int JobRunner::shutdown()
+    {
+        ACE_Message_Block* msg ;
+        Command* cmd ;
+
+        CommandHeader header(ShutdownJobRunner);
+
+        ACE_NEW_RETURN(cmd, Command(header), -1);
+        ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
+
+        this->putq(msg);
+
+        return 1;
+    }
+
     int JobRunner::executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption)
     {
 
@@ -140,13 +155,14 @@ namespace ogl
 
     int JobRunner::svc()
     {
+        bool isShutdown = false;
         ACE_Message_Block* msg;
 
-        while (getq(msg) != -1)
+        while (!isShutdown)
         {
-            if (msg == 0)
+            if (getq(msg) == -1 || msg == 0)
             {
-                return -1;
+                continue;
             }
 
             Command* cmd = reinterpret_cast<Command*>(msg->rd_ptr());
@@ -169,6 +185,12 @@ namespace ogl
             case ExecuteTaskCommand:
             {
                 this->executeTask(*(cmd->m_header), dynamic_cast<ogl::TaskOption*>(cmd->m_option));
+                break;
+            }
+
+            case ShutdownJobRunner:
+            {
+                isShutdown = true;
                 break;
             }
             default:

@@ -37,6 +37,11 @@ namespace ogl
         return 0;
     }
 
+    int HandlerObject::handle_destroy()
+    {
+        return 0;
+    }
+
     void HandlerObject::destroy (void)
     {
         /* Remove ourselves from the reactor */
@@ -44,6 +49,8 @@ namespace ogl
 
         /* Shut down the connection to the client.  */
         this->peer ().close ();
+
+        this->handle_destroy();
 
         /* Free our memory. */
         this->release();

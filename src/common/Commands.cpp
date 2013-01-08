@@ -53,6 +53,8 @@ namespace ogl
         "CloseJobFailed",
         "CloseJobComplete",
 
+        "ShutdownJobRunner",
+
         0
     };
 

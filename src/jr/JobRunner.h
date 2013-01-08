@@ -27,6 +27,8 @@ namespace ogl
 
             int BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption);
 
+            int shutdown();
+
         private:
 
             static log4cxx::LoggerPtr m_logger;

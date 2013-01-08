@@ -58,6 +58,9 @@ namespace ogl
         CloseJobCommand,
         CloseJobFailed,
         CloseJobComplete,
+
+        ShutdownJobRunner,
+
     };
 
     const char* toString(CommandType cmd);

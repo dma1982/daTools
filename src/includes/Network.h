@@ -27,6 +27,7 @@
 
 namespace ogl
 {
+
     class HandlerObject : public ACE_Svc_Handler <ACE_SOCK_STREAM, ACE_NULL_SYNCH>, public Referable
     {
         public:
@@ -47,6 +48,9 @@ namespace ogl
             virtual int handle_input (ACE_HANDLE);
             virtual int handle_close (ACE_HANDLE,
                                       ACE_Reactor_Mask);
+
+            virtual int handle_destroy();
+
         private:
 
             static log4cxx::LoggerPtr m_logger;
@@ -206,7 +210,6 @@ namespace ogl
             virtual int close(unsigned long)
             {
                 m_connector.close();
-                this->shutdown();
                 return 0;
             }
 
