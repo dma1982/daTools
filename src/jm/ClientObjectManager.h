@@ -19,9 +19,14 @@ namespace ogl
             virtual int CreateTask(ogl::CommandHeader&, ogl::TaskOption& );
             virtual int FetchTaskOutput(ogl::CommandHeader&, ogl::TaskOption& taskOption);
 
+            virtual int ShutdownCluster(ogl::CommandHeader& );
+
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
 
         private:
+
+            static log4cxx::LoggerPtr m_logger;
+
             JobManager* m_jobManager;
     };
 

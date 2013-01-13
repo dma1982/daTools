@@ -42,6 +42,9 @@ namespace ogl
 
     JobManagerProxyFactory::JM_CLI_LIST JobManagerProxyFactory::m_clientList;
 
+    JobManagerProxyFactory::JM_ADMIN_LIST JobManagerProxyFactory::m_adminList;
+
+
     void JobManagerProxyFactory::initialize()
     {
         ACE::init();
@@ -50,10 +53,16 @@ namespace ogl
     void JobManagerProxyFactory::uninitialize()
     {
         //Wait();
-        for (JM_CLI_LIST_IT it = m_clientList.begin(); it != m_clientList.end(); ++it)
+        for (JM_CLI_LIST_IT it = m_clientList.begin(); it != m_clientList.end(); it++)
         {
             (*it)->shutdown();
         }
+
+        for (JM_ADMIN_LIST_IT it = m_adminList.begin(); it != m_adminList.end(); it++)
+        {
+            (*it)->shutdown();
+        }
+
 
         if (ACE_Thread_Manager::instance()->wait() < 0)
         {
@@ -67,7 +76,19 @@ namespace ogl
         ACE::fini();
     }
 
-    JobManagerProxyPtr JobManagerProxyFactory::createInstance()
+    JobManagerAdminProxyPtr JobManagerProxyFactory::createJobManagerAdmin()
+    {
+        JobManagerAdminClientPtr admin(new JobManagerAdminClient());
+
+        admin->start(ogl::Configuration::instance()->getMasterHost(),
+                     ogl::Configuration::instance()->getMasterCliPort());
+
+        m_adminList.push_back(admin);
+
+        return admin->get_handler();
+    }
+
+    JobManagerProxyPtr JobManagerProxyFactory::createJobManager()
     {
         JobManagerClientPtr client(new JobManagerClient());
 
@@ -79,4 +100,26 @@ namespace ogl
         return client->get_handler();
     }
 
+    int JobManagerAdminProxy:: shutdown()
+    {
+        ClientAction action(this);
+
+        action.submit(ogl::ShutdownClusterCommand);
+
+        action.wait();
+
+        if (action.returnCode() == ogl::ShutdownClusterFailed)
+        {
+            OGL_THROW_EXCEPTION("Failed to receive response from Job Manager Server.");
+        }
+
+        return 0;
+    }
+
+    int JobManagerAdminProxy:: executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)
+    {
+        return ClientActionManager::signalAction(header, data.duplicate());
+    }
+
 };
+

@@ -90,7 +90,7 @@ namespace ogl
             virtual int wait();
             virtual int signal();
 
-            virtual int submit(ogl::CommandType cmd, Serializable* data);
+            virtual int submit(ogl::CommandType cmd, Serializable* data = 0);
 
             virtual void setResponse(ACE_Message_Block* msg);
             virtual ACE_Message_Block* getResponse();

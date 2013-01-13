@@ -61,6 +61,9 @@ namespace ogl
 
         ShutdownJobRunner,
 
+        ShutdownClusterCommand,
+        ShutdownClusterComplete,
+        ShutdownClusterFailed,
     };
 
     const char* toString(CommandType cmd);

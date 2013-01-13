@@ -5,6 +5,8 @@
 namespace ogl
 {
 
+    log4cxx::LoggerPtr ClientHandlerObject::m_logger(OGLCONF->getLogger("ogl.ClientHandlerObject"));
+
     ClientHandlerObject::ClientHandlerObject()
     {
         m_jobManager = JOBMANAGER::instance();
@@ -91,6 +93,13 @@ namespace ogl
         return HandlerObject::sendResponse(completeHeader, &jobOption);
     }
 
+    int ClientHandlerObject::ShutdownCluster(ogl::CommandHeader& header)
+    {
+        ogl::CommandHeader completeHeader(ShutdownClusterComplete, header.contextId());
+        OGL_LOG_INFO("The cluster is shutting down.");
+        return HandlerObject::sendResponse(completeHeader);
+    }
+
     /*
      * Command router
      */
@@ -124,6 +133,11 @@ namespace ogl
             ogl::TaskOption taskOption;
             taskOption.deserialize(&data);
             FetchTaskOutput(cmd, taskOption);
+            break;
+        }
+        case ShutdownClusterCommand:
+        {
+            ShutdownCluster(cmd);
             break;
         }
         case Unknown:

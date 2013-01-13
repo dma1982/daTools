@@ -63,7 +63,7 @@ namespace ogl
     {
 
         for (std::map<std::string, JobRunnerPtr> :: iterator it = m_jobRunners.begin();
-             it != m_jobRunners.end(); it++)
+             it != m_jobRunners.end(); ++it)
         {
             it->second->shutdown();
         }
