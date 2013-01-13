@@ -77,11 +77,11 @@ namespace ogl
     {
         switch (header.commandType())
         {
-		case RegisterJobRunnerManagerFailed:
-			{
-				JMCLI::instance()->shutdown();
-				break;
-			}
+        case RegisterJobRunnerManagerFailed:
+        {
+            JMCLI::instance()->shutdown();
+            break;
+        }
         case RegisterJobRunnerManagerComplete:
         {
             StartJobRunner();
