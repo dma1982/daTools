@@ -111,12 +111,22 @@ namespace ogl
     int JobRunnerManagerObject::RegisterJobRunnerManager(ogl::JobRunnerOption& runnerOption)
     {
         m_id = ogl::dumpString(runnerOption.mgrId());
-        JRMPool::instance()->RegisterJobRunnerManager(OGL_DYNAMIC_CAST(JobRunnerManagerObject, this));
 
-        OGL_LOG_DEBUG("job runner manager <%s> registered.", this->id());
+		try
+		{
+			JRMPool::instance()->RegisterJobRunnerManager(OGL_DYNAMIC_CAST(JobRunnerManagerObject, this));
+			OGL_LOG_DEBUG("job runner manager <%s> registered.", this->id());
 
-        ogl::CommandHeader header(RegisterJobRunnerManagerComplete, this->id());
-        return HandlerObject::sendResponse(header);
+			ogl::CommandHeader header(RegisterJobRunnerManagerComplete, this->id());
+			return HandlerObject::sendResponse(header);
+
+		}
+		catch(ogl::Exception& e)
+		{
+			OGL_LOG_ERROR("Job runner manager <%s> failed to register because <%s>.", this->id(), e.what());
+			ogl::CommandHeader header(RegisterJobRunnerManagerFailed, this->id());
+			return HandlerObject::sendResponse(header, &e);
+		}
     }
 
     const char* JobRunnerManagerObject::id()
@@ -243,6 +253,11 @@ namespace ogl
     void JobRunnerManagerPool::RegisterJobRunnerManager(ogl::JobRunnerManagerObjectPtr jrmObject)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
+		if (m_jrmObjectMap.find(jrmObject->id()) != m_jrmObjectMap.end())
+		{
+			OGL_THROW_EXCEPTION("Duplicated job runner manager with id <%s>.", jrmObject->id());
+		}
+
         this->m_jrmObjectMap[jrmObject->id()] = jrmObject;
     }
 
