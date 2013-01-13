@@ -104,7 +104,7 @@ namespace ogl
 
     JobRunnerManagerObject::~JobRunnerManagerObject()
     {
-        JRMPool::instance()->UnregisterJobRunnerManager(OGL_DYNAMIC_CAST(JobRunnerManagerObject, this));
+        JRMPool::instance()->UnregisterJobRunnerManager(m_id);
         ogl::releaseString(m_id);
     }
 
@@ -246,10 +246,10 @@ namespace ogl
         this->m_jrmObjectMap[jrmObject->id()] = jrmObject;
     }
 
-    void JobRunnerManagerPool::UnregisterJobRunnerManager(ogl::JobRunnerManagerObjectPtr jrmObject)
+    void JobRunnerManagerPool::UnregisterJobRunnerManager(const char* id)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_jrmObjectMapMutex);
-        this->m_jrmObjectMap.erase(jrmObject->id());
+        this->m_jrmObjectMap.erase(id);
     }
 
     int JobRunnerManagerPool::getAllRunnerManagers(std::list<JobRunnerManagerObjectPtr>& runnerList)

@@ -93,7 +93,7 @@ namespace ogl
     {
         public:
             void RegisterJobRunnerManager(JobRunnerManagerObjectPtr );
-            void UnregisterJobRunnerManager(JobRunnerManagerObjectPtr );
+            void UnregisterJobRunnerManager(const char* );
 
             int getAllRunnerManagers(std::list<JobRunnerManagerObjectPtr>& runnerList);
 
