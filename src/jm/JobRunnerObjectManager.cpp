@@ -104,7 +104,12 @@ namespace ogl
 
     JobRunnerManagerObject::~JobRunnerManagerObject()
     {
-        JRMPool::instance()->UnregisterJobRunnerManager(m_id);
+        // if m_id is null, no need to un-register it from manager pool.
+        if (m_id)
+        {
+            JRMPool::instance()->UnregisterJobRunnerManager(m_id);
+        }
+
         ogl::releaseString(m_id);
     }
 
