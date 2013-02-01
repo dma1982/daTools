@@ -64,6 +64,14 @@ namespace ogl
         ShutdownClusterCommand,
         ShutdownClusterComplete,
         ShutdownClusterFailed,
+
+        ViewResourcesCommand,
+        ViewResourcesComplete,
+        ViewResourcesFailed,
+
+        ViewJobsCommand,
+        ViewJobsComplete,
+        ViewJobsFailed,
     };
 
     const char* toString(CommandType cmd);

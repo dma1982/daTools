@@ -100,6 +100,17 @@ namespace ogl
         return HandlerObject::sendResponse(completeHeader);
     }
 
+    int ClientHandlerObject::ViewResources(ogl::CommandHeader& header)
+    {
+        return 0;
+    }
+
+    int ClientHandlerObject::ViewJobs(ogl::CommandHeader& )
+    {
+        return 0;
+    }
+
+
     /*
      * Command router
      */
@@ -140,6 +151,19 @@ namespace ogl
             ShutdownCluster(cmd);
             break;
         }
+
+        case ViewResourcesCommand:
+        {
+            ViewResources(cmd);
+            break;
+        }
+
+        case ViewJobsCommand:
+        {
+            ViewJobs(cmd);
+            break;
+        }
+
         case Unknown:
         default:
             return 0;

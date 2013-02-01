@@ -21,6 +21,10 @@ namespace ogl
 
             virtual int ShutdownCluster(ogl::CommandHeader& );
 
+            virtual int ViewResources(ogl::CommandHeader& );
+
+            virtual int ViewJobs(ogl::CommandHeader& );
+
             virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
 
         private:
