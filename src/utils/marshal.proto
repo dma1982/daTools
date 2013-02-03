@@ -1,0 +1,31 @@
+package ogl;
+
+message JobRunnerOption
+{
+    required string id = 1;
+    required string mgrId = 2;
+    required int64  pid = 3;
+}
+
+message JobOption
+{
+    required int64 priority = 1;
+    required string name = 2;
+    required string command = 3;
+    repeated string args = 4;
+    repeated string environment = 5;
+    required string workDirectory = 6;
+    required string runnerId = 7;
+    required int64 jobId = 8;
+}
+
+message TaskOption
+{
+    required string taskInput = 1;
+    required string taskOutput = 2;
+    required int64 priority = 3;
+    required string  jobName = 4;
+    required string runnerId = 5;
+    required int64 jobId = 6;
+    required int64 taskId = 7;
+}
