@@ -3,7 +3,7 @@ package ogl;
 message JobRunnerOption
 {
     required string id = 1;
-    required string mgrId = 2;
+    required string runner_mgr_id = 2;
     required int64  pid = 3;
 }
 
@@ -14,18 +14,18 @@ message JobOption
     required string command = 3;
     repeated string args = 4;
     repeated string environment = 5;
-    required string workDirectory = 6;
-    required string runnerId = 7;
-    required int64 jobId = 8;
+    required string work_directory = 6;
+    required string runner_id = 7;
+    required int64 job_id = 8;
 }
 
 message TaskOption
 {
-    required string taskInput = 1;
-    required string taskOutput = 2;
+    required string task_input = 1;
+    required string task_output = 2;
     required int64 priority = 3;
-    required string  jobName = 4;
-    required string runnerId = 5;
-    required int64 jobId = 6;
-    required int64 taskId = 7;
+    required string  job_name = 4;
+    required string runner_id = 5;
+    required int64 job_id = 6;
+    required int64 task_id = 7;
 }
