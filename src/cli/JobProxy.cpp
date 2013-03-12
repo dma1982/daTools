@@ -1,7 +1,6 @@
 #include "ogl.h"
 #include "Object.h"
 #include "Commands.h"
-#include "Exception.h"
 #include "JobProxy.h"
 #include "TaskProxy.h"
 
@@ -15,9 +14,9 @@ namespace ogl
         return m_jobOption;
     }
 
-    JobProxy::JobProxy(ACE_Message_Block* msg, JobManagerProxy* jobManager) : m_jobManagerProxy(jobManager)
+    JobProxy::JobProxy(std::string& msg, JobManagerProxy* jobManager) : m_jobManagerProxy(jobManager)
     {
-        m_jobOption.deserialize(msg);
+        m_jobOption.ParseFromString(msg);
     }
 
     int JobProxy::closeJob()
@@ -38,9 +37,8 @@ namespace ogl
 
     TaskProxyPtr JobProxy::addTask(TaskOptionPtr taskOption)
     {
-        ogl::CommandHeader cmdHeader(ogl::CreateTaskCommand);
 
-        taskOption->jobId(m_jobOption.id());
+        taskOption->set_job_id(m_jobOption.job_id());
 
 
         ClientAction action(this->m_jobManagerProxy);

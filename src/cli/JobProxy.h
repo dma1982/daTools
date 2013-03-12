@@ -13,7 +13,7 @@ namespace ogl
     class JobProxy
     {
         public:
-            JobProxy (ACE_Message_Block* msg, JobManagerProxy*);
+            JobProxy (std::string& msg, JobManagerProxy*);
             TaskProxyPtr addTask(TaskOptionPtr taskOption);
 
             int closeJob();

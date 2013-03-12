@@ -9,5 +9,5 @@ OGL_MODE=Debug
 		OGL_CFLAGS=-DLIN -O2 -Wall
 	endif
 
-OGL_EXT_LIBS=-lACE -lpthread -lconfig++ -llog4cxx
+OGL_EXT_LIBS=-lACE -lpthread -lconfig++ -llog4cxx -lprotobuf
 

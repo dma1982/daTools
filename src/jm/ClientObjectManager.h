@@ -25,7 +25,7 @@ namespace ogl
 
             virtual int ViewJobs(ogl::CommandHeader& );
 
-            virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
+            virtual int executeRequest(ogl::CommandHeader& cmd, std::string& data);
 
         private:
 

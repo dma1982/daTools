@@ -14,7 +14,7 @@ namespace ogl
     {
         public:
             TaskProxy();
-            TaskProxy(ACE_Message_Block*, JobManagerProxy*);
+            TaskProxy(std::string&, JobManagerProxy*);
             ~TaskProxy();
 
             int output(char* data, size_t& size);

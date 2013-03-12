@@ -20,7 +20,7 @@ namespace ogl
             ~JobManagerProxy();
             JobProxyPtr addJob(JobOptionPtr jobOption);
 
-            virtual int executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data);
+            virtual int executeRequest(ogl::CommandHeader& header, std::string& data);
 
         private:
             std::list<JobProxyPtr> m_jobProxyList;
@@ -43,7 +43,7 @@ namespace ogl
     {
         public:
             int shutdown();
-            virtual int executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data);
+            virtual int executeRequest(ogl::CommandHeader& header, std::string& data);
     };
 
     typedef std::tr1::shared_ptr<JobManagerAdminProxy> JobManagerAdminProxyPtr;

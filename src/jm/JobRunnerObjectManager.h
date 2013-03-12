@@ -68,18 +68,18 @@ namespace ogl
 
             int getAllRunners(std::list<JobRunnerObjectPtr>& runnerList);
 
-            virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data );
+            virtual int executeRequest(ogl::CommandHeader& cmd, std::string& data );
 
             const char* id();
 
         private:
 
-            JobRunnerObjectPtr operator[](const char* runnerId);
+            JobRunnerObjectPtr operator[](const std::string& runnerId);
 
             ACE_Thread_Mutex m_jobRunnerMapMutex;
 
             std::map<std::string, JobRunnerObjectPtr> m_jobRunnerMap;
-            char* m_id;
+            std::string m_id;
 
             static ACE_Utils::UUID_Generator m_guidGenerator;
             static log4cxx::LoggerPtr m_logger;
@@ -93,7 +93,7 @@ namespace ogl
     {
         public:
             void RegisterJobRunnerManager(JobRunnerManagerObjectPtr );
-            void UnregisterJobRunnerManager(const char* );
+            void UnregisterJobRunnerManager(const std::string& id );
 
             int getAllRunnerManagers(std::list<JobRunnerManagerObjectPtr>& runnerList);
 

@@ -21,7 +21,7 @@ namespace ogl
             Task(const TaskId& taskId, TaskOptionPtr option)
                     : m_taskOption(option), m_completed(false)
             {
-                m_taskOption->taskId(taskId);
+                m_taskOption->set_task_id(taskId);
             };
 
             TaskOptionPtr taskOption()
@@ -29,7 +29,7 @@ namespace ogl
                 return m_taskOption;
             }
 
-            int addObserver(UUID id, ogl::HandlerObjectPtr);
+            int addObserver(const std::string& id, ogl::HandlerObjectPtr);
 
             bool isCompleted();
 
@@ -37,7 +37,7 @@ namespace ogl
 
             TaskId taskId() const
             {
-                return m_taskOption->taskId();
+                return m_taskOption->task_id();
             };
 
             typedef std::map<std::string, HandlerObjectPtr> OGL_TASK_OBSERVER_MAP;

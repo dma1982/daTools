@@ -4,6 +4,8 @@
 #include <cstring>
 #include <cstdio>
 
+#include <tr1/memory>
+
 #include "msg.h"
 #include "log.h"
 
@@ -56,6 +58,8 @@ namespace ogl
 
             ~Data();
     };
+
+    typedef std::tr1::shared_ptr<ogl::Data> DataPtr;
 
     class Buffer
     {
@@ -111,6 +115,7 @@ namespace ogl
             ~Buffer();
     };
 
+    typedef std::tr1::shared_ptr<ogl::Buffer> BufferPtr;
 
 }
 

@@ -10,7 +10,7 @@ namespace ogl
             : m_nextTaskId(1), m_jobId(jobId)
     {
         m_jobOption.reset(new JobOption(option));
-        m_jobOption->id(jobId);
+        m_jobOption->set_job_id(jobId);
         m_state = OPEN;
     }
 

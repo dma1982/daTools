@@ -1,6 +1,6 @@
 #include "Object.h"
 #include "Commands.h"
-#include "Exception.h"
+
 #include "TaskProxy.h"
 
 #include "JobManagerProxy.h"
@@ -11,9 +11,9 @@ namespace ogl
     {
     }
 
-    TaskProxy::TaskProxy(ACE_Message_Block* msg, JobManagerProxy* jobManager) : m_jobManagerProxy(jobManager)
+    TaskProxy::TaskProxy(std::string& msg, JobManagerProxy* jobManager) : m_jobManagerProxy(jobManager)
     {
-        m_taskOption.deserialize(msg);
+        m_taskOption.ParseFromString(msg);
     }
 
     TaskProxy::~TaskProxy()
@@ -34,10 +34,10 @@ namespace ogl
             OGL_THROW_EXCEPTION("Failed to fetch task output.");
         }
 
-        m_taskOption.deserialize(action.getResponse());
+        m_taskOption.ParseFromString(action.getResponse());
 
-        size = m_taskOption.taskOutput().size();
-        ACE_OS::memcpy(data, m_taskOption.taskOutput().data(), size);
+        size = m_taskOption.task_output().size();
+        ACE_OS::memcpy(data, m_taskOption.task_output().data(), size);
 
         return 0;
 
@@ -77,8 +77,8 @@ namespace ogl
         return 0;
     }
 
-    TaskId TaskProxy::taskId()
+    int TaskProxy::taskId()
     {
-        return m_taskOption.taskId();
+        return m_taskOption.task_id();
     }
 }

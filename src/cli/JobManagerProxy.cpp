@@ -4,8 +4,6 @@
 #include "Commands.h"
 #include "JobProxy.h"
 
-#include "Exception.h"
-
 #include <algorithm>
 
 namespace ogl
@@ -19,9 +17,9 @@ namespace ogl
     {
     }
 
-    int JobManagerProxy::executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)
+    int JobManagerProxy::executeRequest(ogl::CommandHeader& header, std::string& data)
     {
-        return ClientActionManager::signalAction(header, data.duplicate());
+        return ClientActionManager::signalAction(header, data);
     }
 
     JobProxyPtr JobManagerProxy::addJob(JobOptionPtr jobOption)
@@ -116,9 +114,9 @@ namespace ogl
         return 0;
     }
 
-    int JobManagerAdminProxy:: executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)
+    int JobManagerAdminProxy:: executeRequest(ogl::CommandHeader& header, std::string& data)
     {
-        return ClientActionManager::signalAction(header, data.duplicate());
+        return ClientActionManager::signalAction(header, data);
     }
 
 };

@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     }
     catch (ogl::Exception& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cout << e.message() << std::endl;
     }
 
     ACE::fini();

@@ -4,6 +4,8 @@
 #include <ace/ACE.h>
 #include <ace/Guard_T.h>
 
+#include <sstream>
+
 #include <stdio.h>
 
 #include "ogl.h"
@@ -62,44 +64,40 @@ namespace ogl
         return 0;
     }
 
+    int HandlerObject::sendResponse(ogl::CommandType cmdType, const std::string& contextId, Serializable* option)
+    {
+        ogl::CommandHeader header;
+        header.set_type(cmdType);
+        header.set_context_id(contextId);
+        return this->sendResponse(header, option);
+    }
+
     int HandlerObject::sendResponse(ogl::CommandHeader& header, Serializable* option)
     {
-        ACE_Message_Block* data = 0;
+        std::string data;
+        std::string headerData;
 
         if (option != 0)
         {
-            data = option->serialize();
-            if (data == 0)
-            {
-                return -1;
-            }
+            option->SerializeToString(&data);
 
-            header.dataSize(data->length());
+            header.set_data_size(data.length());
         }
 
-        bool wakeupWriter = false;
+        header.SerializeToString(&headerData);
+
+        ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
+        // the size of header
+        os.write_ulong(headerData.length());
+        // the data of header
+        os.write_char_array(headerData.data(), headerData.length());
+        // command
+        os.write_char_array(data.data(), data.length());
 
         {
             ACE_Guard<ACE_Thread_Mutex> sendGuard(m_send_mutex);
 
-            wakeupWriter = this->msg_queue()->is_empty();
-
-            // send header size first
-            {
-                ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
-                SERIALIZE_ULONG(os, header.headerSize());
-                // the message block will be released in handle_output
-                this->msg_queue()->enqueue_tail(os.begin()->duplicate());
-            }
-
-            // push data to output queue
-            this->msg_queue()->enqueue_tail(header.serialize());
-
-            if (data != 0)
-            {
-                this->msg_queue()->enqueue_tail(data);
-            }
-
+            this->msg_queue()->enqueue_tail(os.begin()->duplicate());
         }
 
         this->reactor()->schedule_wakeup(this, ACE_Event_Handler::WRITE_MASK);
@@ -152,16 +150,86 @@ namespace ogl
         return 0;
     }
 
+    int HandlerObject::readCommandHeaderSize(ACE_SOCK_Stream& handle, ACE_CDR::ULong& headerSize )
+    {
+        ACE_Message_Block headerSizeMsg(sizeof(headerSize));
+
+        int n = handle.recv_n(headerSizeMsg.wr_ptr(), sizeof(headerSize));
+
+        if (n < 0)
+        {
+            return -1;
+        }
+        else
+        {
+            headerSizeMsg.wr_ptr(n);
+        }
+
+        ACE_InputCDR is(&headerSizeMsg);
+        is.read_ulong(headerSize);
+        return n;
+    }
+
+
+    int HandlerObject::readCommandHeader(ACE_SOCK_Stream& handle, CommandHeader& header)
+    {
+
+        ACE_CDR::ULong headerSize;
+
+        this->readCommandHeaderSize(handle, headerSize);
+
+        ACE_Message_Block headMsg(headerSize);
+
+        int n = handle.recv_n(headMsg.wr_ptr(), headerSize);
+
+        // get the data of command header
+        if ( n < 0 || (size_t) n != headerSize)
+        {
+            return -1;
+        }
+
+        // set data's write pointer
+        headMsg.wr_ptr(n);
+
+        {
+            std::stringstream ss;
+            ss.write(headMsg.rd_ptr(), n);
+
+            header.ParseFromString(ss.str());
+        }
+        return n;
+    }
 
     int HandlerObject::handle_input (ACE_HANDLE)
     {
-        CommandHeader header;
-        ACE_Message_Block data;
 
-        // receive header size
-        if (ogl::recv(this->peer(), header, data) < 0)
+        CommandHeader header;
+        std::string data;
+
+        int n = -1;
+
+        n = this->readCommandHeader(this->peer(), header);
+
+        if (header.data_size() == 0)
         {
-            return -1;
+            return 0;
+        }
+
+
+        {
+            ACE_Message_Block dataBuf(header.data_size());
+
+            n = this->peer().recv_n(dataBuf.wr_ptr(), header.data_size());
+
+            if (n < 0 || ((unsigned int)n) != header.data_size())
+            {
+                return -1;
+            }
+
+            // set write pointer
+            dataBuf.wr_ptr(n);
+
+            data.assign(dataBuf.rd_ptr(), header.data_size());
         }
 
         // receive data
@@ -189,13 +257,13 @@ namespace ogl
 
     LoggerPtr ClientActionManager::m_logger = OGLCONF->getLogger("ogl.ClientActionManager");
 
-    int ClientActionManager::registerAction(UUID uuid, ClientAction* action)
+    int ClientActionManager::registerAction(std::string& uuid, ClientAction* action)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_clientActionMapMutex);
 
         if (m_clientActionMap.find(uuid) != m_clientActionMap.end())
         {
-            OGL_LOG_ERROR("Duplication action <%s> in action manager.", uuid);
+            OGL_LOG_ERROR("Duplication action <%s> in action manager.", uuid.c_str());
             return 0;
         }
 
@@ -203,13 +271,13 @@ namespace ogl
         return 1;
     }
 
-    int ClientActionManager::unregisterAction(UUID uuid)
+    int ClientActionManager::unregisterAction(std::string& uuid)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_clientActionMapMutex);
 
         if (m_clientActionMap.find(uuid) == m_clientActionMap.end())
         {
-            OGL_LOG_ERROR("Failed to find action <%s> in action manager when un-register action.", uuid);
+            OGL_LOG_ERROR("Failed to find action <%s> in action manager when un-register action.", uuid.c_str());
             return 0;
         }
 
@@ -218,20 +286,20 @@ namespace ogl
         return 1;
     }
 
-    int ClientActionManager::signalAction(ogl::CommandHeader& header, ACE_Message_Block* data)
+    int ClientActionManager::signalAction(ogl::CommandHeader& header, std::string& data)
     {
         ACE_Guard<ACE_Thread_Mutex> guard(m_clientActionMapMutex);
 
-        if (header.contextId() == 0)
+        if (header.context_id().length() == 0)
         {
             return OGL_FAILED;
         }
 
-        ClientAction* action = m_clientActionMap[header.contextId()];
+        ClientAction* action = m_clientActionMap[header.context_id()];
 
         if (action != 0)
         {
-            action->returnCode(header.commandType());
+            action->returnCode(header.type());
             action->setResponse(data);
 
             return action->signal();
@@ -249,13 +317,6 @@ namespace ogl
     ClientAction::~ClientAction()
     {
         this->m_clientActionManager->unregisterAction(m_contextId);
-
-        if (m_response)
-        {
-            m_response->release();
-        }
-
-        ogl::releaseString(m_contextId);
     }
 
     ClientAction::ClientAction(ClientActionManager* manager) : m_response(0)
@@ -281,28 +342,31 @@ namespace ogl
         return m_event.signal();
     }
 
-    void ClientAction::contextId(UUID id)
+    void ClientAction::contextId(std::string& id)
     {
-        m_contextId = ogl::dumpString(id);
+        m_contextId = id;
     }
 
-    char* ClientAction::contextId()
+    std::string& ClientAction::contextId()
     {
         return m_contextId;
     }
 
     int ClientAction::submit(ogl::CommandType cmd, Serializable* data)
     {
-        ogl::CommandHeader header(cmd, m_contextId);
+        ogl::CommandHeader header;
+        header.set_type(cmd);
+        header.set_context_id(m_contextId);
+
         return this->m_clientActionManager->sendResponse(header, data);
     }
 
-    void ClientAction::setResponse(ACE_Message_Block* msg)
+    void ClientAction::setResponse(const std::string& msg)
     {
         m_response = msg;
     }
 
-    ACE_Message_Block* ClientAction::getResponse()
+    std::string& ClientAction::getResponse()
     {
         return m_response;
     }

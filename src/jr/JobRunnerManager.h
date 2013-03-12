@@ -23,7 +23,7 @@ namespace ogl
             // start all JobRunner
             int StartJobRunner();
 
-            virtual int executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data);
+            virtual int executeRequest(ogl::CommandHeader& cmd, std::string& data);
 
             virtual int handle_destroy();
 

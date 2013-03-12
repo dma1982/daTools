@@ -2,30 +2,44 @@ package ogl;
 
 message JobRunnerOption
 {
-    required string id = 1;
-    required string runner_mgr_id = 2;
-    required int64  pid = 3;
+    optional  string runner_id = 1;
+    optional  string runner_mgr_id = 2;
+    optional  int64  pid = 3;
 }
 
 message JobOption
 {
-    required int64 priority = 1;
-    required string name = 2;
-    required string command = 3;
-    repeated string args = 4;
-    repeated string environment = 5;
-    required string work_directory = 6;
-    required string runner_id = 7;
-    required int64 job_id = 8;
+    optional  int64 priority = 1;
+    optional  string name = 2;
+    optional  string command = 3;
+    repeated  string args = 4;
+    repeated  string environment = 5;
+    optional  string work_directory = 6;
+    optional  string runner_id = 7;
+    optional  int64 job_id = 8;
 }
 
 message TaskOption
 {
-    required string task_input = 1;
-    required string task_output = 2;
-    required int64 priority = 3;
-    required string  job_name = 4;
-    required string runner_id = 5;
-    required int64 job_id = 6;
-    required int64 task_id = 7;
+    optional  string task_input = 1;
+    optional  string task_output = 2;
+    optional  int64 priority = 3;
+    optional  string job_name = 4;
+    optional  string runner_id = 5;
+    optional  int64 job_id = 6;
+    optional  int64 task_id = 7;
 }
+
+message Exception
+{
+    optional  string message = 1;
+}
+
+message CommandHeader
+{
+    optional  string context_id = 1;
+    required  int32 type = 2;
+    optional  int64 data_size = 3;
+}
+
+

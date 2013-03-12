@@ -23,7 +23,7 @@ namespace ogl
 
     const char* JobRunner::id()
     {
-        return m_jobRunnerOption->id();
+        return m_jobRunnerOption->runner_id().c_str();
     }
 
     int JobRunner::RegisterJobRunner()
@@ -55,18 +55,16 @@ namespace ogl
     {
 
         OGL_LOG_DEBUG("bind job runner for job id: <%d>, runner id: <%s>",
-                      (int)jobOption->id(),
-                      jobOption->runnerId());
+                      (int)jobOption->job_id(),
+                      jobOption->runner_id().c_str());
 
         releaseObject<ACE_Process_Options>(m_taskProcessOption);
 
         ACE_NEW_RETURN(m_taskProcessOption, ACE_Process_Options(), -1);
 
-        m_taskProcessOption->command_line(jobOption->command());
+        m_taskProcessOption->command_line(jobOption->command().c_str());
 
-        CommandHeader respHeader(BindJobRunnerComplete, jobOption->runnerId());
-
-        return sendResponse(respHeader, jobOption);
+        return sendResponse(BindJobRunnerComplete, jobOption->runner_id(), jobOption);
     }
 
     int JobRunner::ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
@@ -87,9 +85,7 @@ namespace ogl
         ACE_Message_Block* msg ;
         Command* cmd ;
 
-        CommandHeader header(ShutdownJobRunner);
-
-        ACE_NEW_RETURN(cmd, Command(header), -1);
+        ACE_NEW_RETURN(cmd, Command(ShutdownJobRunner), -1);
         ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
         this->putq(msg);
@@ -101,9 +97,9 @@ namespace ogl
     {
 
         OGL_LOG_DEBUG("Execute task for job id: <%d>, task id: <%d>, runner id: <%s>",
-                      (int)taskOption->jobId(),
-                      (int)taskOption->taskId(),
-                      taskOption->runnerId());
+                      (int)taskOption->job_id(),
+                      (int)taskOption->task_id(),
+                      taskOption->runner_id().c_str());
 
         ACE_Process task;
 
@@ -132,25 +128,37 @@ namespace ogl
         // release the duplicated handles
         m_taskProcessOption->release_handles();
 
-        ogl::Buffer& input = taskOption->taskInput();
+        std::string input = taskOption->task_input();
         if (input.size() > 0)
         {
-            inputStream.write(input);
+            inputStream.write(input.data(), input.length());
         }
 
-        ogl::Buffer& output = taskOption->taskOutput();
-        outputStream.read(output);
+        {
+            std::stringstream strbuf;
+            char buffer[BUFSIZ] = {0};
+            size_t len ;
+            while (outputStream.read(buffer, len) > 0)
+            {
+                strbuf.write(buffer, len);
+            }
+
+            taskOption->set_task_output(strbuf.str());
+        }
 
         task.wait();
 
-        CommandHeader respHeader(ExecuteTaskComplete, header.contextId());
-
-        return sendResponse(respHeader, taskOption);
+        return sendResponse(ExecuteTaskComplete, header.context_id(), taskOption);
     }
 
     int JobRunner::sendResponse(CommandHeader& header, Serializable* data)
     {
         return this->m_jobRunnerManager->sendResponse(header, data);
+    }
+
+    int JobRunner::sendResponse(ogl::CommandType cmdType, const std::string& context_id, Serializable* option)
+    {
+        return this->m_jobRunnerManager->sendResponse(cmdType, context_id, option);
     }
 
     int JobRunner::svc()
@@ -167,24 +175,23 @@ namespace ogl
 
             Command* cmd = reinterpret_cast<Command*>(msg->rd_ptr());
 
-            switch (cmd->m_header->commandType())
+            switch (cmd->m_header.type())
             {
             case RegisterJobRunnerCommand:
             {
-                CommandHeader header(RegisterJobRunnerCommand, m_jobRunnerOption->id());
-                sendResponse(header, m_jobRunnerOption.get());
+                sendResponse(RegisterJobRunnerCommand, m_jobRunnerOption->runner_id(), m_jobRunnerOption.get());
                 break;
             }
 
             case BindJobRunnerCommand:
             {
-                this->bindJobRunner(*(cmd->m_header), dynamic_cast<ogl::JobOption*>(cmd->m_option));
+                this->bindJobRunner(cmd->m_header, dynamic_cast<ogl::JobOption*>(cmd->m_option));
                 break;
             }
 
             case ExecuteTaskCommand:
             {
-                this->executeTask(*(cmd->m_header), dynamic_cast<ogl::TaskOption*>(cmd->m_option));
+                this->executeTask(cmd->m_header, dynamic_cast<ogl::TaskOption*>(cmd->m_option));
                 break;
             }
 

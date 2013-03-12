@@ -63,113 +63,16 @@ namespace ogl
         return Cmd2Str[cmd];
     }
 
-    CommandHeader::CommandHeader (CommandType ct, const char* contextId) : m_type(ct)
+    Command::Command(CommandType cmdType, Serializable* option)
     {
-        m_contextId = ogl::dumpString(contextId);
-
-        if (m_contextId != 0)
-        {
-            m_contextIdLength = ::strlen(m_contextId);
-        }
-        else
-        {
-            m_contextIdLength = 0;
-        }
-    };
-
-    CommandHeader::CommandHeader (const CommandHeader& header)
-    {
-        m_contextId = ogl::dumpString(header.m_contextId);
-
-        if (m_contextId != 0)
-        {
-            m_contextIdLength = ::strlen(m_contextId);
-        }
-        else
-        {
-            m_contextIdLength = 0;
-        }
-        m_type = header.m_type;
-
-        Header::m_dataSize = header.Header::m_dataSize;
+        m_header.set_type(cmdType);
+        m_option = option;
     }
 
-    CommandHeader& CommandHeader::operator= (const CommandHeader& header)
+    Command::Command(const CommandHeader& header, Serializable* option)
     {
-        ogl::releaseString(m_contextId);
-
-        m_contextId = ogl::dumpString(header.m_contextId);
-
-        if (m_contextId != 0)
-        {
-            m_contextIdLength = ::strlen(m_contextId);
-        }
-        else
-        {
-            m_contextIdLength = 0;
-        }
-
-        m_type = header.m_type;
-
-        Header::m_dataSize = header.Header::m_dataSize;
-
-        return *this;
-    }
-
-    CommandHeader::~CommandHeader()
-    {
-        ogl::releaseString(m_contextId);
-    }
-
-    size_t CommandHeader::headerSize()
-    {
-        return sizeof(m_type) + sizeof(Header::m_dataSize)
-               + sizeof(m_contextIdLength) + m_contextIdLength;
-    }
-
-    ACE_Message_Block* CommandHeader::serialize()
-    {
-        ACE_OutputCDR os(ACE_DEFAULT_CDR_BUFSIZE);
-
-        SERIALIZE_ULONG(os, m_type);
-        SERIALIZE_CSTRING(os, m_contextId);
-        SERIALIZE_ULONG(os, Header::m_dataSize);
-
-        return os.begin() -> duplicate();
-    }
-
-    void CommandHeader::deserialize(ACE_Message_Block* msg)
-    {
-        ACE_InputCDR is(msg);
-
-        DESERIALIZE_ULONG(is, m_type);
-        DESERIALIZE_CSTRING(is, m_contextId);
-        if (m_contextId != 0)
-        {
-            m_contextIdLength = ::strlen(m_contextId);
-        }
-        else
-        {
-            m_contextIdLength = 0;
-        }
-
-        DESERIALIZE_ULONG(is, Header::m_dataSize);
-    }
-
-    UUID CommandHeader::contextId()
-    {
-        return m_contextId;
-    }
-
-    Command::Command(const CommandHeader& header, Serializable* opt, ACE_Message_Block* rawData):
-            m_option(opt), m_rawData(rawData)
-    {
-        ACE_NEW_NORETURN(m_header, CommandHeader(header));
-    };
-
-    Command::~Command()
-    {
-        releaseObject<CommandHeader>(m_header);
+        m_header = header;
+        m_option = option;
     }
 
 };

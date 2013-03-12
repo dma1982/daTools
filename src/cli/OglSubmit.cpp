@@ -6,7 +6,6 @@
 #include "JobManagerProxy.h"
 #include "JobProxy.h"
 #include "TaskProxy.h"
-#include "Exception.h"
 
 #include <iostream>
 
@@ -53,10 +52,10 @@ int main(int argc, char** argv)
         switch (arg)
         {
         case 'j':
-            jobOption->name(getOpt.optarg);
+            jobOption->set_name(getOpt.optarg);
             break;
         case 'c':
-            jobOption->command(getOpt.optarg);
+            jobOption->set_command(getOpt.optarg);
             break;
 
         case 'n':
@@ -70,15 +69,16 @@ int main(int argc, char** argv)
         }
     }
 
-    if (jobOption->name() == 0 ||
-        jobOption->command() == 0 ||
+    if (jobOption->name().size() == 0 ||
+        jobOption->command().size() == 0 ||
         taskCount <= 0)
     {
         print_help();
         return -1;
     }
 
-    printf("INFO: Creating job <%s> with command <%s>.\n", jobOption->name(), jobOption->command());
+    printf("INFO: Creating job <%s> with command <%s>.\n",
+           jobOption->name().c_str(), jobOption->command().c_str());
 
     try
     {
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
         JobProxyPtr job = jobManager->addJob(jobOption);
 
-        printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().id()));
+        printf("INFO: Create job successfully, job id is <%d>.\n", (int)(job->option().job_id()));
 
         list<TaskProxyPtr> taskList;
 
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
     }
     catch (Exception& e)
     {
-        cout << "*ERROR*: " << e.what() << endl;
+        cout << "*ERROR*: " << e.message() << endl;
     }
 
     JobManagerProxyFactory::uninitialize();

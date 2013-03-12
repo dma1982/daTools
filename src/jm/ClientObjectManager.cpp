@@ -14,90 +14,77 @@ namespace ogl
 
     int ClientHandlerObject::CreateJob(ogl::CommandHeader& header, ogl::JobOption& jobOption)
     {
-
-        ogl::CommandHeader completeHeader(CreateJobComplete, header.contextId());
-        ogl::CommandHeader failedHeader(CreateJobFailed, header.contextId());
-
         int hr = m_jobManager->addJob(jobOption);
 
         if (hr < 0)
         {
-            return HandlerObject::sendResponse(failedHeader);
+            return HandlerObject::sendResponse(CreateJobFailed, header.context_id());
         }
 
-        return HandlerObject::sendResponse(completeHeader, &jobOption);
+        return HandlerObject::sendResponse(CreateJobComplete, header.context_id(), &jobOption);
     }
 
     int ClientHandlerObject::CreateTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
     {
 
-        ogl::CommandHeader completeHeader(CreateTaskComplete, header.contextId());
-        ogl::CommandHeader failedHeader(CreateTaskFailed, header.contextId());
-
-        JobPtr job = m_jobManager->getJob(taskOption.jobId());
+        JobPtr job = m_jobManager->getJob(taskOption.job_id());
 
         if (job == 0)
         {
-            return HandlerObject::sendResponse(failedHeader);
+            return HandlerObject::sendResponse(CreateTaskFailed, header.context_id());
         }
 
         TaskPtr task = job->addTask(taskOption);
 
         if (task == 0)
         {
-            return HandlerObject::sendResponse(failedHeader);
+            return HandlerObject::sendResponse(CreateTaskFailed, header.context_id());
         }
 
-        return HandlerObject::sendResponse(completeHeader, task->taskOption().get());
+        return HandlerObject::sendResponse(CreateTaskComplete, header.context_id(), task->taskOption().get());
     }
 
     int ClientHandlerObject::FetchTaskOutput(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
     {
-        ogl::CommandHeader completeHeader(FetchTaskOutputComplete, header.contextId());
-        ogl::CommandHeader failedHeader(FetchTaskOutputFailed, header.contextId());
 
-        JobPtr job = m_jobManager->getJob(taskOption.jobId());
+        JobPtr job = m_jobManager->getJob(taskOption.job_id());
 
         if (job == 0)
         {
-            return HandlerObject::sendResponse(failedHeader);
+            return HandlerObject::sendResponse(FetchTaskOutputFailed, header.context_id());
         }
 
-        TaskPtr task = job->getTask(taskOption.taskId());
+        TaskPtr task = job->getTask(taskOption.task_id());
         if (task == 0)
         {
-            return HandlerObject::sendResponse(failedHeader);
+            return HandlerObject::sendResponse(FetchTaskOutputFailed, header.context_id());
         }
 
         if (task->isCompleted())
         {
-            return HandlerObject::sendResponse(completeHeader, task->taskOption().get());
+            return HandlerObject::sendResponse(FetchTaskOutputComplete, header.context_id(), task->taskOption().get());
         }
 
-        task->addObserver(header.contextId(), OGL_DYNAMIC_CAST(ClientHandlerObject, this));
+        task->addObserver(header.context_id(), OGL_DYNAMIC_CAST(ClientHandlerObject, this));
         return 0;
     }
 
     int ClientHandlerObject::CloseJob(ogl::CommandHeader& header, ogl::JobOption& jobOption)
     {
-        ogl::CommandHeader completeHeader(CloseJobComplete, header.contextId());
-        ogl::CommandHeader failedHeader(CloseJobFailed, header.contextId());
-
-        int hr = m_jobManager->closeJob(jobOption.id());
+        int hr = m_jobManager->closeJob(jobOption.job_id());
 
         if (hr < 0)
         {
-            return HandlerObject::sendResponse(failedHeader);
+            return HandlerObject::sendResponse(CloseJobFailed, header.context_id());
         }
 
-        return HandlerObject::sendResponse(completeHeader, &jobOption);
+        return HandlerObject::sendResponse(CloseJobComplete, header.context_id(), &jobOption);
     }
 
     int ClientHandlerObject::ShutdownCluster(ogl::CommandHeader& header)
     {
-        ogl::CommandHeader completeHeader(ShutdownClusterComplete, header.contextId());
         OGL_LOG_INFO("The cluster is shutting down.");
-        return HandlerObject::sendResponse(completeHeader);
+        return HandlerObject::sendResponse(ShutdownClusterComplete, header.context_id());
     }
 
     int ClientHandlerObject::ViewResources(ogl::CommandHeader& header)
@@ -114,35 +101,35 @@ namespace ogl
     /*
      * Command router
      */
-    int ClientHandlerObject::executeRequest(ogl::CommandHeader& cmd, ACE_Message_Block& data)
+    int ClientHandlerObject::executeRequest(ogl::CommandHeader& cmd, std::string& data)
     {
-        switch (cmd.commandType())
+        switch (cmd.type())
         {
         case CreateJobCommand:
         {
             ogl::JobOption jobOption;
-            jobOption.deserialize(&data);
+            jobOption.ParseFromString(data);
             CreateJob(cmd, jobOption);
             break;
         }
         case CreateTaskCommand:
         {
             ogl::TaskOption taskOption;
-            taskOption.deserialize(&data);
+            taskOption.ParseFromString(data);
             CreateTask(cmd, taskOption);
             break;
         }
         case CloseJobCommand:
         {
             ogl::JobOption jobOption;
-            jobOption.deserialize(&data);
+            jobOption.ParseFromString(data);
             CloseJob(cmd, jobOption);
             break;
         }
         case FetchTaskOutputCommand:
         {
             ogl::TaskOption taskOption;
-            taskOption.deserialize(&data);
+            taskOption.ParseFromString(data);
             FetchTaskOutput(cmd, taskOption);
             break;
         }

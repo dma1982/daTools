@@ -4,7 +4,7 @@
 namespace ogl
 {
 
-    int Task::addObserver(UUID contextId, ogl::HandlerObjectPtr observer)
+    int Task::addObserver(const std::string& contextId, ogl::HandlerObjectPtr observer)
     {
         ACE_Guard<ACE_Thread_Mutex> mapGuard(m_observerMapMutex);
         this->m_observerMap[contextId] = observer;
@@ -25,8 +25,11 @@ namespace ogl
         for (OGL_TASK_OBSERVER_MAP_ITER it = m_observerMap.begin();
              it != m_observerMap.end(); ++it)
         {
-            const char* contextId = (it->first).c_str();
-            ogl::CommandHeader header(FetchTaskOutputComplete, contextId);
+            ogl::CommandHeader header;
+
+            header.set_type(FetchTaskOutputComplete);
+            header.set_context_id(it->first);
+
             it->second->sendResponse(header, m_taskOption.get());
         }
 

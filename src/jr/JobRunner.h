@@ -37,6 +37,9 @@ namespace ogl
 
             int sendResponse(ogl::CommandHeader& header, Serializable* data);
 
+            int sendResponse(ogl::CommandType cmdType, const std::string& contextId, Serializable* option = 0);
+
+
             int bindJobRunner(ogl::CommandHeader& header, ogl::JobOption* jobOption);
 
             ogl::JobRunnerManager* m_jobRunnerManager;

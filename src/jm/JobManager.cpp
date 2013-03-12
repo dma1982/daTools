@@ -27,7 +27,7 @@ namespace ogl
 
         m_jobs[job->getJobId()] = job;
 
-        option.id(job->getJobId());
+        option.set_job_id(job->getJobId());
 
         return 1;
     }

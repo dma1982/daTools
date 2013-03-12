@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     }
     catch (ogl::Exception& e)
     {
-        cout << e.what() << endl;;
+        cout << e.message() << endl;;
     }
 
     if (ACE_Thread_Manager::instance()->wait() < 0)

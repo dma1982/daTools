@@ -29,14 +29,14 @@ namespace ogl
     int JobRunnerManager::BindJobRunner(ogl::CommandHeader& header, ogl::JobOption& jobOption)
     {
         OGL_LOG_DEBUG("Bind job for job id: <%d>, runner id: <%s>",
-                      (int)(jobOption.id()),
-                      jobOption.runnerId());
+                      (int)(jobOption.job_id()),
+                      jobOption.runner_id().c_str());
 
-        JobRunnerPtr jobRunner = m_jobRunners[jobOption.runnerId()];
+        JobRunnerPtr jobRunner = m_jobRunners[jobOption.runner_id()];
 
         if (jobRunner == 0)
         {
-            OGL_LOG_DEBUG("Failed to get job runner by <%s> when BindJobRunner", jobOption.runnerId());
+            OGL_LOG_DEBUG("Failed to get job runner by <%s> when BindJobRunner", jobOption.runner_id().c_str());
         }
 
         return jobRunner->BindJobRunner(header, jobOption);
@@ -45,15 +45,15 @@ namespace ogl
     int JobRunnerManager::ExecuteTask(ogl::CommandHeader& header, ogl::TaskOption& taskOption)
     {
         OGL_LOG_DEBUG("Execute task for job id: <%d>, task id: <%d>, runner id: <%s>",
-                      (int)taskOption.jobId(),
-                      (int)taskOption.taskId(),
-                      taskOption.runnerId());
+                      (int)taskOption.job_id(),
+                      (int)taskOption.task_id(),
+                      taskOption.runner_id().c_str());
 
-        JobRunnerPtr jobRunner = m_jobRunners[taskOption.runnerId()];
+        JobRunnerPtr jobRunner = m_jobRunners[taskOption.runner_id()];
 
         if (jobRunner == 0)
         {
-            OGL_LOG_DEBUG("Failed to get job runner by <%s> when ExecuteTask", taskOption.runnerId());
+            OGL_LOG_DEBUG("Failed to get job runner by <%s> when ExecuteTask", taskOption.runner_id().c_str());
         }
 
         return jobRunner->ExecuteTask(header, taskOption);
@@ -73,9 +73,9 @@ namespace ogl
         return 0;
     }
 
-    int JobRunnerManager::executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data)
+    int JobRunnerManager::executeRequest(ogl::CommandHeader& header, std::string& data)
     {
-        switch (header.commandType())
+        switch (header.type())
         {
         case RegisterJobRunnerManagerFailed:
         {
@@ -90,14 +90,14 @@ namespace ogl
         case ExecuteTaskCommand:
         {
             ogl::TaskOption taskOption;
-            taskOption.deserialize(&data);
+            taskOption.ParseFromString(data);
             ExecuteTask(header, taskOption);
             break;
         }
         case BindJobRunnerCommand:
         {
             ogl::JobOption jobOption;
-            jobOption.deserialize(&data);
+            jobOption.ParseFromString(data);
             BindJobRunner(header, jobOption);
             break;
         }
@@ -110,7 +110,7 @@ namespace ogl
 
     JobManagerClient::JobManagerClient()
     {
-        m_jobRunnerOption.mgrId(OGLCONF->getRunnerId().c_str());
+        m_jobRunnerOption.set_runner_mgr_id(OGLCONF->getRunnerId());
     }
 
     JobManagerClient::~JobManagerClient()
@@ -119,8 +119,8 @@ namespace ogl
 
     int JobManagerClient::StartJobRunnerManager()
     {
-        CommandHeader respHeader(RegisterJobRunnerManagerCommand, m_jobRunnerOption.mgrId());
-        return this->get_handler()->sendResponse(respHeader, &m_jobRunnerOption);
+        return this->get_handler()->sendResponse(RegisterJobRunnerManagerCommand,
+                m_jobRunnerOption.runner_mgr_id(), &m_jobRunnerOption);
     }
 
 }

@@ -23,8 +23,6 @@
 
 #include "Commands.h"
 
-#include "Exception.h"
-
 namespace ogl
 {
 
@@ -40,9 +38,11 @@ namespace ogl
             virtual int close (u_long flags = 0);
 
             virtual int recvRequest();
-            virtual int executeRequest(ogl::CommandHeader& header, ACE_Message_Block& data) = 0;
+            virtual int executeRequest(ogl::CommandHeader& header, std::string& data) = 0;
 
             virtual int sendResponse(ogl::CommandHeader& header, Serializable* data = 0);
+
+            virtual int sendResponse(ogl::CommandType cmdType, const std::string& contextId, Serializable* option = 0);
 
             virtual int handle_output (ACE_HANDLE);
             virtual int handle_input (ACE_HANDLE);
@@ -53,10 +53,14 @@ namespace ogl
 
         private:
 
+
             static log4cxx::LoggerPtr m_logger;
 
             ACE_Thread_Mutex m_send_mutex;
             ACE_Thread_Mutex m_recv_mutex;
+
+            int readCommandHeaderSize(ACE_SOCK_Stream& handle, ACE_CDR::ULong& headerSize);
+            int readCommandHeader(ACE_SOCK_Stream& handle, CommandHeader& header);
     };
 
     typedef std::tr1::shared_ptr<HandlerObject> HandlerObjectPtr;
@@ -69,9 +73,9 @@ namespace ogl
 
             virtual ~ClientActionManager();
 
-            virtual int registerAction(UUID uuid, ClientAction* action);
-            virtual int unregisterAction(UUID uuid);
-            virtual int signalAction(ogl::CommandHeader& header, ACE_Message_Block* data);
+            virtual int registerAction(std::string& uuid, ClientAction* action);
+            virtual int unregisterAction(std::string& uuid);
+            virtual int signalAction(ogl::CommandHeader& header, std::string& data);
 
         protected:
             static log4cxx::LoggerPtr m_logger;
@@ -92,24 +96,24 @@ namespace ogl
 
             virtual int submit(ogl::CommandType cmd, Serializable* data = 0);
 
-            virtual void setResponse(ACE_Message_Block* msg);
-            virtual ACE_Message_Block* getResponse();
+            virtual void setResponse(const std::string& msg);
+            virtual std::string& getResponse();
 
             virtual void returnCode(int rc);
             virtual int returnCode();
 
-            virtual void contextId(UUID id);
-            virtual char* contextId();
+            virtual void contextId(std::string& id);
+            virtual std::string& contextId();
 
         private:
             ACE_Event m_event;
-            ACE_Message_Block* m_response;
+            std::string m_response;
 
             int m_returnCode;
 
             ClientActionManager* m_clientActionManager;
 
-            UUID m_contextId;
+            std::string m_contextId;
 
             static ACE_Utils::UUID_Generator m_guidGenerator;
 
