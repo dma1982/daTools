@@ -65,14 +65,20 @@ namespace ogl
 
     Command::Command(CommandType cmdType, Serializable* option)
     {
-        m_header.set_type(cmdType);
+        m_header = new CommandHeader();
+        m_header->set_type(cmdType);
         m_option = option;
     }
 
     Command::Command(const CommandHeader& header, Serializable* option)
     {
-        m_header = header;
+        m_header = new CommandHeader(header);
         m_option = option;
+    }
+
+    Command::~Command()
+    {
+        delete m_header;
     }
 
 };

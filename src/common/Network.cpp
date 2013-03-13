@@ -5,10 +5,10 @@
 #include <ace/Guard_T.h>
 
 #include <sstream>
-
 #include <stdio.h>
 
 #include "ogl.h"
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -74,6 +74,7 @@ namespace ogl
 
     int HandlerObject::sendResponse(ogl::CommandHeader& header, Serializable* option)
     {
+
         std::string data;
         std::string headerData;
 
@@ -96,7 +97,6 @@ namespace ogl
 
         {
             ACE_Guard<ACE_Thread_Mutex> sendGuard(m_send_mutex);
-
             this->msg_queue()->enqueue_tail(os.begin()->duplicate());
         }
 
@@ -156,7 +156,7 @@ namespace ogl
 
         int n = handle.recv_n(headerSizeMsg.wr_ptr(), sizeof(headerSize));
 
-        if (n < 0)
+        if (n <= 0)
         {
             return -1;
         }
@@ -167,6 +167,7 @@ namespace ogl
 
         ACE_InputCDR is(&headerSizeMsg);
         is.read_ulong(headerSize);
+
         return n;
     }
 
@@ -176,7 +177,10 @@ namespace ogl
 
         ACE_CDR::ULong headerSize;
 
-        this->readCommandHeaderSize(handle, headerSize);
+        if (this->readCommandHeaderSize(handle, headerSize) < 0)
+        {
+            return -1;
+        }
 
         ACE_Message_Block headMsg(headerSize);
 
@@ -197,6 +201,7 @@ namespace ogl
 
             header.ParseFromString(ss.str());
         }
+
         return n;
     }
 
@@ -210,12 +215,12 @@ namespace ogl
 
         n = this->readCommandHeader(this->peer(), header);
 
-        if (header.data_size() == 0)
+        if (n < 0)
         {
-            return 0;
+            return -1;
         }
 
-
+        if (header.data_size() > 0)
         {
             ACE_Message_Block dataBuf(header.data_size());
 
@@ -229,10 +234,9 @@ namespace ogl
             // set write pointer
             dataBuf.wr_ptr(n);
 
-            data.assign(dataBuf.rd_ptr(), header.data_size());
+            data.assign(dataBuf.rd_ptr(), n);
         }
 
-        // receive data
         this->executeRequest(header, data);
 
         return 0;
@@ -319,7 +323,7 @@ namespace ogl
         this->m_clientActionManager->unregisterAction(m_contextId);
     }
 
-    ClientAction::ClientAction(ClientActionManager* manager) : m_response(0)
+    ClientAction::ClientAction(ClientActionManager* manager) 
     {
         this->m_clientActionManager = manager;
 

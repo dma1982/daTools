@@ -81,8 +81,9 @@ namespace ogl
         public:
             Command(CommandType cmdType, Serializable* = 0);
             Command(const CommandHeader& header, Serializable* = 0);
+            ~Command();
 
-            CommandHeader m_header;
+            CommandHeader* m_header;
             Serializable* m_option;
     };
 

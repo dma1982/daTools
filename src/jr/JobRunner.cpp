@@ -31,7 +31,7 @@ namespace ogl
         ACE_Message_Block* msg;
         Command* cmd;
 
-        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand, m_jobRunnerOption.get()), -1);
+        ACE_NEW_RETURN(cmd, Command(RegisterJobRunnerCommand), -1);
         ACE_NEW_RETURN(msg, ACE_Message_Block((char*)cmd, sizeof(Command)), -1);
 
         this->putq(msg);
@@ -175,7 +175,7 @@ namespace ogl
 
             Command* cmd = reinterpret_cast<Command*>(msg->rd_ptr());
 
-            switch (cmd->m_header.type())
+            switch (cmd->m_header->type())
             {
             case RegisterJobRunnerCommand:
             {
@@ -185,13 +185,13 @@ namespace ogl
 
             case BindJobRunnerCommand:
             {
-                this->bindJobRunner(cmd->m_header, dynamic_cast<ogl::JobOption*>(cmd->m_option));
+                this->bindJobRunner(*(cmd->m_header), dynamic_cast<ogl::JobOption*>(cmd->m_option));
                 break;
             }
 
             case ExecuteTaskCommand:
             {
-                this->executeTask(cmd->m_header, dynamic_cast<ogl::TaskOption*>(cmd->m_option));
+                this->executeTask(*(cmd->m_header), dynamic_cast<ogl::TaskOption*>(cmd->m_option));
                 break;
             }
 
