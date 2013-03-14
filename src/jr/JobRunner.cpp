@@ -7,11 +7,21 @@ namespace ogl
 
     log4cxx::LoggerPtr JobRunner::m_logger = OGLCONF->getLogger("ogl.JobRunner");
 
+    ACE_Utils::UUID_Generator JobRunner::m_guidGenerator;
+
     JobRunner::JobRunner(ogl::JobRunnerManager* jobRunnerManager) :
             m_jobRunnerManager(jobRunnerManager), m_taskProcessOption(0),
             m_jobRunnerOption(new ogl::JobRunnerOption())
     {
+        // update job runner option's attributes
+        ACE_Utils::UUID guid;
+        m_guidGenerator.generate_UUID(guid);
+        m_jobRunnerOption->set_runner_id(guid.to_string()->c_str());
+        m_jobRunnerOption->set_pid(ACE_OS::getpid());
+    }
 
+    JobRunner::~JobRunner()
+    {
     }
 
     int JobRunner::start()

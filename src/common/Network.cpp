@@ -323,7 +323,7 @@ namespace ogl
         this->m_clientActionManager->unregisterAction(m_contextId);
     }
 
-    ClientAction::ClientAction(ClientActionManager* manager) 
+    ClientAction::ClientAction(ClientActionManager* manager)
     {
         this->m_clientActionManager = manager;
 

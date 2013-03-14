@@ -15,6 +15,7 @@ namespace ogl
     {
         public:
             JobRunner(JobRunnerManager* jrm);
+            ~JobRunner();
 
             virtual int start ();
             virtual int svc();
@@ -31,6 +32,7 @@ namespace ogl
 
         private:
 
+            static ACE_Utils::UUID_Generator m_guidGenerator;
             static log4cxx::LoggerPtr m_logger;
 
             int executeTask(ogl::CommandHeader& header, ogl::TaskOption* taskOption);
