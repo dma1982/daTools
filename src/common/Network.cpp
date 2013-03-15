@@ -156,7 +156,7 @@ namespace ogl
 
         int n = handle.recv_n(headerSizeMsg.wr_ptr(), sizeof(headerSize));
 
-        if (n <= 0)
+        if (n < 0)
         {
             return -1;
         }

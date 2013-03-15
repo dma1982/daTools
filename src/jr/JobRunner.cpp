@@ -147,9 +147,14 @@ namespace ogl
         {
             std::stringstream strbuf;
             char buffer[BUFSIZ] = {0};
-            size_t len ;
-            while (outputStream.read(buffer, len) > 0)
+
+            for (;;)
             {
+                size_t len = BUFSIZ;
+                if (outputStream.read(buffer, len) <= 0)
+                {
+                    break;
+                }
                 strbuf.write(buffer, len);
             }
 
