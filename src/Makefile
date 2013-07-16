@@ -1,15 +1,13 @@
-include ../../make.misc
+include ../make.misc
 
 OBJS=log.o \
      fs.o \
      tcp.o \
      event.o \
      buffer.o \
-     conf.o \
+     props.o \
      mem.o \
-     marshal.pb.o \
-     thread.o \
-     utils.o
+     thread.o 
 
 all: libutils.a
 
