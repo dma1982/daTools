@@ -1,13 +1,28 @@
-all:
-	cd utils; make
-	cd common; make
-	cd jm; make
-	cd jr; make
-	cd cli; make
+include ../../make.misc
+
+OBJS=log.o \
+     fs.o \
+     tcp.o \
+     event.o \
+     buffer.o \
+     conf.o \
+     mem.o \
+     marshal.pb.o \
+     thread.o \
+     utils.o
+
+all: libutils.a
+
+CC=g++
+INCLUDE=../includes
+CFLAGS=${OGL_CFLAGS}
+
+libutils.a: ${OBJS}
+	ar cr libutils.a ${OBJS}
+	ranlib libutils.a
+
+${OBJS}: %.o:%.cpp
+	${CC} -c ${CFLAGS} -I${INCLUDE} $< -o $@
 
 clean:
-	cd cli; make clean
-	cd jm; make clean
-	cd jr; make clean
-	cd common; make clean
-	cd utils; make clean
+	rm -f *.o *.a *.orig *~
