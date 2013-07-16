@@ -2,12 +2,6 @@
 
 #include <pthread.h>
 
-static void* _thread_runner_wrapper(void* data)
-{
-    ((ogl::Thread*) data)->run();
-    return 0;
-}
-
 namespace ogl
 {
 	queue_t::queue_t()
@@ -51,13 +45,15 @@ namespace ogl
         return r;
     }
 
-	Thread::Thread()
+	Thread::Thread(worker_t worker, void* data)
 	{
+        m_worker = worker;
+        m_data = data;
 	}
 
 	int Thread::start()
 	{
-        return pthread_create(&m_tid, 0, _thread_runner_wrapper, this);
+        return pthread_create(&m_tid, 0, m_worker, m_data);
 	}
 
 	int Thread::stop()
@@ -67,18 +63,12 @@ namespace ogl
 
 	int Thread::wait()
 	{
-        pthread_join(m_tid, 0);
-        return 0;
+        return pthread_join(m_tid, 0);
 	}
 
 	int Thread::yield()
 	{
-        pthread_yield();
-        return 0;
-	}
-
-	void Thread::run()
-	{
+        return pthread_yield();
 	}
 
 };

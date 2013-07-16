@@ -26,7 +26,10 @@ namespace ogl
     class Thread
     {
         public:
-            Thread();
+
+            typedef void* (*worker_t)(void* data);
+
+            Thread(worker_t worker, void* data);
 
             virtual ~Thread();
 
@@ -38,16 +41,10 @@ namespace ogl
 
             virtual int yield();
 
-            virtual void run();
-
-
         private:
             thread_t m_tid;
-			queue_t m_msg;
-    };
-
-    class ThreadManager
-    {
+            worker_t m_worker;
+            void* m_data;
     };
 }
 
