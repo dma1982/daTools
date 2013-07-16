@@ -10,50 +10,43 @@ static void* _thread_runner_wrapper(void* data)
 
 namespace ogl
 {
-    SyncQueue::SyncQueue()
+	queue_t::queue_t()
     {
+		m_queue = list_create();
     }
 
-    void* SyncQueue::getq()
+    void* queue_t::getq()
     {
         void* res = NULL;
 
         m_event.acquire();
 
-        while (m_queue.empty())
+        while (list_is_empty(m_queue))
         {
             m_event.wait();
         }
 
-        res =  m_queue.front();
-        m_queue.pop_front();
+        res =  list_pop(m_queue);
 
         m_event.release();
 
         return res;
     }
 
-    int SyncQueue::putq(void* data)
+    int queue_t::putq(void* data)
     {
         m_event.acquire();
-        m_queue.push_back(data);
+		list_append(m_queue, data);
+
         m_event.notifyAll();
         m_event.release();
         return 1;
     }
 
-    int SyncQueue::size()
+    bool queue_t::empty()
     {
         m_event.acquire();
-        int n = m_queue.size();
-        m_event.release();
-        return n;
-    }
-
-    bool SyncQueue::empty()
-    {
-        m_event.acquire();
-        bool r = m_queue.empty();
+        bool r = list_is_empty(m_queue);
         m_event.release();
         return r;
     }

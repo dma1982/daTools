@@ -23,6 +23,10 @@ namespace ogl
 
     node_t* list_create();
 
+    int list_is_empty(node_t* head);
+
+    void* list_pop(node_t* head);
+
     void list_destroy(node_t* head, node_operator_t oper = 0);
 
     void list_append(node_t* head, void* data);

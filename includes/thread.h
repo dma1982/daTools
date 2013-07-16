@@ -6,20 +6,20 @@
 
 #include "types.h"
 #include "event.h"
+#include "mem.h"
 
 namespace ogl
 {
-    class SyncQueue
+    class queue_t
     {
         public:
-            SyncQueue();
+            queue_t();
             void* getq();
             int putq(void* data);
-            int size();
             bool empty();
 
         private:
-            std::list<void*> m_queue;
+            node_t* m_queue;
             event_t m_event;
     };
 
@@ -41,9 +41,9 @@ namespace ogl
             virtual void run();
 
 
-
         private:
             thread_t m_tid;
+			queue_t m_msg;
     };
 
     class ThreadManager

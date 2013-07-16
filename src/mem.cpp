@@ -12,11 +12,39 @@ namespace ogl
     node_t* list_create()
     {
         node_t* res = (node_t*) malloc(sizeof(node_t));
-        assert(res != 0);
+        logger->Assert(res != 0);
         res->next = res;
         res->prev = res;
         res->data = 0;
         return res;
+    }
+
+    int list_is_empty(node_t* head)
+    {
+        return (head->next == head && head->prev == head);
+    }
+
+    void* list_pop(node_t* head)
+    {
+        logger->Assert(head != NULL);
+        // if the list is empty, no node to return
+        if (list_is_empty(head))
+        {
+            return NULL;
+        }
+
+        node_t* res = head->next;
+        head->next = res->next;
+        res->next->prev = head;
+
+        res->next = NULL;
+        res->prev = NULL;
+
+        void* data = res->data;
+
+        ::free(res);
+
+        return data;
     }
 
     void list_destroy(node_t* head, node_operator_t oper)

@@ -88,7 +88,7 @@ size_t ogl::File::read(Buffer& buff)
 {
     int n = -1;
 
-    n = ::read(m_handle, buff.data(), buff.size());
+    n = ::read(m_handle, buff.data(), buff.capacity());
     if (n <= 0)
     {
         return n;
