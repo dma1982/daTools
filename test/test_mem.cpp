@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TEST_COUNT 5000000
+#define TEST_COUNT 50000
 #define MEM_SIZE 100
 
 int main(int argc, char **argv)

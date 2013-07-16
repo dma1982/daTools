@@ -15,12 +15,15 @@ int main(int argc, char** argv)
 
     ogl::Buffer buf;
 
-    sleep(10);
     con.recv(buf);
 
     cout << buf.data() << endl;
     cout << buf.size() << endl;
     cout << buf.capacity() << endl;
+
+    con.send(buf);
+    sleep(1000);
+    con.close();
 
     return 0;
 }

@@ -78,7 +78,13 @@ namespace ogl
             int close();
     };
 
-
+    class Reactor
+    {
+        public:
+            int handle_input(int fd);
+            int handle_output(int fd);
+            int handle_close(int fd);
+    };
 }
 
 #endif

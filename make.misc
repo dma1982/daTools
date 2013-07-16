@@ -1,7 +1,7 @@
 OGL_TYPE=lin
 
-OGL_MODE=Debug
-#OGL_MODE=Release
+#OGL_MODE=Debug
+OGL_MODE=Release
 
 	ifeq (${OGL_MODE}, Debug)
 		OGL_CFLAGS=-DLIN -g -Wall -rdynamic

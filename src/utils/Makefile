@@ -8,6 +8,7 @@ OBJS=log.o \
      conf.o \
      mem.o \
      marshal.pb.o \
+     thread.o \
      utils.o
 
 all: libutils.a

@@ -23,6 +23,7 @@ namespace ogl
     typedef int mask_t;
     typedef pthread_mutex_t mutex_t;
     typedef pthread_cond_t cond_t;
+    typedef pthread_t thread_t;
 
     typedef unsigned long ulong;
     typedef int TaskId;
