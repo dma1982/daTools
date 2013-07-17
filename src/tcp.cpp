@@ -143,5 +143,8 @@ int ogl::TcpConnection::close()
     return ::close(m_socket);
 }
 
-
+ogl::handle_t ogl::TcpConnection::get_handler()
+{
+	return m_socket;
+}
 

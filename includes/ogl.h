@@ -9,5 +9,6 @@
 #include "fs.h"
 #include "tcp.h"
 #include "mem.h"
+#include "react.h"
 
 #endif

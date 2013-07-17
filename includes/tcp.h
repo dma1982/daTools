@@ -59,6 +59,9 @@ namespace ogl
             size_t send(const char* buf, int size);
             size_t recv(Buffer& buf);
             size_t recv(char* buf, int& size);
+
+			handle_t get_handler();
+
             int close(void);
     };
 
@@ -76,14 +79,6 @@ namespace ogl
             TcpServer(int& port, const SocketOptions& options) {};
             TcpConnection accept();
             int close();
-    };
-
-    class Reactor
-    {
-        public:
-            int handle_input(int fd);
-            int handle_output(int fd);
-            int handle_close(int fd);
     };
 }
 
