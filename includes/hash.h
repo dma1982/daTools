@@ -9,13 +9,13 @@ namespace ogl
     class ConsistentHashNet
     {
         public:
-            long addNode(char* nodeName);
-            int removeNode(char* nodeName);
+            void addNode(char* nodeName);
+            void removeNode(char* nodeName);
             char* getNode(char* key);
 
         private:
             long hash(char* digest, int nTime);
-            char* computeMd5(char* k);
+            void computeMd5(char* k, char* digest);
 
             std::map<long, char*> m_nodes;
     };

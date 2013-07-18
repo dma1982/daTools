@@ -3,7 +3,7 @@
 namespace ogl
 {
 
-    long ConsistentHashNet::addNode(char* nodeName)
+    void ConsistentHashNet::addNode(char* nodeName)
     {
         char digest[16] = {0};
         computeMd5(nodeName, digest);
@@ -14,7 +14,7 @@ namespace ogl
         }
     }
 
-    int ConsistentHashNet::removeNode(char* nodeName)
+    void ConsistentHashNet::removeNode(char* nodeName)
     {
         char digest[16] = {0};
         computeMd5(nodeName, digest);
@@ -34,7 +34,7 @@ namespace ogl
         }
 
         char digest[16] = {0};
-        computeMd5(k, digest);
+        computeMd5(key, digest);
         long k = this->hash(digest, 0);
 
         std::map<long, char*>::iterator res = m_nodes.find(k);
@@ -68,6 +68,6 @@ namespace ogl
 
         md5_init( &md5state );
         md5_append( &md5state, (unsigned char *)k, strlen(k) );
-        md5_finish( &md5state, digest);
+        md5_finish( &md5state, (unsigned char *) digest);
     }
 }

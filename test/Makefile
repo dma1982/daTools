@@ -4,18 +4,13 @@ CFLAGS=${OGL_CFLAGS}
 CC=g++
 
 INCS=-I../includes -I../src
-LIBS=-L../src/ -lgtest -lpthread -lutils
+LIBS=-L../src/ -lgtest -lgtest_main -lpthread -logl
 
-BINS=test_buffer test_fs test_tcp_serv test_tcp_client test_log test_mem 
+BINS=TestHash
 
 all: ${BINS}
 
-OBJS=test_log \
-     test_buffer \
-     test_fs \
-     test_tcp_serv \
-     test_tcp_client \
-     test_mem 
+OBJS=TestHash
 
 ${OBJS}: %:%.cpp$
 	${CC} ${CFLAGS} $< -o $@ ${INCS} ${LIBS}

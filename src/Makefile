@@ -8,17 +8,18 @@ OBJS=log.o \
      props.o \
      mem.o \
      md5.o \
+     hash.o \
      thread.o 
 
-all: libutils.a
+all: libogl.a
 
 CC=g++
 INCLUDE=../includes
 CFLAGS=${OGL_CFLAGS}
 
-libutils.a: ${OBJS}
-	ar cr libutils.a ${OBJS}
-	ranlib libutils.a
+libogl.a: ${OBJS}
+	ar cr libogl.a ${OBJS}
+	ranlib libogl.a
 
 ${OBJS}: %.o:%.cpp
 	${CC} -c ${CFLAGS} -I${INCLUDE} $< -o $@
