@@ -10,5 +10,7 @@
 #include "tcp.h"
 #include "mem.h"
 #include "react.h"
+#include "md5.h"
+#include "hash.h"
 
 #endif
