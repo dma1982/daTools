@@ -60,7 +60,7 @@ namespace ogl
             size_t recv(Buffer& buf);
             size_t recv(char* buf, int& size);
 
-			handle_t get_handler();
+            handle_t get_handler();
 
             int close(void);
     };

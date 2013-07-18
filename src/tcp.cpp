@@ -145,6 +145,6 @@ int ogl::TcpConnection::close()
 
 ogl::handle_t ogl::TcpConnection::get_handler()
 {
-	return m_socket;
+    return m_socket;
 }
 

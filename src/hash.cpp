@@ -8,7 +8,8 @@ namespace ogl
         char digest[16] = {0};
         computeMd5(nodeName, digest);
 
-        for(int h = 0; h < 4; h++) {
+        for(int h = 0; h < 4; h++)
+        {
             long m = this->hash(digest, h);
             m_nodes[m] = nodeName;
         }
@@ -19,7 +20,8 @@ namespace ogl
         char digest[16] = {0};
         computeMd5(nodeName, digest);
 
-        for(int h = 0; h < 4; h++) {
+        for(int h = 0; h < 4; h++)
+        {
             long m = this->hash(digest, h);
             m_nodes.erase(m);
         }
@@ -54,11 +56,11 @@ namespace ogl
 
     long ConsistentHashNet::hash(char* digest, int nTime)
     {
-        long rv = ((long) (digest[3+nTime*4] & 0xFF) << 24) | 
-            ((long) (digest[2+nTime*4] & 0xFF) << 16) | 
-            ((long) (digest[1+nTime*4] & 0xFF) << 8) | 
-            ((long) (digest[0+nTime*4] & 0xFF));
-                
+        long rv = ((long) (digest[3 + nTime * 4] & 0xFF) << 24) |
+                  ((long) (digest[2 + nTime * 4] & 0xFF) << 16) |
+                  ((long) (digest[1 + nTime * 4] & 0xFF) << 8) |
+                  ((long) (digest[0 + nTime * 4] & 0xFF));
+
         return rv & 0xffffffffL; /* Truncate to 32-bits */
     }
 

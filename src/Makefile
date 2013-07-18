@@ -5,7 +5,6 @@ OBJS=log.o \
      tcp.o \
      event.o \
      buffer.o \
-     props.o \
      mem.o \
      md5.o \
      hash.o \

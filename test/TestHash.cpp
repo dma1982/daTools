@@ -5,7 +5,7 @@
 
 using namespace std;
 
-TEST(ConsistentHashNet, addNode) 
+TEST(ConsistentHashNet, addNode)
 {
     ogl::ConsistentHashNet hashNet;
     hashNet.addNode("hello world");

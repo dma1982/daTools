@@ -4,9 +4,9 @@
 
 namespace ogl
 {
-	queue_t::queue_t()
+    queue_t::queue_t()
     {
-		m_queue = list_create();
+        m_queue = list_create();
     }
 
     void* queue_t::getq()
@@ -30,7 +30,7 @@ namespace ogl
     int queue_t::putq(void* data)
     {
         m_event.acquire();
-		list_append(m_queue, data);
+        list_append(m_queue, data);
 
         m_event.notifyAll();
         m_event.release();
@@ -45,30 +45,30 @@ namespace ogl
         return r;
     }
 
-	Thread::Thread(worker_t worker, void* data)
-	{
+    Thread::Thread(worker_t worker, void* data)
+    {
         m_worker = worker;
         m_data = data;
-	}
+    }
 
-	int Thread::start()
-	{
+    int Thread::start()
+    {
         return pthread_create(&m_tid, 0, m_worker, m_data);
-	}
+    }
 
-	int Thread::stop()
-	{
-		return 0;
-	}
+    int Thread::stop()
+    {
+        return 0;
+    }
 
-	int Thread::wait()
-	{
+    int Thread::wait()
+    {
         return pthread_join(m_tid, 0);
-	}
+    }
 
-	int Thread::yield()
-	{
+    int Thread::yield()
+    {
         return pthread_yield();
-	}
+    }
 
 };
