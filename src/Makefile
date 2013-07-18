@@ -7,6 +7,7 @@ OBJS=log.o \
      buffer.o \
      props.o \
      mem.o \
+     md5.o \
      thread.o 
 
 all: libutils.a
