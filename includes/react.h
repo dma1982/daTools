@@ -7,6 +7,7 @@ namespace ogl
 {
     class Handler
     {
+        public:
             virtual int handle_input() = 0;
             virtual int handle_output() = 0;
             virtual int handle_close() = 0;
@@ -15,6 +16,7 @@ namespace ogl
             {
                 m_handler = t;
             };
+
             handle_t get_handler()
             {
                 return m_handler;
