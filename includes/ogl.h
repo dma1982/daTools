@@ -4,7 +4,6 @@
 #include "msg.h"
 #include "types.h"
 #include "log.h"
-#include "props.h"
 #include "buffer.h"
 #include "fs.h"
 #include "tcp.h"

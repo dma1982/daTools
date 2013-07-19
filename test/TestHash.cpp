@@ -7,7 +7,11 @@ using namespace std;
 
 TEST(ConsistentHashNet, addNode)
 {
+    char nodeName[] = "hello world";
+    char key[] = "hello";
+
     ogl::ConsistentHashNet hashNet;
-    hashNet.addNode("hello world");
-    cout << hashNet.getNode("hello") << endl;
+
+    hashNet.addNode(nodeName);
+    ASSERT_STREQ(hashNet.getNode(key), "hello world");
 }
