@@ -1,10 +1,19 @@
-#ifndef _OGL_EVENT_H_
-#define _OGL_EVENT_H_
+#ifndef __OGL_UTILS_H__
+#define __OGL_UTILS_H__
 
+#include <string>
 #include "types.h"
 
 namespace ogl
 {
+    void trim(std::string& str);
+
+    std::string gethostname();
+
+    char* cstr_append_int(const char* str, size_t len, int num);
+    void cstr_release(char*& str);
+    int cstr_to_upper(std::string& str);
+
     class event_t
     {
         public:

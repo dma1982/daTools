@@ -5,7 +5,7 @@
 #include <list>
 
 #include "types.h"
-#include "event.h"
+#include "utils.h"
 #include "mem.h"
 
 namespace ogl
@@ -29,7 +29,7 @@ namespace ogl
 
             typedef void* (*worker_t)(void* data);
 
-            Thread(worker_t worker, void* data);
+            Thread(worker_t worker, void* data = 0);
 
             virtual ~Thread();
 

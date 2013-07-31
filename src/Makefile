@@ -3,12 +3,12 @@ include ../make.misc
 OBJS=log.o \
      fs.o \
      tcp.o \
-     event.o \
      buffer.o \
      mem.o \
      md5.o \
      hash.o \
-     thread.o 
+     thread.o \
+     props.o
 
 all: libogl.a
 

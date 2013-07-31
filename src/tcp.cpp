@@ -15,17 +15,6 @@
 #include <netdb.h>
 
 
-std::string ogl::gethostname()
-{
-    Buffer buf;
-
-    ::gethostname(buf.data(), buf.capacity());
-
-    buf.size(strlen(buf.data()) + 1);
-
-    return buf.data();
-}
-
 ogl::Logger* ogl::TcpServer::m_logger = ogl::Logger::getLogger("ogl.TcpServer");
 ogl::Logger* ogl::TcpConnection::m_logger = ogl::Logger::getLogger("ogl.TcpConnection");
 

@@ -18,6 +18,12 @@ namespace ogl
         node_t** data;
     } hash_table_t;
 
+    typedef struct
+    {
+        char* key;
+        void* data;
+    } hash_table_node_t;
+
     typedef int (*node_comparator_t)(void*, void*);
     typedef int (*node_operator_t)(void* );
 
@@ -41,9 +47,13 @@ namespace ogl
 
     hash_table_t* table_create(size_t size = 997);
 
-    void table_insert(hash_table_t* table, ulong key, void* data);
+    int table_destroy(hash_table_t* table);
 
-    int table_remove(hash_table_t* table, ulong key, void* data, node_comparator_t cmp);
+    int table_insert(hash_table_t* table, char* key, void* data);
+
+    void* table_get(hash_table_t* table, char* key);
+
+    int table_remove(hash_table_t* table, char* key);
 
     void table_for_each(hash_table_t* table, node_operator_t oper);
 
@@ -52,15 +62,18 @@ namespace ogl
         public:
             virtual void* alloc(size_t size) = 0;
             virtual void free(void* ptr) = 0;
+            virtual void refresh(size_t size, size_t blockSize) = 0;
     };
 
     class Memory
     {
         public:
-            Memory(size_t size = BUFSIZ);
+            Memory(size_t size = BUFSIZ, size_t blockSize = 1);
             ~Memory();
             void* alloc(size_t size);
             void free(void* ptr);
+
+            void refresh(size_t size, size_t blockSize);
         private:
             MemoryPool* m_memPool;
     };

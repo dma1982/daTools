@@ -104,3 +104,12 @@ void ogl::File::mkdir(int mask)
     ::mkdir(m_path.c_str(), mask);
 }
 
+size_t ogl::File::size()
+{
+    struct stat sb;
+    if(::fstat(m_handle, &sb) == -1)
+    {
+        return -1;
+    }
+    return sb.st_size;
+}

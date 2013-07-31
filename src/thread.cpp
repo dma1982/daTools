@@ -51,6 +51,11 @@ namespace ogl
         m_data = data;
     }
 
+    Thread::~Thread()
+    {
+        // do nothing
+    }
+
     int Thread::start()
     {
         return pthread_create(&m_tid, 0, m_worker, m_data);

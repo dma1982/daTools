@@ -11,7 +11,6 @@
 namespace ogl
 {
 
-    std::string gethostname();
 
     class SocketOptions
     {

@@ -8,6 +8,9 @@
 #include "log.h"
 
 #include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 namespace ogl
 {
@@ -72,6 +75,13 @@ namespace ogl
              */
 
             void mkdir(mask_t mask = default_dir_mask);
+
+
+            /**
+             * get the size of file
+             *
+             */
+            size_t size();
     };
 
 }

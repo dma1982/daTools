@@ -3,7 +3,7 @@
 namespace ogl
 {
 
-    void ConsistentHashNet::addNode(char* nodeName)
+    void ConsistentHashNet::addNode(const std::string& nodeName)
     {
         char digest[16] = {0};
         computeMd5(nodeName, digest);
@@ -15,7 +15,7 @@ namespace ogl
         }
     }
 
-    void ConsistentHashNet::removeNode(char* nodeName)
+    void ConsistentHashNet::removeNode(const std::string& nodeName)
     {
         char digest[16] = {0};
         computeMd5(nodeName, digest);
@@ -27,7 +27,7 @@ namespace ogl
         }
     }
 
-    char* ConsistentHashNet::getNode(char* key)
+    std::string ConsistentHashNet::getNode(const std::string& key)
     {
 
         if (m_nodes.empty())
@@ -39,7 +39,7 @@ namespace ogl
         computeMd5(key, digest);
         long k = this->hash(digest, 0);
 
-        std::map<long, char*>::iterator res = m_nodes.find(k);
+        std::map<long, std::string>::iterator res = m_nodes.find(k);
 
         if (res != m_nodes.end())
         {
@@ -64,12 +64,12 @@ namespace ogl
         return rv & 0xffffffffL; /* Truncate to 32-bits */
     }
 
-    void ConsistentHashNet::computeMd5(char* k, char* digest)
+    void ConsistentHashNet::computeMd5(const std::string& key, char* digest)
     {
         md5_state_t md5state;
 
         md5_init( &md5state );
-        md5_append( &md5state, (unsigned char *)k, strlen(k) );
+        md5_append( &md5state, (const md5_byte_t *) key.c_str(), key.length() );
         md5_finish( &md5state, (unsigned char *) digest);
     }
 }

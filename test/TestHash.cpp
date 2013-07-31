@@ -13,5 +13,5 @@ TEST(ConsistentHashNet, addNode)
     ogl::ConsistentHashNet hashNet;
 
     hashNet.addNode(nodeName);
-    ASSERT_STREQ(hashNet.getNode(key), "hello world");
+    ASSERT_STREQ(hashNet.getNode(key).c_str(), "hello world");
 }

@@ -61,14 +61,14 @@ namespace ogl
 
             if (oper == 0)
             {
-                free(cur->data);
+                ::free(cur->data);
             }
             else
             {
                 oper(cur->data);
             }
 
-            free(cur);
+            ::free(cur);
 
             cur = head->next;
         }
@@ -157,6 +157,22 @@ namespace ogl
         }
     }
 
+    static unsigned long sdbm_hash(const char* str, size_t size)
+    {
+        unsigned long hash = 0;
+        int c;
+
+        while ((c = *str++) != 0)
+            hash = c + (hash << 6) + (hash << 16) - hash;
+
+        return size ? (hash % size) : hash;
+    }
+
+    static int hash_node_comparator_fn(void* l, void* r)
+    {
+        return ::strcmp(((hash_table_node_t*)l)->key, ((hash_table_node_t*)r)->key) == 0;
+    }
+
     hash_table_t* table_create(size_t size)
     {
         hash_table_t* res = (hash_table_t*) malloc(sizeof(hash_table_t));
@@ -168,23 +184,74 @@ namespace ogl
         return res;
     }
 
-    void table_insert(hash_table_t* table, ulong key, void* data)
+    int table_destroy(hash_table_t* table)
     {
-        ulong index = key % table->size;
+        // table_for_each(table, hash_free_node_fn);
+        for (size_t i = 0; i < table->size; i++)
+        {
+            if (table->data[i])
+            {
+                list_destroy(table->data[i]);
+            }
+        }
+
+        return 0;
+    }
+
+    int table_insert(hash_table_t* table, char* key, void* data)
+    {
+        ulong index = sdbm_hash(key, table->size);
+
+        hash_table_node_t* node = 0;
+
         if (table->data[index] == 0)
         {
             table->data[index] = list_create();
         }
 
-        list_append(table->data[index], data);
+        if (table_get(table, key) != 0)
+        {
+            return 0;
+        }
+
+        node = (hash_table_node_t*) ::malloc(sizeof(hash_table_node_t));
+        assert(node != 0);
+
+        node->key = key;
+        node->data = data;
+
+        list_append(table->data[index], node);
+        return 1;
     }
 
-    int table_remove(hash_table_t* table, ulong key, void* data, node_comparator_t cmp)
+    void* table_get(hash_table_t* table, char* key)
     {
-        ulong index = key % (table->size);
+        hash_table_node_t node;
+
+        ulong index = sdbm_hash(key, table->size);
+        if (table->data[index] == 0)
+        {
+            return 0;
+        }
+
+        node.key = key;
+        node.data = 0;
+
+        node_t* data_node = list_find(table->data[index], &node, hash_node_comparator_fn);
+        if (0 == data_node)
+        {
+            return 0;
+        }
+
+        return ((hash_table_node_t*)(data_node->data))->data;
+    }
+
+    int table_remove(hash_table_t* table, const char* key, void* data)
+    {
+        ulong index = sdbm_hash(key, table->size);
         if (table->data[index])
         {
-            return list_remove(table->data[index], data, cmp);
+            return list_remove(table->data[index], data, hash_node_comparator_fn);
         }
         else
         {
@@ -217,6 +284,9 @@ namespace ogl
             virtual void free(void* addr)
             {
                 free(addr);
+            }
+            virtual void refresh(size_t size, size_t blockSize)
+            {
             }
     };
 
@@ -281,6 +351,9 @@ namespace ogl
             {
             }
 
+            virtual void refresh(size_t size, size_t blockSize)
+            {
+            }
         private:
             NginxMemory* m_nextPool;
             NginxMemory* m_currentPool;
@@ -291,9 +364,45 @@ namespace ogl
             node_t* m_bigBlock;
     };
 
-    Memory::Memory(size_t size)
+    class BitmapPool : public MemoryPool
     {
-        m_memPool = new NginxMemory(size);
+        public:
+            BitmapPool(size_t size, size_t blockSize) : m_bitmap(size)
+            {
+            }
+
+            virtual void refresh(size_t size, size_t blockSize)
+            {
+                m_mem = (char*)::malloc(blockSize * size);
+            }
+
+            ~BitmapPool()
+            {
+                if (m_mem)
+                {
+                    ::free(m_mem);
+                }
+            }
+
+            virtual void free(void* addr)
+            {
+                m_bitmap.deallocateBlock((char*)addr - m_mem);
+            }
+
+            virtual void* alloc(size_t size)
+            {
+                return m_mem + m_bitmap.allocateBlock();
+            }
+
+        private:
+            Bitmap m_bitmap;
+            char* m_mem;
+    };
+
+    Memory::Memory(size_t size, size_t blockSize)
+    {
+        // m_memPool = new NginxMemory(size);
+        m_memPool = new BitmapPool(size, blockSize);
     }
 
     Memory::~Memory()
@@ -311,6 +420,10 @@ namespace ogl
         m_memPool->free(addr);
     }
 
+    void Memory::refresh(size_t size, size_t blockSize)
+    {
+        m_memPool->refresh(size, blockSize);
+    }
 }
 
 
