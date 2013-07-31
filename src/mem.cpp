@@ -186,6 +186,8 @@ namespace ogl
 
     int table_destroy(hash_table_t* table)
     {
+        assert(table != NULL);
+
         // table_for_each(table, hash_free_node_fn);
         for (size_t i = 0; i < table->size; i++)
         {
@@ -194,6 +196,13 @@ namespace ogl
                 list_destroy(table->data[i]);
             }
         }
+
+        if (table->data)
+        {
+            ::free(table->data);
+        }
+
+        ::free(table);
 
         return 0;
     }

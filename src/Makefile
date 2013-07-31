@@ -8,6 +8,8 @@ OBJS=log.o \
      md5.o \
      hash.o \
      thread.o \
+     utils.o \
+     bitmap.o \
      props.o
 
 all: libogl.a
