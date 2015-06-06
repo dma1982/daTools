@@ -8,9 +8,15 @@
 #include "log.h"
 
 #include <string>
+#include <cstdio>
+#include <cstdlib>
+extern "C"
+{
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
+}
 
 namespace ogl
 {

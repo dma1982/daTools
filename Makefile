@@ -1,6 +1,5 @@
 all:
 	cd src; make
-	cd test; make
 
 clean:
 	cd src; make clean
@@ -9,3 +8,6 @@ clean:
 astyle:
 	astyle `find . -name *.cpp -o -name *.h`
 	rm -f `find . -name *.orig | xargs`
+
+test:
+	cd test; make

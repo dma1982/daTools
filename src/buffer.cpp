@@ -27,7 +27,6 @@ void ogl::Data::_dec_ref_cnt()
 
 void ogl::Data::size(size_t s)
 {
-    m_logger->Assert(s >= 0, ERR_INVALID_SIZE_NEG);
     m_logger->Assert(s <= m_capacity, ERR_INVALID_SIZE_BIG);
 
     m_size = s;
@@ -151,7 +150,7 @@ void ogl::Buffer::append(const char* msg, size_t len)
 
 void ogl::Buffer::size(size_t s)
 {
-    m_logger->Assert(s <= capacity() && s >= 0, ERR_INVALID_SIZE);
+    m_logger->Assert(s <= capacity(), ERR_INVALID_SIZE);
     m_data->size(s);
 }
 

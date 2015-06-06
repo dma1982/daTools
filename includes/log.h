@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cassert>
 
-#include <tr1/memory>
+#include <memory>
 
 #include "utils.h"
 #include "types.h"
@@ -43,7 +43,7 @@ namespace ogl
             void Backtrace(void);
     };
 
-    typedef std::tr1::shared_ptr<ogl::Logger> LoggerPtr;
+    typedef std::shared_ptr<ogl::Logger> LoggerPtr;
 
     extern LoggerPtr logger;
 

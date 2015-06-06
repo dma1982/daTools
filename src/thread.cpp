@@ -1,6 +1,9 @@
 #include "thread.h"
 
+extern "C"
+{
 #include <pthread.h>
+}
 
 namespace ogl
 {
@@ -73,7 +76,10 @@ namespace ogl
 
     int Thread::yield()
     {
-        return pthread_yield();
+
+        return -1;
+        // return pthread_yield();
+        //
     }
 
 };

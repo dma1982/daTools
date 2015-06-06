@@ -60,6 +60,7 @@ namespace ogl
     class MemoryPool
     {
         public:
+            virtual ~MemoryPool() = 0;
             virtual void* alloc(size_t size) = 0;
             virtual void free(void* ptr) = 0;
             virtual void refresh(size_t size, size_t blockSize) = 0;
